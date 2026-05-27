@@ -1163,7 +1163,7 @@ export default function ServiceHub() {
               )}
 
               <div className="flex justify-between items-center text-[10px] text-gray-500 dark:text-gray-400 mt-2">
-                <span>{safeDate(selectedTicket.timestamp).toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" })}</span>
+                <span>{safeDate(selectedTicket.timestamp).toLocaleString("id-ID", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })}</span>
                 <span>ID Pelapor: <span className="font-bold">{selectedTicket.id_user_pelapor}</span></span>
               </div>
 
