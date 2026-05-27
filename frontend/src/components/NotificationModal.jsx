@@ -231,7 +231,7 @@ export default function NotificationModal({ isOpen, onClose, onPayNow }) {
 
   return (
     <div
-      className={`fixed inset-0 z-60 flex justify-center items-end transition-colors duration-300 ${
+      className={`fixed inset-0 z-[999] flex justify-center items-end transition-colors duration-300 ${
         isOpen ? "bg-black/50 pointer-events-auto" : "bg-transparent pointer-events-none"
       }`}
       onClick={handleOverlayClick}
