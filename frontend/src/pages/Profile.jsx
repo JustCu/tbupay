@@ -23,12 +23,23 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
 
+  const getInitials = (name) => {
+    if (!name) return "W";
+    const words = name.split(" ");
+    if (words.length >= 2) {
+      return (words[0][0] + words[1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
   const openEditProfile = () => {
     setForm({
       nama: user?.nama || "",
       blok_rumah: user?.blok_rumah || "",
       no_hp: user?.no_hp || "",
       password: "",
+      url_foto_profil: user?.url_foto_profil || "",
+      imageBase64: "",
     });
     setFormError("");
     setIsEditOpen(true);
@@ -58,6 +69,9 @@ export default function Profile() {
       if (form.password.trim()) {
         payload.password = form.password.trim();
       }
+      if (form.imageBase64) {
+        payload.imageBase64 = form.imageBase64;
+      }
       const res = await updateUser(payload);
       if (res.status === "success") {
         // Sync Zustand store
@@ -65,6 +79,7 @@ export default function Profile() {
           ...user,
           nama: payload.nama,
           no_hp: payload.no_hp,
+          url_foto_profil: res.url_foto_profil || user.url_foto_profil,
         });
         showAlert("Profil Anda berhasil diperbarui!", { variant: "success", title: "Sukses" });
         setIsEditOpen(false);
@@ -114,11 +129,17 @@ export default function Profile() {
           {/* Left Side: Premium Avatar Picture & Badges */}
           <div className="relative shrink-0 flex flex-col items-center gap-3 justify-center">
             <div className="relative w-20 h-20 rounded-full border-3 border-white/90 shadow-md overflow-hidden bg-slate-100 flex items-center justify-center shrink-0">
-              <img
-                src="/avatar_placeholder.png"
-                alt="Foto Profil"
-                className="w-full h-full object-cover"
-              />
+              {user?.url_foto_profil ? (
+                <img
+                  src={user.url_foto_profil}
+                  alt="Foto Profil"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-500 text-white flex items-center justify-center text-3xl font-black tracking-widest shadow-inner">
+                  {getInitials(user?.nama)}
+                </div>
+              )}
               {/* Subtle online status indicator */}
               <span className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-400 border-2 border-slate-900 rounded-full z-10"></span>
             </div>
@@ -272,6 +293,41 @@ export default function Profile() {
           )}
 
           <form onSubmit={handleSaveProfile} className="flex flex-col gap-4">
+            {/* Avatar Upload Area */}
+            <div className="flex flex-col gap-2 items-center mb-1">
+              <div className="relative w-20 h-20 rounded-full border-2 border-gray-200 overflow-hidden bg-gray-100 flex items-center justify-center shadow-sm">
+                {form.imageBase64 || form.url_foto_profil ? (
+                  <img
+                    src={form.imageBase64 || form.url_foto_profil}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-500 text-white flex items-center justify-center text-3xl font-black">
+                    {getInitials(form.nama || user?.nama)}
+                  </div>
+                )}
+              </div>
+              <label className="text-[12px] font-bold text-blue-600 cursor-pointer hover:underline">
+                Ubah Foto Profil
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setForm((p) => ({ ...p, imageBase64: reader.result }));
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                />
+              </label>
+            </div>
+
             <div className="flex flex-col gap-1">
               <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase">Nama Lengkap</label>
               <input

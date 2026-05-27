@@ -112,6 +112,7 @@ function handleLogin(data) {
     const role = row[4];
     const password_hash = row[5];
     const status_warga = row[6] || "tetap";
+    const url_foto_profil = row[7] || "";
 
     // Convert to String to prevent type mismatch (e.g. 123456 as Number vs '123456' as String)
     const strBlok = String(blok_rumah).trim();
@@ -127,7 +128,7 @@ function handleLogin(data) {
       return ContentService.createTextOutput(
         JSON.stringify({
           status: "success",
-          user: { id_user, nama, blok_rumah, no_hp, role, status_warga },
+          user: { id_user, nama, blok_rumah, no_hp, role, status_warga, url_foto_profil },
         }),
       ).setMimeType(ContentService.MimeType.JSON);
     }
@@ -809,6 +810,7 @@ function initSheet() {
         "role",
         "password_hash",
         "status_warga",
+        "url_foto_profil",
       ],
     },
     {
@@ -886,6 +888,7 @@ function initSheet() {
       "admin",
       "123456",
       "tetap",
+      "",
     ]);
     userSheet.appendRow([
       "warga-001",
@@ -895,6 +898,7 @@ function initSheet() {
       "warga",
       "123456",
       "tetap",
+      "",
     ]);
     userSheet.appendRow([
       "petugas-001",
@@ -904,6 +908,7 @@ function initSheet() {
       "petugas",
       "123456",
       "tetap",
+      "",
     ]);
   }
 
@@ -940,6 +945,7 @@ function handleGetUsers() {
       no_hp: String(rows[i][3]),
       role: rows[i][4],
       status_warga: rows[i][6] || "tetap",
+      url_foto_profil: rows[i][7] || "",
       // never return password hash
     });
   }
@@ -977,6 +983,7 @@ function handleAddUser(data) {
     data.role || "warga",
     data.password || "123456",
     data.status_warga || "tetap",
+    "",
   ]);
   return ContentService.createTextOutput(
     JSON.stringify({
@@ -992,18 +999,37 @@ function handleUpdateUser(data) {
     SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName("tb_users");
   const rows = sheet.getDataRange().getValues();
 
+  let url_foto_profil = "";
+  if (data.imageBase64) {
+    const rootFolder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+    var profileFolderIter = rootFolder.getFoldersByName("profil");
+    var profileFolder = profileFolderIter.hasNext()
+      ? profileFolderIter.next()
+      : rootFolder.createFolder("profil");
+
+    var fileName = "profil-" + data.id_user + "-" + Date.now();
+    var contentType = data.imageBase64.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,/)[1];
+    var base64Data = data.imageBase64.split(",")[1];
+    var blob = Utilities.newBlob(Utilities.base64Decode(base64Data), contentType, fileName);
+    var file = profileFolder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    url_foto_profil = "https://lh3.googleusercontent.com/d/" + file.getId() + "=s800";
+  }
+
   for (let i = 1; i < rows.length; i++) {
     if (String(rows[i][0]) === String(data.id_user)) {
-      sheet.getRange(i + 1, 2).setValue(data.nama);
-      sheet.getRange(i + 1, 3).setValue(data.blok_rumah);
-      sheet.getRange(i + 1, 4).setValue(data.no_hp || "");
-      sheet.getRange(i + 1, 5).setValue(data.role);
-      if (data.password) {
-        sheet.getRange(i + 1, 6).setValue(data.password);
-      }
-      sheet.getRange(i + 1, 7).setValue(data.status_warga || "tetap");
+      if (data.nama) sheet.getRange(i + 1, 2).setValue(data.nama);
+      if (data.blok_rumah) sheet.getRange(i + 1, 3).setValue(data.blok_rumah);
+      if (data.no_hp !== undefined) sheet.getRange(i + 1, 4).setValue(data.no_hp);
+      if (data.role) sheet.getRange(i + 1, 5).setValue(data.role);
+      if (data.password) sheet.getRange(i + 1, 6).setValue(data.password);
+      if (data.status_warga) sheet.getRange(i + 1, 7).setValue(data.status_warga);
+      if (url_foto_profil) sheet.getRange(i + 1, 8).setValue(url_foto_profil);
+
+      const finalUrlFoto = url_foto_profil || String(rows[i][7] || "");
+
       return ContentService.createTextOutput(
-        JSON.stringify({ status: "success", message: "User diperbarui" }),
+        JSON.stringify({ status: "success", message: "User diperbarui", url_foto_profil: finalUrlFoto })
       ).setMimeType(ContentService.MimeType.JSON);
     }
   }
