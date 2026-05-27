@@ -109,85 +109,86 @@ export default function Profile() {
       </div>
 
       <div
-        className="relative overflow-hidden text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 select-none border border-white/10 w-full"
+        className="relative overflow-hidden text-white rounded-2xl shadow-xl transition-all duration-300 select-none border border-white/10 w-full mb-6"
         style={{
-          background: "linear-gradient(135deg, #0a3460 0%, #0f4c81 55%, #1565a8 100%)",
+          background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", // Darker premium slate
           aspectRatio: "1.586 / 1",
         }}
       >
-        <div className="p-5 flex items-stretch gap-5 h-full w-full relative z-10">
-          {/* Subtle Watermark pattern / glow effect */}
-          <div className="absolute right-[-40px] bottom-[-40px] w-64 h-64 bg-white/[0.03] rounded-full pointer-events-none filter blur-xl"></div>
-          <div className="absolute left-[-20px] top-[-20px] w-48 h-48 bg-blue-400/[0.05] rounded-full pointer-events-none filter blur-xl"></div>
+        <div className="absolute right-[-20%] top-[-20%] w-[70%] h-[70%] bg-blue-500/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute left-[-10%] bottom-[-10%] w-[50%] h-[50%] bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
+        
+        {/* Hologram subtle effect */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJ0cmFuc3BhcmVudCI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwbDR2NE00IDBMMCA0IiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4wMykiIHN0cm9rZS13aWR0aD0iMSI+PC9wYXRoPgo8L3N2Zz4=')] opacity-50 pointer-events-none"></div>
+
+        <div className="p-5 flex flex-col h-full w-full relative z-10 justify-between">
           
-          {/* Glowing metallic logo at top right */}
-          <div className="absolute top-4 right-5 flex flex-col items-end opacity-40 select-none pointer-events-none">
-            <span className="text-[14px] font-black tracking-widest text-white leading-none">TBU PAY</span>
-            <span className="text-[8px] font-medium tracking-wider text-slate-300 mt-1 uppercase">Resident ID Card</span>
+          {/* Top Header */}
+          <div className="flex justify-between items-start w-full">
+            <div className="flex flex-col">
+              <span className="text-[16px] font-black tracking-widest text-white leading-none">TBU PAY</span>
+              <span className="text-[8px] font-medium tracking-widest text-slate-400 mt-1 uppercase">Resident Identity Card</span>
+            </div>
+            {/* Simulating a smart card chip */}
+            <div className="w-8 h-6 bg-gradient-to-br from-yellow-200 to-yellow-500 rounded-md opacity-90 shadow-inner flex flex-col justify-evenly items-center border border-yellow-600/30 overflow-hidden px-1">
+              <div className="w-full h-[1px] bg-yellow-700/20"></div>
+              <div className="w-full h-[1px] bg-yellow-700/20"></div>
+            </div>
           </div>
 
-          {/* Left Side: Premium Avatar Picture & Badges */}
-          <div className="relative shrink-0 flex flex-col items-center gap-3 justify-center">
-            <div className="relative w-20 h-20 rounded-full border-3 border-white/90 shadow-md overflow-hidden bg-slate-100 flex items-center justify-center shrink-0">
-              {user?.url_foto_profil ? (
-                <img
-                  src={user.url_foto_profil}
-                  alt="Foto Profil"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-500 text-white flex items-center justify-center text-3xl font-black tracking-widest shadow-inner">
-                  {getInitials(user?.nama)}
-                </div>
-              )}
-              {/* Subtle online status indicator */}
-              <span className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-400 border-2 border-slate-900 rounded-full z-10"></span>
+          {/* Main Body */}
+          <div className="flex gap-4 items-end mb-1 mt-auto pb-1">
+            {/* Left: Photo */}
+            <div className="shrink-0 flex flex-col gap-2">
+              <div className="relative w-[72px] h-[90px] rounded-lg border-2 border-white/20 shadow-md overflow-hidden bg-slate-800 flex items-center justify-center shrink-0">
+                {user?.url_foto_profil ? (
+                  <img
+                    src={user.url_foto_profil}
+                    alt="Foto Profil"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-500 text-white flex items-center justify-center text-3xl font-black tracking-widest shadow-inner">
+                    {getInitials(user?.nama)}
+                  </div>
+                )}
+              </div>
             </div>
-            
-            {/* Badges Row aligned underneath avatar */}
-            <div className="flex flex-col gap-1.5 items-center w-full">
-              <span className="capitalize bg-white/10 border border-white/20 text-white px-2 py-0.5 rounded-md text-[9px] font-black shadow-sm leading-none flex items-center justify-center uppercase tracking-wider gap-1">
-                <ShieldCheck size={10} className="text-emerald-400 shrink-0" />
-                {user?.role || "warga"}
-              </span>
-              {user?.status_warga && (
-                <span className={`capitalize px-2 py-0.5 rounded-md text-[9px] font-black border shadow-sm leading-none flex items-center justify-center uppercase tracking-wider ${
-                  user.status_warga === "tetap" ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30" :
-                  user.status_warga === "kontrak" ? "bg-blue-500/20 text-blue-300 border-blue-500/30" :
-                  user.status_warga === "kos" ? "bg-amber-500/20 text-amber-300 border-amber-500/30" :
-                  "bg-purple-500/20 text-purple-300 border-purple-500/30"
-                }`}>
-                  {user.status_warga}
+
+            {/* Right: Info */}
+            <div className="flex-1 flex flex-col gap-2.5 pb-0.5">
+              <div className="flex flex-col">
+                <span className="text-[7px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Nama Lengkap</span>
+                <span className="text-[15px] font-black tracking-wide text-white leading-none uppercase drop-shadow-xs truncate max-w-[170px]">
+                  {user?.nama || "Nama Warga"}
                 </span>
-              )}
-            </div>
-          </div>
-
-          {/* Right Side: Identity Details */}
-          <div className="flex-1 flex flex-col justify-center py-1 relative">
-            <div>
-              {/* Citizen Name */}
-              <h3 className="text-[18px] font-black tracking-wide text-white m-0 leading-tight drop-shadow-xs capitalize pr-8">
-                {user?.nama || "Nama Warga"}
-              </h3>
+              </div>
               
-              {/* Contact Info Grid */}
-              <div className="flex flex-col gap-2.5 mt-4 text-white/80">
-                <div className="flex items-center gap-2 text-xs font-semibold">
-                  <div className="w-5 h-5 bg-white/10 rounded-md flex items-center justify-center shrink-0">
-                    <Home size={12} className="text-blue-300" />
-                  </div>
-                  <span>Blok Rumah: <strong className="text-white capitalize">{user?.blok_rumah || "-"}</strong></span>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col">
+                  <span className="text-[7px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Blok Rumah</span>
+                  <span className="text-[11px] font-bold text-white uppercase leading-none truncate">{user?.blok_rumah || "-"}</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs font-semibold">
-                  <div className="w-5 h-5 bg-white/10 rounded-md flex items-center justify-center shrink-0">
-                    <Phone size={12} className="text-blue-300" />
-                  </div>
-                  <span>No. HP: <strong className="text-white tabular-nums">{user?.no_hp || "-"}</strong></span>
+                <div className="flex flex-col">
+                  <span className="text-[7px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Status Warga</span>
+                  <span className="text-[11px] font-bold uppercase leading-none text-emerald-400 truncate">{user?.status_warga || "Tetap"}</span>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Bottom Footer */}
+          <div className="flex justify-between items-end border-t border-white/10 pt-2.5 mt-2">
+            <div className="flex items-center gap-1.5 opacity-90">
+              <ShieldCheck size={11} className="text-emerald-400" />
+              <span className="text-[9px] uppercase tracking-wider font-bold text-white">{user?.role || "warga"}</span>
+            </div>
+            <div className="flex flex-col items-end">
+              <span className="text-[7px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">ID Number</span>
+              <span className="text-[10px] font-mono tracking-widest text-white/90">{user?.no_hp || "000000000"}</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
