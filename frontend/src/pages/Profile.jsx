@@ -184,7 +184,7 @@ export default function Profile() {
               <span className="text-[9px] uppercase tracking-wider font-bold text-white">{user?.role || "warga"}</span>
             </div>
             <div className="flex flex-col items-end">
-              <span className="text-[7px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">ID Number</span>
+              <span className="text-[7px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Phone Number</span>
               <span className="text-[10px] font-mono tracking-widest text-white/90">{user?.no_hp || "000000000"}</span>
             </div>
           </div>

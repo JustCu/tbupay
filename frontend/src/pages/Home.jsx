@@ -900,6 +900,15 @@ export default function Home() {
     window.dispatchEvent(new CustomEvent("open-payment-modal"));
   };
 
+  const getInitials = (name) => {
+    if (!name) return "W";
+    const words = name.split(" ");
+    if (words.length >= 2) {
+      return (words[0][0] + words[1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
   return (
     <>
     <div className="flex flex-col gap-6 pb-24" {...pull.bind}>
@@ -913,11 +922,17 @@ export default function Home() {
       {/* Header */}
       <header className="flex justify-between items-center py-1">
         <div className="flex items-center gap-3">
-          <img
-            src="/avatar_placeholder.png"
-            alt="Avatar"
-            className="w-12 h-12 rounded-full object-cover border border-gray-100 dark:border-slate-700 shadow-sm"
-          />
+          {user?.url_foto_profil ? (
+            <img
+              src={user.url_foto_profil}
+              alt="Avatar"
+              className="w-12 h-12 rounded-full object-cover border border-gray-100 dark:border-slate-700 shadow-sm shrink-0"
+            />
+          ) : (
+            <div className="w-12 h-12 rounded-full border border-gray-100 dark:border-slate-700 shadow-sm bg-gradient-to-br from-blue-400 to-indigo-500 text-white flex items-center justify-center text-lg font-black tracking-widest overflow-hidden shrink-0">
+              {getInitials(user?.nama)}
+            </div>
+          )}
           <div className="flex flex-col justify-center">
             <span className="text-[13px] font-medium text-gray-400 leading-tight">Welcome Back,</span>
             <h2 className="text-[20px] font-extrabold text-gray-900 dark:text-gray-100 m-0 leading-tight">
