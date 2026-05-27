@@ -24,6 +24,8 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const hasUnreadNotif = useStore((state) => state.hasUnreadNotif);
+  const setHasUnreadNotif = useStore((state) => state.setHasUnreadNotif);
 
   const getInitials = (name) => {
     if (!name) return "W";
@@ -112,9 +114,15 @@ export default function Profile() {
         </div>
         <div
           className="cursor-pointer relative transition-all duration-200 flex items-center justify-center p-2 text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white active:scale-95 shrink-0 mt-1"
-          onClick={() => setIsNotifOpen(true)}
+          onClick={() => {
+            setIsNotifOpen(true);
+            setHasUnreadNotif(false);
+          }}
         >
           <Bell size={24} className="stroke-[1.75] transition-colors duration-500 fill-amber-400 text-amber-500" />
+          {hasUnreadNotif && (
+            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 border border-white rounded-full animate-pulse z-10"></span>
+          )}
         </div>
       </div>
 

@@ -139,6 +139,8 @@ export default function Cashflow() {
   });
 
   const [refreshing, setRefreshing] = useState(false);
+  const hasUnreadNotif = useStore((state) => state.hasUnreadNotif);
+  const setHasUnreadNotif = useStore((state) => state.setHasUnreadNotif);
   const [filter, setFilter] = useState("semua");
   const [showAllTransactions, setShowAllTransactions] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -547,12 +549,18 @@ export default function Cashflow() {
         </div>
         <div
           className="cursor-pointer relative transition-all duration-200 flex items-center justify-center p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full active:scale-95 shrink-0 mt-1"
-          onClick={() => setIsNotifOpen(true)}
+          onClick={() => {
+            setIsNotifOpen(true);
+            setHasUnreadNotif(false);
+          }}
         >
           <Bell 
             size={24} 
             className={`stroke-[1.75] transition-all duration-500 ${(loading || refreshing) ? "text-gray-400 dark:text-gray-500 fill-transparent" : "fill-amber-400 text-amber-500"}`} 
           />
+          {hasUnreadNotif && !loading && !refreshing && (
+            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 border border-white rounded-full animate-pulse z-10"></span>
+          )}
         </div>
       </div>
 

@@ -544,6 +544,8 @@ function HeroCarousel({ totalKas, totalPemasukan, totalPengeluaran, latestNews, 
 // ── Main Home Component ────────────────────────────────────────────────────
 export default function Home() {
   const user = useStore((state) => state.user);
+  const hasUnreadNotif = useStore((state) => state.hasUnreadNotif);
+  const setHasUnreadNotif = useStore((state) => state.setHasUnreadNotif);
   const showAlert = useStore((state) => state.showAlert);
   const showConfirm = useStore((state) => state.showConfirm);
   const navigate = useNavigate();
@@ -688,7 +690,6 @@ export default function Home() {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedNews, setSelectedNews] = useState(null);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
-  const [hasUnread, setHasUnread] = useState(false);
   const [isAllTrxOpen, setIsAllTrxOpen] = useState(false);
 
   const myAllTransactions = useMemo(() => {
@@ -791,7 +792,7 @@ export default function Home() {
           myVerified.length > 0 ||
           (user?.role === "warga" && !hasPayment) ||
           hasNews;
-        setHasUnread(showBadge);
+        setHasUnreadNotif(showBadge);
       }
 
       if (newsRes?.status === "success" && Array.isArray(newsRes.data)) {
@@ -954,14 +955,14 @@ export default function Home() {
           className="cursor-pointer relative transition-all duration-200 flex items-center justify-center p-2 text-gray-700 hover:text-gray-950 active:scale-95"
           onClick={() => {
             setIsNotifOpen(true);
-            setHasUnread(false);
+            setHasUnreadNotif(false);
           }}
         >
           <Bell 
             size={24} 
             className={`stroke-[1.75] transition-all duration-500 ${(loading || refreshing) ? "text-gray-400 dark:text-gray-500 fill-transparent" : "fill-amber-400 text-amber-500"}`} 
           />
-          {hasUnread && !loading && !refreshing && (
+          {hasUnreadNotif && !loading && !refreshing && (
             <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 border border-white rounded-full animate-pulse z-10"></span>
           )}
         </div>

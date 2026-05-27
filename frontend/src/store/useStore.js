@@ -9,6 +9,9 @@ const useStore = create(
       login: (userData) => set({ user: userData, isAuthenticated: true }),
       logout: () => set({ user: null, isAuthenticated: false }),
 
+      hasUnreadNotif: false,
+      setHasUnreadNotif: (val) => set({ hasUnreadNotif: val }),
+
       // App Settings
       isDarkMode: false,
       toggleDarkMode: () => set((state) => {
