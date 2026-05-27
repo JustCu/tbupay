@@ -1,7 +1,8 @@
 import { useState } from "react";
 import useStore from "../store/useStore";
-import { Key, Info, LogOut, Home, Phone, ShieldCheck, Pencil, X, AlertCircle, Moon, Volume2, Globe } from "lucide-react";
+import { Key, Info, LogOut, Home, Phone, ShieldCheck, Pencil, X, AlertCircle, Moon, Volume2, Globe, Bell } from "lucide-react";
 import { updateUser } from "../application/use-cases/users/userUseCases";
+import NotificationModal from "../components/NotificationModal";
 
 export default function Profile() {
   const user = useStore((state) => state.user);
@@ -22,6 +23,7 @@ export default function Profile() {
   const [form, setForm] = useState({ nama: "", blok_rumah: "", no_hp: "", password: "" });
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
 
   const getInitials = (name) => {
     if (!name) return "W";
@@ -103,9 +105,17 @@ export default function Profile() {
 
   return (
     <div className="pb-24 animate-[fadeIn_0.3s_ease-in-out]">
-      <div className="py-4">
-        <h2 className="text-xl font-bold m-0 text-gray-800 dark:text-gray-100">Profil Warga</h2>
-        <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-1 m-0">Kelola informasi pribadi dan pengaturan akun Anda</p>
+      <div className="py-4 flex justify-between items-start">
+        <div>
+          <h2 className="text-xl font-bold m-0 text-gray-800 dark:text-gray-100">Profil Warga</h2>
+          <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-1 m-0">Kelola informasi pribadi dan pengaturan akun Anda</p>
+        </div>
+        <div
+          className="cursor-pointer relative transition-all duration-200 flex items-center justify-center p-2 text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white active:scale-95 shrink-0 mt-1"
+          onClick={() => setIsNotifOpen(true)}
+        >
+          <Bell size={24} className="stroke-[1.75]" />
+        </div>
       </div>
 
       <div
@@ -385,6 +395,12 @@ export default function Profile() {
           </form>
         </div>
       </div>
+
+      {/* Notification Modal */}
+      <NotificationModal
+        isOpen={isNotifOpen}
+        onClose={() => setIsNotifOpen(false)}
+      />
     </div>
   );
 }

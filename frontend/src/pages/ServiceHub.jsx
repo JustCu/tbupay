@@ -13,8 +13,8 @@ import {
   ChevronRight,
   RefreshCw,
   CalendarDays,
-  Plus,
   CheckCircle,
+  Bell,
 } from "lucide-react";
 import {
   getTickets,
@@ -34,6 +34,7 @@ import {
   createGeneralChat,
 } from "../application/use-cases/chats/chatUseCases";
 import CacheFallbackBadge from "../components/CacheFallbackBadge";
+import NotificationModal from "../components/NotificationModal";
 import usePullToRefresh from "../hooks/usePullToRefresh";
 
 // ---------- Reusable Bottom Sheet Wrapper ----------
@@ -171,6 +172,7 @@ export default function ServiceHub() {
   });
 
   const [refreshing, setRefreshing] = useState(false);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
 
   const [dataSource, setDataSource] = useState(() => {
     try {
@@ -480,9 +482,17 @@ export default function ServiceHub() {
       <CacheFallbackBadge source={dataSource} />
 
       {/* ========== HUB (always rendered) ========== */}
-      <div className="py-4">
-        <h2 className="text-xl font-bold m-0 text-gray-800 dark:text-gray-100">Layanan Warga</h2>
-        <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-1 m-0">Pusat informasi dan pengaduan</p>
+      <div className="py-4 flex justify-between items-start">
+        <div>
+          <h2 className="text-xl font-bold m-0 text-gray-800 dark:text-gray-100">Layanan Warga</h2>
+          <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-1 m-0">Pusat informasi dan pengaduan</p>
+        </div>
+        <div
+          className="cursor-pointer relative transition-all duration-200 flex items-center justify-center p-2 text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white active:scale-95 shrink-0 mt-1"
+          onClick={() => setIsNotifOpen(true)}
+        >
+          <Bell size={24} className="stroke-[1.75]" />
+        </div>
       </div>
 
       {/* Quick action cards */}
@@ -1291,6 +1301,12 @@ export default function ServiceHub() {
           </div>
         )}
       </BottomSheet>
+
+      {/* Notification Modal */}
+      <NotificationModal
+        isOpen={isNotifOpen}
+        onClose={() => setIsNotifOpen(false)}
+      />
     </div>
   );
 }
