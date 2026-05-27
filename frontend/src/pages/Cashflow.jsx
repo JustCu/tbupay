@@ -17,6 +17,12 @@ import CacheFallbackBadge from "../components/CacheFallbackBadge";
 import NotificationModal from "../components/NotificationModal";
 import usePullToRefresh from "../hooks/usePullToRefresh";
 
+const safeDate = (dateVal) => {
+  if (!dateVal) return new Date();
+  if (typeof dateVal === 'string') return new Date(dateVal.replace(" ", "T"));
+  return new Date(dateVal);
+};
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -53,7 +59,7 @@ const DOUGHNUT_COLORS = [
 ];
 
 const parseDate = (value) => {
-  const date = new Date(value);
+  const date = safeDate(value);
   return Number.isNaN(date.getTime()) ? null : date;
 };
 
@@ -97,8 +103,8 @@ export default function Cashflow() {
       if (cachedTrx) {
         const entry = JSON.parse(cachedTrx);
         if (entry?.response?.status === "success" && Array.isArray(entry.response.data)) {
-          return entry.response.data.sort(
-            (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
+          return [...entry.response.data].sort(
+            (a, b) => safeDate(b.timestamp) - safeDate(a.timestamp),
           );
         }
       }
@@ -158,9 +164,9 @@ export default function Cashflow() {
       if (res?._meta?.source) {
         setDataSource(res._meta.source);
       }
-      if (res.status === "success") {
-        const sortedData = res.data.sort(
-          (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
+      if (res.status === "success" && Array.isArray(res.data)) {
+        const sortedData = [...res.data].sort(
+          (a, b) => safeDate(b.timestamp) - safeDate(a.timestamp),
         );
         setTransactions(sortedData);
       }
@@ -801,13 +807,13 @@ export default function Cashflow() {
                         </span>
                       )}
                     </div>
-                    <p className="text-[10px] text-gray-400 m-0 mt-1">
-                      {new Date(trx.timestamp).toLocaleDateString("id-ID", {
-                        day: "2-digit",
+                    <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium whitespace-nowrap">
+                      {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
+                        day: "numeric",
                         month: "short",
-                        year: "numeric",
+                        year: "numeric"
                       })}
-                    </p>
+                    </span>
                   </div>
                 </div>
                 <p

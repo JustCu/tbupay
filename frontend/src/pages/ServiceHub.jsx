@@ -37,6 +37,13 @@ import CacheFallbackBadge from "../components/CacheFallbackBadge";
 import NotificationModal from "../components/NotificationModal";
 import usePullToRefresh from "../hooks/usePullToRefresh";
 
+// ---------- Helpers ----------
+const safeDate = (dateVal) => {
+  if (!dateVal) return new Date();
+  if (typeof dateVal === 'string') return new Date(dateVal.replace(" ", "T"));
+  return new Date(dateVal);
+};
+
 // ---------- Reusable Bottom Sheet Wrapper ----------
 function BottomSheet({ isOpen, onClose, title, children, heightClass = "h-[82vh]" }) {
   return (
@@ -95,7 +102,7 @@ const getDeterministicColor = (name) => {
 
 const formatChatDateHeader = (dateStr) => {
   if (!dateStr) return "";
-  const d = new Date(dateStr);
+  const d = safeDate(dateStr);
   if (Number.isNaN(d.getTime())) return "";
 
   const today = new Date();
@@ -151,7 +158,7 @@ export default function ServiceHub() {
       if (cached) {
         const entry = JSON.parse(cached);
         if (entry?.response?.status === "success" && Array.isArray(entry.response.data)) {
-          return [...entry.response.data].sort((a, b) => new Date(b.tanggal || 0) - new Date(a.tanggal || 0));
+          return [...entry.response.data].sort((a, b) => safeDate(b.tanggal || 0) - safeDate(a.tanggal || 0));
         }
       }
     } catch (e) {
@@ -255,8 +262,8 @@ export default function ServiceHub() {
     try {
       const res = await getNews(forceRefresh ? { forceRefresh: true } : {});
       if (res?._meta?.source) setDataSource(res._meta.source);
-      if (res.status === "success") {
-        const sorted = [...res.data].sort((a, b) => new Date(b.tanggal || 0) - new Date(a.tanggal || 0));
+      if (res.status === "success" && Array.isArray(res.data)) {
+        const sorted = [...res.data].sort((a, b) => safeDate(b.tanggal || 0) - safeDate(a.tanggal || 0));
         setNewsList(sorted);
       }
     } catch (e) { 
@@ -275,26 +282,25 @@ export default function ServiceHub() {
     disabled: loading || refreshing || openSheet !== null,
   });
 
-  const fetchNewsReplies = async (idBerita) => {
-    if (!idBerita) return;
+  const fetchNewsReplies = async (id_berita) => {
+    if (!id_berita) return;
     setLoadingReplies(true);
     try {
-      const res = await getNewsReplies(idBerita);
-      const data = res.status === "success" ? (res.data || []) : [];
-      const sorted = [...data].sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
+      const data = await getNewsReplies(id_berita);
+      const sorted = [...data].sort((a, b) => safeDate(a.timestamp || 0) - safeDate(b.timestamp || 0));
       setNewsReplies(sorted);
     } catch (e) { setNewsReplies([]); }
     finally { setLoadingReplies(false); }
   };
 
-  const fetchTicketReplies = async (idTiket, forceRefresh = false) => {
-    if (!idTiket) return;
+  const fetchTicketReplies = async (id_tiket) => {
+    if (!id_tiket) return;
     setLoadingTicketReplies(true);
     try {
-      const res = await getTicketReplies(idTiket, forceRefresh ? { forceRefresh: true } : {});
-      const data = res.status === "success" ? (res.data || []) : [];
-      const sorted = [...data].sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
+      const data = await getTicketReplies(id_tiket);
+      const sorted = [...data].sort((a, b) => safeDate(a.timestamp || 0) - safeDate(b.timestamp || 0));
       setTicketReplies(sorted);
+      setSelectedTicket((prev) => (prev && prev.id_tiket === id_tiket ? { ...prev, replies: sorted } : prev));
     } catch (e) { setTicketReplies([]); }
     finally { setLoadingTicketReplies(false); }
   };
@@ -303,8 +309,8 @@ export default function ServiceHub() {
     setLoadingGeneralChats(true);
     try {
       const res = await getGeneralChats(forceRefresh ? { forceRefresh: true } : {});
-      if (res?.status === "success") {
-        const sorted = [...res.data].sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
+      if (res?.status === "success" && Array.isArray(res.data)) {
+        const sorted = [...res.data].sort((a, b) => safeDate(a.timestamp || 0) - safeDate(b.timestamp || 0));
         setGeneralChats(sorted);
       }
     } catch (e) {
@@ -350,7 +356,7 @@ export default function ServiceHub() {
     setSelectedTicket(ticket);
     setOpenSheet("ticketDetail");
     setTicketReplyForm("");
-    await fetchTicketReplies(ticket.id_tiket, true);
+    await fetchTicketReplies(ticket.id_tiket);
   };
 
   const handleSendTicketReply = async (e) => {
@@ -368,7 +374,7 @@ export default function ServiceHub() {
       });
       if (res.status === "success") {
         setTicketReplyForm("");
-        await fetchTicketReplies(selectedTicket.id_tiket, true);
+        await fetchTicketReplies(selectedTicket.id_tiket);
       } else {
         showAlert(res.message || "Gagal mengirim balasan.", { variant: "danger", title: "Gagal" });
       }
@@ -643,6 +649,9 @@ export default function ServiceHub() {
                 <span className="text-[13px] font-semibold text-gray-700 dark:text-gray-150">{ticket.kategori}</span>
               </div>
               <p className="m-0 text-[12px] text-gray-500 dark:text-gray-400 line-clamp-2">{ticket.deskripsi}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 m-0 font-medium mt-1.5">
+                Dilaporkan oleh ID: {ticket.id_user_pelapor} • {safeDate(ticket.timestamp).toLocaleDateString("id-ID")}
+              </p>
             </button>
           ))}
         </div>
@@ -779,7 +788,7 @@ export default function ServiceHub() {
                             
                             {/* Timestamp in corner */}
                             <span className="absolute bottom-1 right-2 text-[9px] text-gray-400 dark:text-gray-500 font-medium select-none tabular-nums">
-                              {chat.timestamp ? new Date(chat.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
+                              {chat.timestamp ? safeDate(chat.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
                             </span>
                           </div>
                         </div>
@@ -871,8 +880,8 @@ export default function ServiceHub() {
             const filteredNews = newsDateFilter
               ? newsList.filter((n) => {
                   if (!n.tanggal) return false;
-                  const d = new Date(n.tanggal);
-                  const ym = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+                  const d = safeDate(n.tanggal);
+                  const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
                   return ym === newsDateFilter;
                 })
               : newsList;
@@ -900,18 +909,17 @@ export default function ServiceHub() {
             return filteredNews.map((news) => (
               <div key={news.id_berita} className="bg-white border border-gray-100 rounded-[14px] p-4 shadow-sm">
                 <div className="flex justify-between items-center gap-2 mb-1">
-                  <p className="text-[11px] text-gray-400 m-0">{news.tanggal ? new Date(news.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""}</p>
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 border border-blue-200 bg-blue-50 text-blue-700 rounded-full px-2 py-1 text-[11px] font-semibold cursor-pointer"
-                    onClick={() => openNewsDetail(news)}
-                  >
-                    <MessageCircle size={12} />
-                    Detail & Balas
-                  </button>
+                  <h4 className="text-sm font-bold text-gray-800 dark:text-gray-100 m-0 leading-tight group-hover:text-primary transition-colors">{news.judul}</h4>
+                  <p className="text-[11px] text-gray-400 m-0">{news.tanggal ? safeDate(news.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""}</p>
                 </div>
-                <h4 className="mt-1 m-0 text-[15px] font-bold text-gray-900">{news.judul}</h4>
-                <p className="text-[13px] text-gray-500 mt-1 m-0 line-clamp-3">{news.konten}</p>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1 border border-blue-200 bg-blue-50 text-blue-700 rounded-full px-2 py-1 text-[11px] font-semibold cursor-pointer"
+                  onClick={() => openNewsDetail(news)}
+                >
+                  <MessageCircle size={12} />
+                  Detail & Balas
+                </button>
               </div>
             ));
           })()}
@@ -965,8 +973,10 @@ export default function ServiceHub() {
             >
               ← Kembali ke Daftar Berita
             </button>
-            <p className="text-[11px] text-gray-400 m-0">{selectedNews.tanggal ? new Date(selectedNews.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""}</p>
-            <h3 className="m-0 text-[17px] font-bold text-gray-900 leading-[1.3]">{selectedNews.judul}</h3>
+            <div className="flex flex-col gap-1">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 m-0 leading-tight">{selectedNews.judul}</h3>
+              <p className="text-[11px] text-gray-400 m-0">{selectedNews.tanggal ? safeDate(selectedNews.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""}</p>
+            </div>
             <p className="text-[14px] text-gray-600 m-0 leading-relaxed whitespace-pre-wrap">{selectedNews.konten}</p>
             
             <div className="mt-2 flex flex-col gap-3 border-t border-gray-100 pt-4">
@@ -1047,8 +1057,8 @@ export default function ServiceHub() {
                                 <p className="m-0 text-[13px] leading-relaxed whitespace-pre-wrap break-words text-gray-700 font-medium">
                                   {reply.isi_balasan}
                                 </p>
-                                <span className="text-[9px] text-gray-400 mt-1 self-end leading-none text-right">
-                                  {reply.timestamp ? new Date(reply.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
+                                <span className="text-[9px] text-gray-400/80 shrink-0">
+                                  {reply.timestamp ? safeDate(reply.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
                                 </span>
                               </div>
                             </div>
@@ -1058,7 +1068,8 @@ export default function ServiceHub() {
                     })()}
                   </div>
                 )}
-              </div>              <form onSubmit={handleSendReply} className="flex items-center gap-2 mt-1.5 pt-1.5 bg-white dark:bg-[#131c33] sticky bottom-0">
+              </div>
+              <form onSubmit={handleSendReply} className="flex items-center gap-2 mt-1.5 pt-1.5 bg-white dark:bg-[#131c33] sticky bottom-0">
                 <input
                   type="text"
                   className="flex-1 border border-gray-200 rounded-full px-4 py-2.5 text-[13px] bg-gray-50 focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
@@ -1116,8 +1127,8 @@ export default function ServiceHub() {
                 }`}>{ticket.status}</span>
               </div>
               <p className="text-[14px] mt-1 m-0 text-gray-800 dark:text-gray-150 line-clamp-3">{ticket.deskripsi}</p>
-              <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-2 m-0">
-                Dilaporkan oleh ID: {ticket.id_user_pelapor} • {new Date(ticket.timestamp).toLocaleDateString("id-ID")}
+              <p className="text-xs text-gray-500 dark:text-gray-400 m-0 font-medium mt-1.5">
+                Dilaporkan oleh ID: {ticket.id_user_pelapor} • {safeDate(ticket.timestamp).toLocaleDateString("id-ID")}
               </p>
             </button>
           ))}
@@ -1151,9 +1162,9 @@ export default function ServiceHub() {
                 </div>
               )}
 
-              <div className="flex items-center justify-between text-[11px] text-gray-400 mt-1 pt-2 border-t border-gray-200/60 dark:border-slate-800/50">
-                <span>Pelapor: <strong className="text-gray-600 dark:text-gray-300">{selectedTicket.id_user_pelapor}</strong></span>
-                <span>{new Date(selectedTicket.timestamp).toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" })}</span>
+              <div className="flex justify-between items-center text-[10px] text-gray-500 dark:text-gray-400 mt-2">
+                <span>{safeDate(selectedTicket.timestamp).toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" })}</span>
+                <span>ID Pelapor: <span className="font-bold">{selectedTicket.id_user_pelapor}</span></span>
               </div>
 
               {selectedTicket.id_petugas_pic && (
@@ -1230,8 +1241,8 @@ export default function ServiceHub() {
                                 </div>
                               )}
                               <p className="m-0 text-[13px] leading-relaxed whitespace-pre-wrap break-words">{reply.isi_balasan}</p>
-                              <span className="text-[9px] text-gray-400 mt-1 self-end leading-none text-right">
-                                {reply.timestamp ? new Date(reply.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
+                              <span className="text-[9px] text-gray-400/80 shrink-0">
+                                {reply.timestamp ? safeDate(reply.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
                               </span>
                             </div>
                           </div>

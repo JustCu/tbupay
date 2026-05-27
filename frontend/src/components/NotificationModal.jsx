@@ -14,6 +14,12 @@ import { getNews } from "../application/use-cases/news/newsUseCases";
 import CacheFallbackBadge from "./CacheFallbackBadge";
 import useStore from "../store/useStore";
 
+const safeDate = (dateVal) => {
+  if (!dateVal) return new Date();
+  if (typeof dateVal === 'string') return new Date(dateVal.replace(" ", "T"));
+  return new Date(dateVal);
+};
+
 /**
  * Builds a notification list dynamically from:
  * 1. Unverified transactions (pending bukti bayar) → tipe "warning"
@@ -43,9 +49,20 @@ function buildNotifications(transactions, news, user) {
     });
   });
 
+  // --- 3. Transaksi belum terverifikasi milik user lain (untuk Admin) ---
+  const unverifiedOthers = transactions.filter((t) => {
+    const d = safeDate(t.timestamp);
+    return (
+      t.id_user !== user?.id_user &&
+      t.status === "pending" &&
+      d.getMonth() === thisMonth &&
+      d.getFullYear() === thisYear
+    );
+  });
+
   // --- 2. Transaksi diverifikasi bulan ini (milik user) ---
   const myVerifiedTrx = transactions.filter((t) => {
-    const d = new Date(t.timestamp);
+    const d = safeDate(t.timestamp);
     return (
       t.id_user === user?.id_user &&
       t.status === "verified" &&
@@ -98,7 +115,7 @@ function buildNotifications(transactions, news, user) {
 
   // --- 4. Berita / pengumuman admin (terbaru 3) ---
   const latestNews = [...news]
-    .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
+    .sort((a, b) => safeDate(b.tanggal) - safeDate(a.tanggal))
     .slice(0, 3);
   latestNews.forEach((n, idx) => {
     notifs.push({
@@ -127,7 +144,7 @@ function formatRp(nominal) {
 }
 
 function timeAgo(dateStr) {
-  const date = new Date(dateStr);
+  const date = safeDate(dateStr);
   const now = new Date();
   const diffMs = now - date;
   const diffMin = Math.floor(diffMs / 60000);

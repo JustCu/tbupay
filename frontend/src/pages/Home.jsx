@@ -30,6 +30,12 @@ import NotificationModal from "../components/NotificationModal";
 import CacheFallbackBadge from "../components/CacheFallbackBadge";
 import usePullToRefresh from "../hooks/usePullToRefresh";
 
+const safeDate = (dateVal) => {
+  if (!dateVal) return new Date();
+  if (typeof dateVal === 'string') return new Date(dateVal.replace(" ", "T"));
+  return new Date(dateVal);
+};
+
 // ── News Detail Bottom Sheet ───────────────────────────────────────────────
 function NewsDetailSheet({ news, onClose }) {
   const isOpen = !!news;
@@ -51,7 +57,7 @@ function NewsDetailSheet({ news, onClose }) {
 
   const formatDate = (str) => {
     if (!str) return "";
-    return new Date(str).toLocaleDateString("id-ID", {
+    return safeDate(str).toLocaleDateString("id-ID", {
       weekday: "long",
       day: "numeric",
       month: "long",
@@ -189,7 +195,7 @@ function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
                         {trx.keterangan || "-"}
                       </p>
                       <p className="mt-0.5 text-[12px] text-gray-400 flex items-center gap-1.5 m-0">
-                        {new Date(trx.timestamp).toLocaleDateString("id-ID", {
+                        {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
                           day: "numeric",
                           month: "short",
                           year: "numeric",
@@ -312,7 +318,7 @@ function HeroCarousel({ totalKas, totalPemasukan, totalPengeluaran, latestNews, 
 
   const formatNewsDate = (dateStr) => {
     if (!dateStr) return "";
-    return new Date(dateStr).toLocaleDateString("id-ID", {
+    return safeDate(dateStr).toLocaleDateString("id-ID", {
       day: "numeric",
       month: "short",
       year: "numeric",
@@ -572,7 +578,7 @@ export default function Home() {
         const parsed = JSON.parse(cached);
         if (parsed?.response?.status === "success" && Array.isArray(parsed.response.data)) {
           const sorted = [...parsed.response.data].sort(
-            (a, b) => new Date(b.tanggal) - new Date(a.tanggal),
+            (a, b) => safeDate(b.tanggal) - safeDate(a.tanggal),
           );
           return sorted.slice(0, 3);
         }
@@ -695,7 +701,7 @@ export default function Home() {
   const myAllTransactions = useMemo(() => {
     return [...transactions]
       .filter((t) => t.id_user === user?.id_user)
-      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      .sort((a, b) => safeDate(b.timestamp) - safeDate(a.timestamp));
   }, [transactions, user?.id_user]);
 
   const myLatestTransactions = useMemo(() => {
@@ -706,7 +712,7 @@ export default function Home() {
   const thisMonth = new Date().getMonth();
   const thisYear = new Date().getFullYear();
   const myTrxThisMonth = transactions.filter((t) => {
-    const d = new Date(t.timestamp);
+    const d = safeDate(t.timestamp);
     return (
       t.id_user === user?.id_user &&
       d.getMonth() === thisMonth &&
@@ -768,7 +774,7 @@ export default function Home() {
           (t) => t.id_user === user?.id_user && t.status === "pending",
         );
         const myVerified = transRes.data.filter((t) => {
-          const d = new Date(t.timestamp);
+          const d = safeDate(t.timestamp);
           return (
             t.id_user === user?.id_user &&
             d.getMonth() === thisMonth &&
@@ -776,7 +782,7 @@ export default function Home() {
           );
         });
         const hasPayment = transRes.data.some((t) => {
-          const d = new Date(t.timestamp);
+          const d = safeDate(t.timestamp);
           return (
             t.id_user === user?.id_user &&
             d.getMonth() === thisMonth &&
@@ -797,7 +803,7 @@ export default function Home() {
 
       if (newsRes?.status === "success" && Array.isArray(newsRes.data)) {
         const sorted = [...newsRes.data].sort(
-          (a, b) => new Date(b.tanggal) - new Date(a.tanggal),
+          (a, b) => safeDate(b.tanggal) - safeDate(a.tanggal),
         );
         setLatestNews(sorted.slice(0, 3));
       }
@@ -861,7 +867,7 @@ export default function Home() {
       const paidUserIds = new Set(
         transactions
           .filter((t) => {
-            const d = new Date(t.timestamp);
+            const d = safeDate(t.timestamp);
             return (
               d.getMonth() === curMonth &&
               d.getFullYear() === curYear &&
@@ -1113,7 +1119,7 @@ export default function Home() {
                           {trx.keterangan || "-"}
                         </p>
                         <p className="mt-0.5 text-[11px] text-gray-400 flex items-center gap-1.5 m-0">
-                          {new Date(trx.timestamp).toLocaleDateString("id-ID", {
+                          {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
                             day: "numeric",
                             month: "short",
                             year: "numeric",
