@@ -957,8 +957,11 @@ export default function Home() {
             setHasUnread(false);
           }}
         >
-          <Bell size={24} className={`stroke-[1.75] transition-colors duration-500 ${!loading ? "fill-amber-400 text-amber-500" : ""}`} />
-          {hasUnread && (
+          <Bell 
+            size={24} 
+            className={`stroke-[1.75] transition-all duration-500 ${(loading || refreshing) ? "text-gray-400 dark:text-gray-500 fill-transparent" : "fill-amber-400 text-amber-500"}`} 
+          />
+          {hasUnread && !loading && !refreshing && (
             <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 border border-white rounded-full animate-pulse z-10"></span>
           )}
         </div>

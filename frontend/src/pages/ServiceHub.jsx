@@ -488,10 +488,13 @@ export default function ServiceHub() {
           <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-1 m-0">Pusat informasi dan pengaduan</p>
         </div>
         <div
-          className="cursor-pointer relative transition-all duration-200 flex items-center justify-center p-2 text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white active:scale-95 shrink-0 mt-1"
+          className="cursor-pointer relative transition-all duration-200 flex items-center justify-center p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full active:scale-95 shrink-0 mt-1"
           onClick={() => setIsNotifOpen(true)}
         >
-          <Bell size={24} className={`stroke-[1.75] transition-colors duration-500 ${!loading ? "fill-amber-400 text-amber-500" : ""}`} />
+          <Bell 
+            size={24} 
+            className={`stroke-[1.75] transition-all duration-500 ${(loading || refreshing) ? "text-gray-400 dark:text-gray-500 fill-transparent" : "fill-amber-400 text-amber-500"}`} 
+          />
         </div>
       </div>
 
