@@ -491,7 +491,7 @@ export default function ServiceHub() {
           className="cursor-pointer relative transition-all duration-200 flex items-center justify-center p-2 text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white active:scale-95 shrink-0 mt-1"
           onClick={() => setIsNotifOpen(true)}
         >
-          <Bell size={24} className="stroke-[1.75]" />
+          <Bell size={24} className={`stroke-[1.75] transition-colors duration-500 ${!loading ? "fill-amber-400 text-amber-500" : ""}`} />
         </div>
       </div>
 
