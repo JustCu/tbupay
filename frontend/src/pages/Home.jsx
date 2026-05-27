@@ -286,6 +286,20 @@ function HeroCarousel({ totalKas, totalPemasukan, totalPengeluaran, latestNews, 
     isDragging.current = false;
   };
 
+  const getTranslateX = () => {
+    const cardWidth = 88;
+    const gap = 12;
+    const baseTranslate = `-${activeIndex * cardWidth}% - ${activeIndex * gap}px`;
+    
+    if (activeIndex === 0) {
+      return `calc(${baseTranslate})`;
+    } else if (activeIndex === totalSlides - 1) {
+      return `calc(${baseTranslate} + 12%)`;
+    } else {
+      return `calc(${baseTranslate} + 6%)`;
+    }
+  };
+
   // Mouse drag (desktop)
   const mouseStartX = useRef(null);
   const handleMouseDown = (e) => { mouseStartX.current = e.clientX; };
@@ -320,14 +334,14 @@ function HeroCarousel({ totalKas, totalPemasukan, totalPengeluaran, latestNews, 
         <div
           className="flex"
           style={{
-            transform: `translateX(calc(-${activeIndex * 92}% - ${activeIndex * 12}px))`,
+            transform: `translateX(${getTranslateX()})`,
             transition: "transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
             willChange: "transform",
             gap: "12px",
           }}
         >
           {/* ── Card 0: Kas Finansial ── */}
-          <div className="w-[92%] shrink-0 h-[210px]">
+          <div className="w-[88%] shrink-0 h-[210px]">
             <div
               className="relative overflow-hidden text-white p-5 rounded-xl flex flex-col h-full"
               style={{
@@ -420,7 +434,7 @@ function HeroCarousel({ totalKas, totalPemasukan, totalPengeluaran, latestNews, 
 
           {/* ── Cards 1-3: Berita Terkini ── */}
           {newsSlides.map((item, i) => (
-            <div key={item.id_berita || i} className="w-[92%] shrink-0 h-[210px]">
+            <div key={item.id_berita || i} className="w-[88%] shrink-0 h-[210px]">
               <div
                 className="relative overflow-hidden rounded-xl p-5 flex flex-col h-full"
                 style={{
