@@ -599,40 +599,61 @@ function ServiceHub() {
             Lihat Semua
           </span>
         </div>
-        <div className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl overflow-hidden shadow-sm dark:shadow-none">
+        <div className="flex flex-col gap-3">
           {loading && newsList.length === 0 && <Skeleton />}
           {!loading && newsList.length === 0 && (
-            <div className="p-5 text-center">
+            <div className="border border-dashed border-slate-300 dark:border-slate-800/80 rounded-2xl bg-white dark:bg-[#151f32] p-5 text-center">
               <p className="text-sm font-bold m-0 mb-1 text-slate-850 dark:text-slate-100">Belum ada berita</p>
               <span className="text-xs text-slate-500 dark:text-slate-400">Informasi dari pengurus akan muncul di sini.</span>
             </div>
           )}
-          {!loading && newsList.length > 0 && (
-            <div className="flex flex-col">
-              {newsList.slice(0, 2).map((news, index) => {
-                if (!news) return null;
-                return (
-                  <button
-                    key={news.id_berita}
-                    type="button"
-                    className={`w-full p-4 flex gap-4 text-left cursor-pointer transition-all duration-300 hover:bg-slate-50 dark:hover:bg-slate-800/20 border-none bg-transparent ${
-                      index !== newsList.slice(0, 2).length - 1 ? "border-b border-slate-100/80 dark:border-slate-800/60" : ""
-                    }`}
-                    onClick={() => openNewsDetail(news)}
-                  >
-                    <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-blue-500/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400 shrink-0 shadow-xs">
-                      <Newspaper size={18} className="stroke-[2.2]" />
-                    </div>
-                    <div className="flex flex-col min-w-0 flex-1 gap-1">
-                      <p className="m-0 text-sm font-bold text-slate-800 dark:text-slate-100 leading-snug">{news.judul}</p>
-                      <p className="m-0 mt-1 text-xs font-normal text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">{news.konten}</p>
-                    </div>
-                    <ChevronRight size={16} className="self-center text-slate-500 dark:text-slate-400 shrink-0" />
-                  </button>
-                );
-              })}
-            </div>
-          )}
+          {newsList.slice(0, 2).map((news) => {
+            if (!news) return null;
+            return (
+              <button
+                key={news.id_berita}
+                type="button"
+                className="w-full border border-slate-100 dark:border-slate-800/60 rounded-2xl bg-white dark:bg-[#131c33] p-4 flex flex-col gap-2.5 text-left cursor-pointer transition-all duration-300 hover:shadow-md active:scale-[0.99] group"
+                onClick={() => openNewsDetail(news)}
+              >
+                {/* Header: category badge + date */}
+                <div className="flex justify-between items-center w-full gap-2 select-none">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                      Berita &amp; Info
+                    </span>
+                    {news.created_by_role && news.created_by_role !== "warga" && (
+                      <>
+                        <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                        <span className="text-[9px] font-extrabold uppercase bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded border border-blue-100 dark:border-blue-900/40">
+                          {news.created_by_role}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 flex items-center gap-1 whitespace-nowrap">
+                    <CalendarDays size={10} className="stroke-[2.5]" />
+                    {news.tanggal ? safeDate(news.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "short" }) : ""}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <p className="m-0 text-[13px] font-bold text-slate-800 dark:text-slate-100 leading-snug transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">{news.judul}</p>
+
+                {/* Content preview */}
+                <p className="m-0 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">{news.konten}</p>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-2 border-t border-slate-100/60 dark:border-slate-800/40 select-none">
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 flex items-center gap-1">
+                    <MessageCircle size={11} className="stroke-[2]" />
+                    Baca &amp; diskusikan
+                  </span>
+                  <ChevronRight size={13} className="text-slate-400 dark:text-slate-500" />
+                </div>
+              </button>
+            );
+          })}
         </div>
       </section>
 
@@ -647,72 +668,66 @@ function ServiceHub() {
             Lihat Semua
           </span>
         </div>
-        <div className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl overflow-hidden shadow-sm dark:shadow-none">
+        <div className="flex flex-col gap-3">
           {loading && tickets.length === 0 && <Skeleton />}
           {!loading && tickets.length === 0 && (
-            <div className="p-5 text-center">
+            <div className="border border-dashed border-slate-300 dark:border-slate-800/80 rounded-2xl bg-white dark:bg-[#151f32] p-5 text-center">
               <p className="text-sm font-bold m-0 mb-1 text-slate-850 dark:text-slate-100">Belum ada tiket</p>
               <span className="text-xs text-slate-500 dark:text-slate-400">Warga dapat membuat laporan baru.</span>
             </div>
           )}
-          {!loading && tickets.length > 0 && (
-            <div className="flex flex-col">
-              {tickets.slice(0, 3).map((ticket, index) => {
-                if (!ticket) return null;
-                const isOpen = ticket.status === "open";
-                const isProses = ticket.status === "proses";
-                const statusTheme = isOpen 
-                  ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200/40 dark:border-amber-500/10" 
-                  : isProses 
-                  ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200/40 dark:border-blue-500/10" 
-                  : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200/40 dark:border-emerald-500/10";
-                
-                return (
-                  <button
-                    key={ticket.id_tiket}
-                    type="button"
-                    className={`w-full text-left cursor-pointer transition-all duration-300 hover:bg-slate-50 dark:hover:bg-slate-800/20 p-4 flex flex-col gap-2.5 bg-transparent border-none group ${
-                      index !== tickets.slice(0, 3).length - 1 ? "border-b border-slate-100/80 dark:border-slate-800/60" : ""
-                    }`}
-                    onClick={() => openTicketDetail(ticket)}
-                  >
-                    {/* Header Row: Category & Date */}
-                    <div className="flex justify-between items-center w-full gap-2 shrink-0 select-none">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
-                          {ticket.kategori}
-                        </span>
-                        <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700"></span>
-                        <span className="text-[10px] text-slate-450 dark:text-slate-500 font-medium">
-                          #{ticket.id_tiket ? ticket.id_tiket.slice(-5).toUpperCase() : ""}
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 flex items-center gap-1 whitespace-nowrap">
-                        <Clock3 size={10} className="stroke-[2.5]" />
-                        {safeDate(ticket.timestamp).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
-                      </span>
-                    </div>
+          {tickets.slice(0, 3).map((ticket) => {
+            if (!ticket) return null;
+            const isOpen = ticket.status === "open";
+            const isProses = ticket.status === "proses";
+            const statusTheme = isOpen 
+              ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200/40 dark:border-amber-500/10" 
+              : isProses 
+              ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200/40 dark:border-blue-500/10" 
+              : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200/40 dark:border-emerald-500/10";
+            
+            return (
+              <button
+                key={ticket.id_tiket}
+                type="button"
+                className="w-full text-left cursor-pointer transition-all duration-300 hover:shadow-md border border-slate-100 dark:border-slate-800/60 rounded-2xl bg-white dark:bg-[#131c33] p-4 flex flex-col gap-2.5 active:scale-[0.99] group"
+                onClick={() => openTicketDetail(ticket)}
+              >
+                {/* Header Row: Category & Date */}
+                <div className="flex justify-between items-center w-full gap-2 shrink-0 select-none">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                      {ticket.kategori}
+                    </span>
+                    <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                    <span className="text-[10px] text-slate-450 dark:text-slate-500 font-medium">
+                      #{ticket.id_tiket ? ticket.id_tiket.slice(-5).toUpperCase() : ""}
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 flex items-center gap-1 whitespace-nowrap">
+                    <Clock3 size={10} className="stroke-[2.5]" />
+                    {safeDate(ticket.timestamp).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
+                  </span>
+                </div>
 
-                    {/* Complaint Text Preview */}
-                    <p className="m-0 text-[12px] font-semibold text-slate-700 dark:text-slate-250 line-clamp-2 leading-relaxed transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
-                      {ticket.deskripsi || "Tidak ada deskripsi."}
-                    </p>
+                {/* Complaint Text Preview */}
+                <p className="m-0 text-[12px] font-semibold text-slate-700 dark:text-slate-250 line-clamp-2 leading-relaxed transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                  {ticket.deskripsi || "Tidak ada deskripsi."}
+                </p>
 
-                    {/* Footer Section: Reporter & Status Badge */}
-                    <div className="flex items-center justify-between w-full shrink-0 select-none text-[10px] pt-2 border-t border-slate-100/60 dark:border-slate-800/40">
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500">
-                        Oleh: <span className="font-bold text-slate-600 dark:text-slate-300">{ticket.id_user_pelapor || "Warga"}</span>
-                      </span>
-                      
-                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider ${statusTheme}`}>
-                        {ticket.status}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+                {/* Footer Section: Reporter & Status Badge */}
+                <div className="flex items-center justify-between w-full shrink-0 select-none text-[10px] pt-2 border-t border-slate-100/60 dark:border-slate-800/40">
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                    Oleh: <span className="font-bold text-slate-600 dark:text-slate-300">{ticket.id_user_pelapor || "Warga"}</span>
+                  </span>
+                  
+                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider ${statusTheme}`}>
+                    {ticket.status}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </section>
 
@@ -1075,39 +1090,54 @@ function ServiceHub() {
               }
 
               return (
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
                   {filteredNews.map((news) => {
                     if (!news) return null;
                     return (
-                      <div key={news.id_berita} className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-4.5 shadow-xs flex flex-col gap-3">
-                        <div className="flex justify-between items-start gap-2">
-                          <div className="flex flex-col gap-1">
-                            <h4 className="text-sm font-bold text-slate-855 dark:text-slate-100 m-0 leading-tight">{news.judul}</h4>
-                            <p className="text-[10px] text-slate-400 dark:text-slate-500 m-0 flex items-center gap-1 font-semibold">
-                              <CalendarDays size={12} />
-                              {news.tanggal ? safeDate(news.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""}
-                            </p>
-                          </div>
-                          {news.created_by_role && news.created_by_role !== "warga" && (
-                            <span className="text-[9px] font-extrabold uppercase bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/40">
-                              {news.created_by_role}
+                      <button
+                        key={news.id_berita}
+                        type="button"
+                        className="w-full text-left cursor-pointer transition-all duration-300 hover:shadow-md border border-slate-100 dark:border-slate-800/60 rounded-2xl bg-white dark:bg-[#131c33] p-4 flex flex-col gap-2.5 active:scale-[0.99] group"
+                        onClick={() => openNewsDetail(news)}
+                      >
+                        {/* Header: category + role badge + date */}
+                        <div className="flex justify-between items-center w-full gap-2 select-none">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                              Berita &amp; Info
                             </span>
-                          )}
+                            {news.created_by_role && news.created_by_role !== "warga" && (
+                              <>
+                                <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                                <span className="text-[9px] font-extrabold uppercase bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded border border-blue-100 dark:border-blue-900/40">
+                                  {news.created_by_role}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                          <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 flex items-center gap-1 whitespace-nowrap">
+                            <CalendarDays size={10} className="stroke-[2.5]" />
+                            {news.tanggal ? safeDate(news.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }) : ""}
+                          </span>
                         </div>
-                        
-                        <p className="text-xs text-slate-655 dark:text-slate-350 m-0 leading-relaxed line-clamp-3">
+
+                        {/* Title */}
+                        <h4 className="text-[13px] font-bold text-slate-800 dark:text-slate-100 m-0 leading-snug transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">{news.judul}</h4>
+
+                        {/* Content preview */}
+                        <p className="text-[12px] text-slate-500 dark:text-slate-400 m-0 leading-relaxed line-clamp-3">
                           {news.konten}
                         </p>
-                        
-                        <button
-                          type="button"
-                          className="w-full mt-1.5 inline-flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 rounded-xl py-2.5 text-xs font-bold cursor-pointer transition-colors"
-                          onClick={() => openNewsDetail(news)}
-                        >
-                          <MessageCircle size={14} />
-                          Baca Selengkapnya & Diskusi
-                        </button>
-                      </div>
+
+                        {/* Footer */}
+                        <div className="flex items-center justify-between pt-2 border-t border-slate-100/60 dark:border-slate-800/40 select-none">
+                          <span className="text-[10px] text-slate-400 dark:text-slate-500 flex items-center gap-1">
+                            <MessageCircle size={11} className="stroke-[2]" />
+                            Baca selengkapnya &amp; diskusi
+                          </span>
+                          <ChevronRight size={13} className="text-slate-400 dark:text-slate-500" />
+                        </div>
+                      </button>
                     );
                   })}
                 </div>
