@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import useStore from "../store/useStore";
 import { TrendingUp, ArrowDownLeft, ArrowUpRight, Bell } from "lucide-react";
 import { getTransactions } from "../application/use-cases/transactions/transactionUseCases";
+import { getUsers } from "../application/use-cases/users/userUseCases";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -151,6 +152,20 @@ export default function Cashflow() {
   const [showAllTransactions, setShowAllTransactions] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const chartScrollRef = useRef(null);
+  const [users, setUsers] = useState(() => {
+    try {
+      const cachedUsers = localStorage.getItem("tbu_pay_cache_v1:getUsers:{}");
+      if (cachedUsers) {
+        const entry = JSON.parse(cachedUsers);
+        if (entry?.response?.status === "success" && Array.isArray(entry.response.data)) {
+          return entry.response.data;
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load users cache in state initializer:", e);
+    }
+    return [];
+  });
 
   const fetchTransactions = async (forceRefresh = false) => {
     if (forceRefresh) setRefreshing(true);
@@ -159,9 +174,10 @@ export default function Cashflow() {
     }
 
     try {
-      const res = await getTransactions(
-        forceRefresh ? { forceRefresh: true } : {},
-      );
+      const [res, userRes] = await Promise.all([
+        getTransactions(forceRefresh ? { forceRefresh: true } : {}),
+        getUsers(forceRefresh ? { forceRefresh: true } : {}),
+      ]);
       if (res?._meta?.source) {
         setDataSource(res._meta.source);
       }
@@ -170,6 +186,9 @@ export default function Cashflow() {
           (a, b) => safeDate(b.timestamp) - safeDate(a.timestamp),
         );
         setTransactions(sortedData);
+      }
+      if (userRes.status === "success" && Array.isArray(userRes.data)) {
+        setUsers(userRes.data);
       }
     } catch (error) {
       console.error("Failed to fetch transactions:", error);
@@ -423,6 +442,23 @@ export default function Cashflow() {
       }, 100);
     }
   }, [barData]);
+
+  const userMap = useMemo(() => {
+    const map = {};
+    users.forEach((u) => {
+      map[u.id_user] = u;
+    });
+    return map;
+  }, [users]);
+
+  const getInitials = (name) => {
+    if (!name) return "?";
+    const words = name.trim().split(/\s+/);
+    if (words.length >= 2) {
+      return (words[0][0] + words[1][0]).toUpperCase();
+    }
+    return words[0].slice(0, 2).toUpperCase();
+  };
 
   const globalTotalSaldo = useMemo(() => {
     return verifiedTransactions.reduce((acc, trx) => {
@@ -817,25 +853,45 @@ export default function Cashflow() {
           displayedTransactions.map((trx) => {
             const isPemasukan = trx.jenis === "pemasukan";
             const isVerified = String(trx.status).toLowerCase() === "verified";
+            const trxUser = userMap[trx.id_user] || {};
+            const userPhoto = trxUser.url_foto_profil;
+            const userName = trxUser.nama || "Warga";
+            
             return (
               <div
                 key={trx.id_transaksi || Math.random()}
                 className="bg-white dark:bg-[#1a2640] p-4 rounded-xl flex items-center justify-between border border-gray-100 dark:border-slate-800/80 shadow-sm relative overflow-hidden"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div
-                    className={`p-2 rounded-lg shrink-0 ${
-                      isPemasukan 
-                        ? "bg-green-50 dark:bg-green-950/20 text-green-600 dark:text-green-400" 
-                        : "bg-rose-50 dark:bg-rose-950/20 text-rose-500 dark:text-rose-400"
-                    }`}
-                  >
-                    {isPemasukan ? (
-                      <ArrowDownLeft size={20} />
+                  {/* User Avatar with Cashflow Direction Indicator Badge */}
+                  <div className="relative shrink-0 select-none">
+                    {userPhoto ? (
+                      <img
+                        src={userPhoto}
+                        alt={userName}
+                        className="w-[40px] h-[40px] min-w-[40px] min-h-[40px] rounded-full object-cover border border-gray-100 dark:border-slate-700 shadow-sm"
+                      />
                     ) : (
-                      <ArrowUpRight size={20} />
+                      <div className="w-[40px] h-[40px] min-w-[40px] min-h-[40px] rounded-full border border-gray-100 dark:border-slate-700 shadow-sm bg-gradient-to-br from-blue-400 to-indigo-500 text-white flex items-center justify-center text-sm font-black tracking-widest overflow-hidden">
+                        {getInitials(userName)}
+                      </div>
                     )}
+                    {/* Small overlay badge in bottom-right corner */}
+                    <div 
+                      className={`absolute bottom-[-2px] right-[-2px] w-[18px] h-[18px] min-w-[18px] min-h-[18px] rounded-full flex items-center justify-center border border-white dark:border-[#1a2640] shadow-sm shrink-0 ${
+                        isPemasukan 
+                          ? "bg-green-500 text-white" 
+                          : "bg-red-500 text-white"
+                      }`}
+                    >
+                      {isPemasukan ? (
+                        <ArrowDownLeft size={10} className="stroke-[3]" />
+                      ) : (
+                        <ArrowUpRight size={10} className="stroke-[3]" />
+                      )}
+                    </div>
                   </div>
+
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="text-[14px] font-bold text-gray-800 dark:text-gray-100 m-0 truncate">{trx.keterangan || "Tanpa Keterangan"}</p>
@@ -845,13 +901,22 @@ export default function Cashflow() {
                         </span>
                       )}
                     </div>
-                    <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium whitespace-nowrap">
-                      {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric"
-                      })}
-                    </span>
+                    {/* Display user name who performed the transaction, along with the date */}
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold max-w-[80px] truncate leading-none">
+                        {userName}
+                      </span>
+                      <span className="text-[10px] text-gray-400 dark:text-slate-500 font-bold leading-none select-none">
+                        •
+                      </span>
+                      <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium whitespace-nowrap leading-none">
+                        {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric"
+                        })}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <p
