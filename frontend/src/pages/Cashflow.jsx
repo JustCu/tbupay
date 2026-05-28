@@ -578,7 +578,7 @@ export default function Cashflow() {
       )}
       <CacheFallbackBadge source={dataSource} />
       
-      <div className="py-4 flex justify-between items-start">
+      <div className="pt-1 pb-4 flex justify-between items-start">
         <div>
           <h2 className="text-xl font-bold m-0 text-gray-800 dark:text-gray-100">Laporan Keuangan</h2>
           <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-1 m-0">Pantau dan kelola arus kas warga secara real-time</p>
