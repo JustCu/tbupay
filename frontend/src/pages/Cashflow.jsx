@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import useStore from "../store/useStore";
 import { TrendingUp, ArrowDownLeft, ArrowUpRight, Bell } from "lucide-react";
 import { getTransactions } from "../application/use-cases/transactions/transactionUseCases";
@@ -150,6 +150,7 @@ export default function Cashflow() {
   const [filter, setFilter] = useState("semua");
   const [showAllTransactions, setShowAllTransactions] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const chartScrollRef = useRef(null);
 
   const fetchTransactions = async (forceRefresh = false) => {
     if (forceRefresh) setRefreshing(true);
@@ -397,6 +398,32 @@ export default function Cashflow() {
     };
   }, [verifiedTransactions, filter]);
 
+  useEffect(() => {
+    if (chartScrollRef.current && barData?.labels?.length > 7) {
+      // Focus on the current month initially on the scrollable chart
+      setTimeout(() => {
+        if (chartScrollRef.current) {
+          const container = chartScrollRef.current;
+          const currentMonth = new Date().getMonth();
+          const totalMonths = barData.labels.length;
+          const monthWidth = container.scrollWidth / totalMonths;
+          
+          // Calculate center position for the current month
+          const targetCenter = (currentMonth + 0.5) * monthWidth;
+          
+          // scrollLeft to center the month inside the viewport
+          const targetScrollLeft = targetCenter - container.clientWidth / 2;
+          
+          // Clamp scroll position to valid bounds
+          container.scrollLeft = Math.max(
+            0,
+            Math.min(container.scrollWidth - container.clientWidth, targetScrollLeft)
+          );
+        }
+      }, 100);
+    }
+  }, [barData]);
+
   const globalTotalSaldo = useMemo(() => {
     return verifiedTransactions.reduce((acc, trx) => {
       const nominal = Number(trx.nominal) || 0;
@@ -528,7 +555,10 @@ export default function Cashflow() {
         callbacks: {
           label: function (context) {
             const raw = Number(context.raw) || 0;
-            return ` ${context.label}: ${formatRupiah(raw)}`;
+            const dataset = context.chart.data.datasets[context.datasetIndex];
+            const total = dataset.data.reduce((sum, val) => sum + (Number(val) || 0), 0);
+            const percentage = total > 0 ? Math.round((raw / total) * 100) : 0;
+            return ` ${percentage}% • ${formatRupiah(raw)}`;
           },
         },
       },
@@ -537,7 +567,7 @@ export default function Cashflow() {
 
   const displayedTransactions = showAllTransactions
     ? transactions
-    : transactions.slice(0, 10);
+    : transactions.slice(0, 5);
 
   return (
     <div className="pb-6 animate-[fadeIn_0.3s_ease-in-out]" {...pull.bind}>
@@ -706,8 +736,16 @@ export default function Cashflow() {
             {periodTitle}
           </span>
         </div>
-        <div className="relative h-56 w-full">
-          {barData && <Bar data={barData} options={barOptions} />}
+        <div ref={chartScrollRef} className="w-full overflow-x-auto pb-2 scrollbar-none">
+          <div 
+            className="relative h-56"
+            style={{ 
+              width: barData?.labels?.length > 7 ? "200%" : "100%", 
+              minWidth: "100%" 
+            }}
+          >
+            {barData && <Bar data={barData} options={barOptions} />}
+          </div>
         </div>
       </div>
 
@@ -827,7 +865,7 @@ export default function Cashflow() {
             );
           })}
 
-        {!loading && transactions.length > 10 && (
+        {!loading && transactions.length > 5 && (
           <button
             onClick={() => setShowAllTransactions(!showAllTransactions)}
             className="mt-2 w-full py-3 bg-gray-50 dark:bg-[#1a2640]/50 border border-gray-100 dark:border-slate-800/80 text-xs font-extrabold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800/50 transition-all flex items-center justify-center gap-1 active:scale-95"

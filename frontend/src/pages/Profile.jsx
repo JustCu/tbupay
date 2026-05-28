@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useStore from "../store/useStore";
-import { Key, Info, LogOut, Home, Phone, ShieldCheck, Pencil, X, AlertCircle, Moon, Volume2, Globe, Bell } from "lucide-react";
+import { Key, Info, LogOut, Home, Phone, ShieldCheck, Pencil, X, AlertCircle, Moon, Sun, Volume2, Globe, Bell } from "lucide-react";
 import { updateUser } from "../application/use-cases/users/userUseCases";
 import NotificationModal from "../components/NotificationModal";
 
@@ -222,7 +222,7 @@ export default function Profile() {
           className="w-full flex items-center gap-3.5 p-3.5 bg-transparent border-none border-b cursor-pointer text-left transition-colors border-gray-100 dark:border-slate-800/80 hover:bg-slate-50 active:bg-slate-100 dark:hover:bg-slate-800/40 dark:active:bg-slate-800/60"
           onClick={openEditProfile}
         >
-          <div className="w-7.5 h-7.5 min-w-[30px] rounded-full flex items-center justify-center shrink-0 transition-colors bg-blue-50 text-[#0f4c81] dark:bg-slate-800/60 dark:text-indigo-400">
+          <div className="w-[30px] h-[30px] min-w-[30px] min-h-[30px] rounded-full flex items-center justify-center shrink-0 transition-colors bg-blue-50 text-[#0f4c81] dark:bg-slate-800/60 dark:text-indigo-400">
             <Pencil size={14} />
           </div>
           <div className="flex flex-col flex-1 min-w-0">
@@ -234,8 +234,19 @@ export default function Profile() {
         {/* Row 2: Mode Gelap (Dark Mode) */}
         <div className="flex items-center justify-between gap-3.5 p-3.5 border-b transition-colors border-gray-100 dark:border-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-800/40">
           <div className="flex items-center gap-3.5 text-left min-w-0">
-            <div className="w-7.5 h-7.5 min-w-[30px] rounded-full flex items-center justify-center shrink-0 transition-colors bg-blue-50 text-[#0f4c81] dark:bg-slate-800/60 dark:text-indigo-400">
-              <Moon size={14} />
+            <div className="w-[30px] h-[30px] min-w-[30px] min-h-[30px] rounded-full flex items-center justify-center shrink-0 transition-colors bg-blue-50 text-[#0f4c81] dark:bg-slate-800/60 dark:text-indigo-400 relative overflow-hidden">
+              <Sun
+                size={14}
+                className={`absolute transition-all duration-500 ${
+                  isDarkMode ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"
+                }`}
+              />
+              <Moon
+                size={14}
+                className={`absolute transition-all duration-500 ${
+                  isDarkMode ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"
+                }`}
+              />
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-[13px] font-bold leading-snug transition-colors text-gray-800 dark:text-gray-200">Mode Gelap (Dark Mode)</span>
@@ -244,15 +255,31 @@ export default function Profile() {
           </div>
           <button
             onClick={toggleDarkMode}
-            className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer border-none shrink-0 transition-all duration-300 ${
-              isDarkMode ? "bg-primary" : "bg-gray-200"
+            className={`w-[50px] h-[28px] p-[2px] flex items-center rounded-full cursor-pointer border-none shrink-0 transition-all duration-300 relative ${
+              isDarkMode ? "bg-indigo-600 dark:bg-indigo-500" : "bg-slate-200 dark:bg-slate-700"
             }`}
+            aria-label="Toggle Mode Gelap"
           >
             <div
-              className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-all duration-300 ${
-                isDarkMode ? "translate-x-5" : "translate-x-0"
+              className={`bg-white w-[24px] h-[24px] rounded-full shadow-md flex items-center justify-center relative transform transition-all duration-300 ${
+                isDarkMode ? "translate-x-[22px]" : "translate-x-0"
               }`}
-            />
+            >
+              <div className="relative w-full h-full flex items-center justify-center">
+                <Sun
+                  size={13}
+                  className={`absolute text-amber-500 transition-all duration-500 ${
+                    isDarkMode ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"
+                  }`}
+                />
+                <Moon
+                  size={12}
+                  className={`absolute text-indigo-600 transition-all duration-500 ${
+                    isDarkMode ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"
+                  }`}
+                />
+              </div>
+            </div>
           </button>
         </div>
 
@@ -266,7 +293,7 @@ export default function Profile() {
             )
           }
         >
-          <div className="w-7.5 h-7.5 min-w-[30px] rounded-full flex items-center justify-center shrink-0 transition-colors bg-blue-50 text-[#0f4c81] dark:bg-slate-800/60 dark:text-indigo-400">
+          <div className="w-[30px] h-[30px] min-w-[30px] min-h-[30px] rounded-full flex items-center justify-center shrink-0 transition-colors bg-blue-50 text-[#0f4c81] dark:bg-slate-800/60 dark:text-indigo-400">
             <Info size={14} />
           </div>
           <div className="flex flex-col flex-1 min-w-0">
