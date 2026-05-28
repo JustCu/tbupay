@@ -6,9 +6,17 @@
   html {
     background-color: #fafafa;
     color-scheme: light;
+    overflow-x: hidden;
+    height: 100%;
+    width: 100%;
   }
   body {
     @apply bg-background text-text-primary antialiased;
+    overflow-x: hidden;
+    min-height: 100%;
+    width: 100%;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
   }
   
   h1 {
@@ -33,7 +41,7 @@
 @layer components {
   /* Layout App Container for Mobile View */
   .app-container {
-    @apply max-w-[480px] mx-auto min-h-screen bg-background relative overflow-x-hidden border-x border-border;
+    @apply max-w-[480px] mx-auto min-h-screen bg-background relative border-x border-border;
   }
 
   /* Card Component */
@@ -64,7 +72,12 @@
   .bottom-nav {
     min-height: 60px;
     padding-top: 8px;
-    padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+    /* Hardware acceleration to fix fixed position rendering bugs on iOS Safari */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    /* Ensure it anchors perfectly at the bottom without floating gaps */
+    bottom: 0 !important;
   }
 
   /* Safe Footer Padding for Sticky Forms */
