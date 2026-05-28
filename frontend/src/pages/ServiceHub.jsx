@@ -653,46 +653,48 @@ function ServiceHub() {
             if (!ticket) return null;
             const isOpen = ticket.status === "open";
             const isProses = ticket.status === "proses";
-            const borderClr = isOpen ? "border-l-[#f59e0b]" : isProses ? "border-l-[#3b82f6]" : "border-l-[#10b981]";
+            const statusTheme = isOpen 
+              ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200/40 dark:border-amber-500/10" 
+              : isProses 
+              ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200/40 dark:border-blue-500/10" 
+              : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200/40 dark:border-emerald-500/10";
             
             return (
               <button
                 key={ticket.id_tiket}
                 type="button"
-                className={`w-full text-left cursor-pointer transition-all duration-200 hover:shadow-xs hover:border-slate-300/80 dark:hover:border-slate-700/80 border border-slate-100 dark:border-slate-800/80 border-l-4 ${borderClr} rounded-xl bg-white dark:bg-[#131c33] shadow-xs p-3 flex flex-col gap-2 active:scale-[0.99]`}
+                className="w-full text-left cursor-pointer transition-all duration-300 hover:shadow-md border border-slate-100 dark:border-slate-800/60 rounded-2xl bg-white dark:bg-[#131c33] p-4 flex flex-col gap-2.5 active:scale-[0.99] group"
                 onClick={() => openTicketDetail(ticket)}
               >
-                {/* Header Row: Category + Ticket ID + Date */}
+                {/* Header Row: Category & Date */}
                 <div className="flex justify-between items-center w-full gap-2 shrink-0 select-none">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
                       {ticket.kategori}
                     </span>
                     <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700"></span>
-                    <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 tracking-wider">
+                    <span className="text-[10px] text-slate-450 dark:text-slate-500 font-medium">
                       #{ticket.id_tiket ? ticket.id_tiket.slice(-5).toUpperCase() : ""}
                     </span>
                   </div>
-                  <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 flex items-center gap-1 whitespace-nowrap">
+                  <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 flex items-center gap-1 whitespace-nowrap">
                     <Clock3 size={10} className="stroke-[2.5]" />
                     {safeDate(ticket.timestamp).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
                   </span>
                 </div>
 
-                {/* Footer Section: Reporter & Status Badge (Clean, line-free design) */}
-                <div className="flex items-center justify-between w-full shrink-0 select-none text-[10px]">
-                  <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold">
-                    Pelapor:{" "}
-                    <span className="ml-1 bg-slate-50 dark:bg-slate-800/80 text-slate-655 dark:text-slate-355 font-bold px-1.5 py-0.5 rounded text-[9px] border border-slate-100/50 dark:border-transparent">
-                      {ticket.id_user_pelapor || "Warga"}
-                    </span>
+                {/* Complaint Text Preview */}
+                <p className="m-0 text-[12px] font-semibold text-slate-700 dark:text-slate-250 line-clamp-2 leading-relaxed transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                  {ticket.deskripsi || "Tidak ada deskripsi."}
+                </p>
+
+                {/* Footer Section: Reporter & Status Badge */}
+                <div className="flex items-center justify-between w-full shrink-0 select-none text-[10px] pt-2 border-t border-slate-100/60 dark:border-slate-800/40">
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                    Oleh: <span className="font-bold text-slate-600 dark:text-slate-300">{ticket.id_user_pelapor || "Warga"}</span>
                   </span>
                   
-                  <span className={`px-2 py-0.5 rounded text-[8px] uppercase tracking-wider font-extrabold border ${
-                    isOpen ? "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200/50 dark:border-amber-500/20" :
-                    isProses ? "bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200/50 dark:border-blue-500/20" :
-                    "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200/50 dark:border-emerald-500/20"
-                  }`}>
+                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider ${statusTheme}`}>
                     {ticket.status}
                   </span>
                 </div>
@@ -1359,46 +1361,48 @@ function ServiceHub() {
                 if (!ticket) return null;
                 const isOpenStatus = ticket.status === "open";
                 const isProsesStatus = ticket.status === "proses";
-                const borderClr = isOpenStatus ? "border-l-[#f59e0b]" : isProsesStatus ? "border-l-[#3b82f6]" : "border-l-[#10b981]";
+                const statusTheme = isOpenStatus 
+                  ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200/40 dark:border-amber-500/10" 
+                  : isProsesStatus 
+                  ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200/40 dark:border-blue-500/10" 
+                  : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200/40 dark:border-emerald-500/10";
                 
                 return (
                   <button
                     key={ticket.id_tiket}
                     type="button"
-                    className={`w-full text-left cursor-pointer transition-all duration-200 hover:shadow-xs hover:border-slate-300/80 dark:hover:border-slate-700/80 border border-slate-100 dark:border-slate-800/80 border-l-4 ${borderClr} rounded-xl bg-white dark:bg-[#131c33] shadow-xs p-3 flex flex-col gap-2 active:scale-[0.99]`}
+                    className="w-full text-left cursor-pointer transition-all duration-300 hover:shadow-md border border-slate-100 dark:border-slate-800/60 rounded-2xl bg-white dark:bg-[#131c33] p-4 flex flex-col gap-2.5 active:scale-[0.99] group"
                     onClick={() => openTicketDetail(ticket)}
                   >
-                    {/* Header Row: Category + Ticket ID + Date */}
+                    {/* Header Row: Category & Date */}
                     <div className="flex justify-between items-center w-full gap-2 shrink-0 select-none">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
                           {ticket.kategori}
                         </span>
-                        <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700"></span>
-                        <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 tracking-wider">
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                        <span className="text-[10px] text-slate-450 dark:text-slate-500 font-medium">
                           #{ticket.id_tiket ? ticket.id_tiket.slice(-5).toUpperCase() : ""}
                         </span>
                       </div>
-                      <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 flex items-center gap-1 whitespace-nowrap">
+                      <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 flex items-center gap-1 whitespace-nowrap">
                         <Clock3 size={10} className="stroke-[2.5]" />
                         {safeDate(ticket.timestamp).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
                       </span>
                     </div>
 
-                    {/* Footer Section: Reporter & Status Badge (Clean, line-free design) */}
-                    <div className="flex items-center justify-between w-full shrink-0 select-none text-[10px]">
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold">
-                        Pelapor:{" "}
-                        <span className="ml-1 bg-slate-50 dark:bg-slate-800/80 text-slate-655 dark:text-slate-355 font-bold px-1.5 py-0.5 rounded text-[9px] border border-slate-100/50 dark:border-transparent">
-                          {ticket.id_user_pelapor || "Warga"}
-                        </span>
+                    {/* Complaint Text Preview */}
+                    <p className="m-0 text-[12px] font-semibold text-slate-700 dark:text-slate-250 line-clamp-2 leading-relaxed transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                      {ticket.deskripsi || "Tidak ada deskripsi."}
+                    </p>
+
+                    {/* Footer Section: Reporter & Status Badge */}
+                    <div className="flex items-center justify-between w-full shrink-0 select-none text-[10px] pt-2 border-t border-slate-100/60 dark:border-slate-800/40">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                        Oleh: <span className="font-bold text-slate-600 dark:text-slate-300">{ticket.id_user_pelapor || "Warga"}</span>
                       </span>
                       
-                      <span className={`px-2 py-0.5 rounded text-[8px] uppercase tracking-wider font-extrabold border ${
-                        isOpenStatus ? "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200/50 dark:border-amber-500/20" :
-                        isProsesStatus ? "bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200/50 dark:border-blue-500/20" :
-                        "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200/50 dark:border-emerald-500/20"
-                      }`}>
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider ${statusTheme}`}>
                         {ticket.status}
                       </span>
                     </div>
