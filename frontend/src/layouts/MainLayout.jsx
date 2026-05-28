@@ -92,7 +92,7 @@ export default function MainLayout() {
         <Outlet />
       </main>
 
-      <nav className="bottom-nav bg-white dark:bg-[#0f1829] border-t border-gray-100 dark:border-slate-800/80 flex justify-around items-start fixed bottom-0 left-0 right-0 mx-auto w-full max-w-[480px] z-50 px-2">
+      <nav className="bottom-nav bg-white dark:bg-[#0f1829] border-t border-gray-100 dark:border-slate-800/80 flex justify-around items-start fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-50 px-2">
         {leftNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
