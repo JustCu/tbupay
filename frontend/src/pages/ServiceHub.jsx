@@ -171,6 +171,7 @@ class ServiceHubErrorBoundary extends Component {
 function ServiceHub() {
   const location = useLocation();
   const user = useStore((state) => state.user);
+  const isAdmin = user?.role === "admin";
   const showAlert = useStore((s) => s.showAlert);
   const showConfirm = useStore((s) => s.showConfirm);
 
