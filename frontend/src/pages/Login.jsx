@@ -65,7 +65,7 @@ export default function Login() {
         
         {/* Logo and Header Block */}
         <div className="text-center mb-8 select-none">
-          <img src="/logo.png" alt="TBU Pay Logo" className="w-16 h-16 rounded-2xl mx-auto mb-5 shadow-md" />
+          <img src={`${import.meta.env.BASE_URL}logo.png`} alt="TBU Pay Logo" className="w-16 h-16 rounded-2xl mx-auto mb-5 shadow-md" />
           <h1 className="text-3xl font-black mb-1 select-none tracking-wider bg-gradient-to-r from-[#0a3460] to-[#1565a8] dark:from-white dark:to-indigo-300 bg-clip-text text-transparent">
             TBU PAY
           </h1>
