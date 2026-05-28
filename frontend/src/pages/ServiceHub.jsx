@@ -16,6 +16,7 @@ import {
   CheckCircle,
   Bell,
   Plus,
+  ArrowLeft,
 } from "lucide-react";
 import {
   getTickets,
@@ -44,41 +45,6 @@ const safeDate = (dateVal) => {
   if (typeof dateVal === 'string') return new Date(dateVal.replace(" ", "T"));
   return new Date(dateVal);
 };
-
-// ---------- Reusable Bottom Sheet Wrapper ----------
-function BottomSheet({ isOpen, onClose, title, children, heightClass = "h-[82vh]" }) {
-  return (
-    <div
-      className={`fixed inset-0 z-[70] flex justify-center items-end transition-colors duration-300 ${
-        isOpen ? "bg-black/50 pointer-events-auto" : "bg-transparent pointer-events-none overflow-hidden"
-      }`}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div
-        className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${heightClass} ${
-          isOpen ? "translate-y-0" : "translate-y-full"
-        }`}
-      >
-        {/* Drag handle */}
-        <div className="w-[44px] h-[4px] rounded-full bg-gray-200 dark:bg-slate-700 mx-auto mt-3 mb-1 shrink-0" />
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
-          <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100">{title}</h3>
-          <button
-            className="p-2 bg-gray-100 dark:bg-slate-800/60 rounded-full text-slate-600 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-gray-200 dark:hover:bg-slate-700/60"
-            onClick={onClose}
-          >
-            <X size={18} />
-          </button>
-        </div>
-        {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto flex flex-col">
-          {children}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ---------- Helpers for WhatsApp Style Chat ----------
 const getInitials = (name) => {
@@ -737,71 +703,147 @@ function ServiceHub() {
         </div>
       </section>
 
-      {/* ========== BOTTOM SHEET: KELUHAN ========== */}
-      <BottomSheet isOpen={openSheet === "keluhan"} onClose={closeSheet} title="Buat Keluhan Warga" heightClass="max-h-[88vh]">
-        <div className="p-5 flex flex-col gap-4 overflow-y-auto">
-          <div className="flex flex-col gap-1.5">
-            <label className={labelCls}>Kategori Keluhan</label>
-            <select className={inputCls} value={keluhanForm.kategori} onChange={(e) => setKeluhanForm({ ...keluhanForm, kategori: e.target.value })}>
-              <option>Lampu Penerangan</option>
-              <option>Kebersihan / Sampah</option>
-              <option>Keamanan</option>
-              <option>Fasilitas Umum</option>
-            </select>
+      {/* ========== STANDALONE VIEW: KELUHAN ========== */}
+      {openSheet === "keluhan" && (
+        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+          {/* Header */}
+          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
+            <button
+              type="button"
+              className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-700/60 active:scale-95"
+              onClick={closeSheet}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className="flex flex-col">
+              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Buat Keluhan Warga</h3>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Sampaikan pengaduan atau laporan fasilitas lingkungan</p>
+            </div>
           </div>
-          <div className="flex flex-col gap-1.5">
-            <label className={labelCls}>Deskripsi Detail</label>
-            <textarea
-              className={`${inputCls} resize-y`}
-              rows="4"
-              placeholder="Jelaskan masalah secara detail..."
-              value={keluhanForm.deskripsi}
-              onChange={(e) => setKeluhanForm({ ...keluhanForm, deskripsi: e.target.value })}
-            />
-          </div>
-          <button
-            className="bg-red-600 hover:bg-red-700 text-white min-h-[48px] rounded-xl font-bold shadow-[0_8px_16px_rgba(239,68,68,0.25)] border-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-            onClick={handleKeluhanSubmit}
-            disabled={loading || !keluhanForm.deskripsi.trim()}
-          >
-            {loading ? "Mengirim..." : "Kirim Keluhan"}
-          </button>
-        </div>
-      </BottomSheet>
 
-      {/* ========== BOTTOM SHEET: SARAN ========== */}
-      <BottomSheet isOpen={openSheet === "saran"} onClose={closeSheet} title="Kotak Saran & Masukan" heightClass="max-h-[88vh]">
-        <div className="p-5 flex flex-col gap-4 overflow-y-auto">
-          <div className="flex flex-col gap-1.5">
-            <label className={labelCls}>Saran / Aspirasi</label>
-            <textarea
-              className={`${inputCls} resize-y`}
-              rows="5"
-              placeholder="Tuliskan saran Anda di sini..."
-              value={saranForm.deskripsi}
-              onChange={(e) => setSaranForm({ deskripsi: e.target.value })}
-            />
+          {/* Scrollable Body */}
+          <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
+            <div className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-5 flex flex-col gap-4 shadow-xs">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelCls}>Kategori Keluhan</label>
+                <select className={inputCls} value={keluhanForm.kategori} onChange={(e) => setKeluhanForm({ ...keluhanForm, kategori: e.target.value })}>
+                  <option>Lampu Penerangan</option>
+                  <option>Kebersihan / Sampah</option>
+                  <option>Keamanan</option>
+                  <option>Fasilitas Umum</option>
+                </select>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelCls}>Deskripsi Detail</label>
+                <textarea
+                  className={`${inputCls} resize-y`}
+                  rows="4"
+                  placeholder="Jelaskan masalah secara detail..."
+                  value={keluhanForm.deskripsi}
+                  onChange={(e) => setKeluhanForm({ ...keluhanForm, deskripsi: e.target.value })}
+                />
+              </div>
+              <button
+                type="button"
+                className="bg-red-600 hover:bg-red-700 text-white min-h-[48px] rounded-xl font-bold shadow-[0_8px_16px_rgba(239,68,68,0.25)] border-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-colors mt-2"
+                onClick={handleKeluhanSubmit}
+                disabled={loading || !keluhanForm.deskripsi.trim()}
+              >
+                {loading ? "Mengirim..." : "Kirim Keluhan"}
+              </button>
+            </div>
           </div>
-          <button
-            className="bg-[#0f4c81] hover:bg-[#0d3d6b] text-white min-h-[48px] rounded-xl font-bold shadow-[0_8px_16px_rgba(15,76,129,0.25)] border-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-            onClick={handleSaranSubmit}
-            disabled={loading || !saranForm.deskripsi.trim()}
-          >
-            {loading ? "Mengirim..." : "Kirim Saran"}
-          </button>
         </div>
-      </BottomSheet>
+      )}
 
-      {/* ========== BOTTOM SHEET: GENERAL GROUP CHAT ========== */}
-      <BottomSheet isOpen={openSheet === "grupchat"} onClose={closeSheet} title="Grup Obrolan Warga" heightClass="h-[88vh]">
-        <div className="flex flex-col flex-1 min-h-0 bg-[#efeae2] dark:bg-[#0b141a] transition-colors duration-300">
-          
+      {/* ========== STANDALONE VIEW: SARAN ========== */}
+      {openSheet === "saran" && (
+        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+          {/* Header */}
+          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
+            <button
+              type="button"
+              className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-650 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-205 dark:hover:bg-slate-700/60 active:scale-95"
+              onClick={closeSheet}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className="flex flex-col">
+              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Kotak Saran & Masukan</h3>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Salurkan aspirasi dan ide kreatif demi kemajuan bersama</p>
+            </div>
+          </div>
+
+          {/* Scrollable Body */}
+          <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
+            <div className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-5 flex flex-col gap-4 shadow-xs">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelCls}>Saran / Aspirasi</label>
+                <textarea
+                  className={`${inputCls} resize-y`}
+                  rows="5"
+                  placeholder="Tuliskan saran Anda di sini..."
+                  value={saranForm.deskripsi}
+                  onChange={(e) => setSaranForm({ deskripsi: e.target.value })}
+                />
+              </div>
+              <button
+                type="button"
+                className="bg-[#0f4c81] hover:bg-[#0d3d6b] text-white min-h-[48px] rounded-xl font-bold shadow-[0_8px_16px_rgba(15,76,129,0.25)] border-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-colors mt-2"
+                onClick={handleSaranSubmit}
+                disabled={loading || !saranForm.deskripsi.trim()}
+              >
+                {loading ? "Mengirim..." : "Kirim Saran"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========== STANDALONE VIEW: GENERAL GROUP CHAT ========== */}
+      {openSheet === "grupchat" && (
+        <div className="fixed inset-0 z-[60] bg-[#efeae2] dark:bg-[#0b141a] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-3.5 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm z-10">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-205 dark:hover:bg-slate-700/60 active:scale-95"
+                onClick={closeSheet}
+              >
+                <ArrowLeft size={20} />
+              </button>
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm select-none shadow-sm">
+                  GW
+                </div>
+                <div className="flex flex-col">
+                  <h3 className="m-0 text-sm font-bold text-slate-800 dark:text-slate-100 leading-tight">Grup Obrolan Warga</h3>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1 mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Online • {generalChats.length} pesan
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <button
+              type="button"
+              className="p-2 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full border-none cursor-pointer transition-colors flex items-center justify-center active:scale-95"
+              onClick={() => fetchGeneralChats(true)}
+              disabled={loadingGeneralChats}
+              title="Refresh Obrolan"
+            >
+              <RefreshCw size={16} className={loadingGeneralChats ? "animate-spin" : ""} />
+            </button>
+          </div>
+
           {/* Main chat messages list */}
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5 shadow-inner">
             {loadingGeneralChats && generalChats.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 gap-2">
                 <RefreshCw size={22} className="text-emerald-500 animate-spin" />
-                <span className="text-[12px] text-gray-500 dark:text-gray-400">Memuat obrolan...</span>
+                <span className="text-[12px] text-gray-500 dark:text-gray-400 font-bold">Memuat obrolan...</span>
               </div>
             ) : generalChats.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
@@ -827,7 +869,7 @@ function ServiceHub() {
                       <div key={chat.id_chat} className="flex flex-col w-full">
                         {showDateHeader && (
                           <div className="flex justify-center my-3.5 select-none">
-                            <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-[10px] text-gray-500 dark:text-gray-400 font-extrabold px-3.5 py-1.5 rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.05)] uppercase tracking-wider">
+                            <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-[10px] text-gray-555 dark:text-gray-450 font-extrabold px-3.5 py-1.5 rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.05)] uppercase tracking-wider">
                               {currentDateHeader}
                             </span>
                           </div>
@@ -868,7 +910,7 @@ function ServiceHub() {
                             </p>
                             
                             {/* Timestamp in corner */}
-                            <span className="absolute bottom-1 right-2 text-[9px] text-gray-400 dark:text-gray-500 font-medium select-none tabular-nums">
+                            <span className="absolute bottom-1 right-2 text-[9px] text-gray-400 dark:text-gray-550 font-medium select-none tabular-nums">
                               {chat.timestamp ? safeDate(chat.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
                             </span>
                           </div>
@@ -882,7 +924,7 @@ function ServiceHub() {
           </div>
 
           {/* Sticky text-input control pill bar */}
-          <div className="bg-white dark:bg-[#131c33] border-t border-gray-100 dark:border-slate-800/80 p-3 shrink-0 flex items-center gap-2">
+          <div className="safe-footer-padding bg-white dark:bg-[#131c33] border-t border-gray-100 dark:border-slate-800/80 shrink-0 flex items-center gap-2 z-10">
             <form onSubmit={handleSendGeneralChat} className="flex items-center gap-2 flex-1">
               <input
                 type="text"
@@ -903,181 +945,260 @@ function ServiceHub() {
             </form>
           </div>
         </div>
-      </BottomSheet>
-
-      {/* ========== BOTTOM SHEET: BERITA ========== */}
-      <BottomSheet isOpen={openSheet === "berita"} onClose={closeSheet} title="Berita Terkini" heightClass="h-[88vh]">
-        <div className="p-4 flex flex-col gap-3 overflow-y-auto flex-1">
-          {/* Toolbar: Filter Tanggal + Tambah Berita (Admin) */}
-          <div className="flex items-center gap-2">
-            <div className="flex-1 relative">
-              <CalendarDays size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              <input
-                type="month"
-                className="w-full border border-gray-200 rounded-xl pl-9 pr-3 py-2.5 text-[12px] bg-white focus:outline-none focus:border-blue-400 text-gray-600 appearance-none"
-                value={newsDateFilter}
-                onChange={(e) => setNewsDateFilter(e.target.value)}
-              />
-            </div>
-            {newsDateFilter && (
-              <button
-                type="button"
-                className="px-3 py-2.5 text-[11px] font-semibold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-800 border-none rounded-xl cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors whitespace-nowrap"
-                onClick={() => setNewsDateFilter("")}
-              >
-                Reset
-              </button>
-            )}
-            {user?.role === "admin" && (
-              <button
-                type="button"
-                className="flex items-center gap-1.5 px-4 py-2.5 bg-blue-600 text-white text-[12px] font-bold border-none rounded-xl cursor-pointer hover:bg-blue-700 transition-colors whitespace-nowrap shadow-sm"
-                onClick={() => setOpenSheet("tambahBerita")}
-              >
-                <Plus size={14} />
-                Tambah
-              </button>
-            )}
-          </div>
- 
-          {/* Refresh */}
-          <button
-            className="inline-flex items-center justify-center gap-2 text-[12px] font-semibold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-800 rounded-xl py-2 border-none cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors w-full"
-            onClick={() => fetchNews(true)}
-            disabled={refreshing}
-          >
-            <RefreshCw size={13} className={refreshing ? "animate-spin" : ""} />
-            {refreshing ? "Memuat ulang..." : "Muat Ulang Berita"}
-          </button>
-
-          {loading && (
-            <div className="animate-pulse flex flex-col gap-3">
-              <div className="h-24 bg-gray-100 rounded-[14px]"></div>
-              <div className="h-24 bg-gray-100 rounded-[14px]"></div>
-            </div>
-          )}
-          
-          {(() => {
-            const filteredNews = newsDateFilter
-              ? newsList.filter((n) => {
-                  if (!n.tanggal) return false;
-                  const d = safeDate(n.tanggal);
-                  const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-                  return ym === newsDateFilter;
-                })
-              : newsList;
-
-            if (!loading && filteredNews.length === 0) {
-              return (
-                <div className="text-center py-8 bg-gray-50 rounded-[14px] border border-dashed border-gray-200">
-                  <Newspaper size={32} className="mx-auto mb-2 text-gray-300" />
-                  <p className="text-[13px] text-gray-500 m-0 font-semibold">
-                    {newsDateFilter ? "Tidak ada berita di bulan ini" : "Belum ada berita terbaru"}
-                  </p>
-                  {newsDateFilter && (
-                    <button
-                      type="button"
-                      className="mt-2 text-[12px] text-blue-600 font-semibold bg-transparent border-none cursor-pointer underline"
-                      onClick={() => setNewsDateFilter("")}
-                    >
-                      Tampilkan semua berita
-                    </button>
-                  )}
-                </div>
-              );
-            }
-
-            return filteredNews.map((news) => {
-              if (!news) return null;
-              return (
-                <div key={news.id_berita} className="bg-white border border-gray-100 rounded-[14px] p-4 shadow-sm">
-                  <div className="flex justify-between items-center gap-2 mb-1">
-                    <h4 className="text-sm font-bold text-gray-800 dark:text-gray-150 m-0 leading-tight group-hover:text-primary transition-colors">{news.judul}</h4>
-                    <p className="text-[11px] text-gray-400 m-0">{news.tanggal ? safeDate(news.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""}</p>
-                  </div>
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 border border-blue-200 bg-blue-50 text-blue-700 rounded-full px-2 py-1 text-[11px] font-semibold cursor-pointer"
-                    onClick={() => openNewsDetail(news)}
-                  >
-                    <MessageCircle size={12} />
-                    Detail & Balas
-                  </button>
-                </div>
-              );
-            });
-          })()}
-        </div>
-      </BottomSheet>
-
-      {/* ========== BOTTOM SHEET: TAMBAH BERITA (Admin Only) ========== */}
-      <BottomSheet isOpen={openSheet === "tambahBerita"} onClose={() => setOpenSheet("berita")} title="Publikasi Berita Baru" heightClass="h-fit max-h-[80vh]">
-        <form className="p-5 flex flex-col gap-4 overflow-y-auto" onSubmit={handlePublishNews}>
-          <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1.5">Judul Berita</label>
-            <input
-              type="text"
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-[13px] bg-slate-50 focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
-              placeholder="Masukkan judul berita atau pengumuman"
-              value={newsForm.judul}
-              onChange={(e) => setNewsForm({ ...newsForm, judul: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1.5">Isi Berita</label>
-            <textarea
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-[13px] bg-slate-50 resize-y focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
-              rows="5"
-              placeholder="Tulis isi berita atau pengumuman selengkapnya..."
-              value={newsForm.konten}
-              onChange={(e) => setNewsForm({ ...newsForm, konten: e.target.value })}
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl text-[13px] border-none cursor-pointer hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
-            disabled={publishingNews}
-          >
-            <Send size={14} />
-            {publishingNews ? "Memublikasikan..." : "Publikasi Sekarang"}
-          </button>
-        </form>
-      </BottomSheet>
-
-      {/* ========== BOTTOM SHEET: NEWS DETAIL ========== */}
-      <BottomSheet isOpen={openSheet === "newsDetail" && !!selectedNews} onClose={closeSheet} title="Detail Informasi" heightClass="h-[88vh]">
-        {selectedNews && (
-          <div className="p-4 flex flex-col gap-3 flex-1 min-h-0 overflow-hidden">
+      )}
+      {/* ========== STANDALONE VIEW: BERITA ========== */}
+      {openSheet === "berita" && (
+        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+          {/* Header */}
+          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
             <button
               type="button"
-              className="inline-flex items-center gap-1 text-[12px] font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 border-none rounded-full px-3 py-1.5 w-fit cursor-pointer transition-colors"
+              className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-700/60 active:scale-95"
+              onClick={closeSheet}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className="flex flex-col">
+              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Berita & Informasi</h3>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Kumpulan berita terkini dan pengumuman lingkungan warga</p>
+            </div>
+          </div>
+
+          {/* Body content */}
+          <div className="p-5 flex flex-col gap-4 overflow-y-auto flex-1">
+            {/* Toolbar: Filter Tanggal + Tambah Berita (Admin) */}
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="flex-1 relative">
+                <CalendarDays size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none" />
+                <input
+                  type="month"
+                  className="w-full border border-gray-200 dark:border-[#2c3c5e] rounded-xl pl-9 pr-3 py-2.5 text-[12px] bg-white dark:bg-[#1b2641] text-gray-650 dark:text-gray-250 focus:outline-none focus:border-blue-400 appearance-none"
+                  value={newsDateFilter}
+                  onChange={(e) => setNewsDateFilter(e.target.value)}
+                />
+              </div>
+              {newsDateFilter && (
+                <button
+                  type="button"
+                  className="px-3.5 py-2.5 text-[11px] font-bold text-gray-650 dark:text-gray-300 bg-gray-150 dark:bg-slate-800 border-none rounded-xl cursor-pointer hover:bg-gray-205 dark:hover:bg-slate-750 transition-colors whitespace-nowrap active:scale-95"
+                  onClick={() => setNewsDateFilter("")}
+                >
+                  Reset
+                </button>
+              )}
+              {user?.role === "admin" && (
+                <button
+                  type="button"
+                  className="flex items-center gap-1.5 px-4 py-2.5 bg-blue-600 text-white text-[12px] font-extrabold border-none rounded-xl cursor-pointer hover:bg-blue-700 transition-colors whitespace-nowrap shadow-sm active:scale-95"
+                  onClick={() => setOpenSheet("tambahBerita")}
+                >
+                  <Plus size={14} />
+                  Tambah
+                </button>
+              )}
+            </div>
+   
+            {/* Refresh */}
+            <button
+              className="inline-flex items-center justify-center gap-2 text-[12px] font-bold text-gray-650 dark:text-gray-300 bg-gray-150 dark:bg-slate-800 rounded-xl py-2.5 border-none cursor-pointer hover:bg-gray-205 dark:hover:bg-slate-750 transition-colors w-full shrink-0 active:scale-[0.99]"
+              onClick={() => fetchNews(true)}
+              disabled={refreshing}
+            >
+              <RefreshCw size={13} className={refreshing ? "animate-spin" : ""} />
+              {refreshing ? "Memuat ulang..." : "Muat Ulang Berita"}
+            </button>
+
+            {loading && (
+              <div className="animate-pulse flex flex-col gap-3">
+                <div className="h-24 bg-gray-200 dark:bg-slate-800 rounded-[14px]"></div>
+                <div className="h-24 bg-gray-200 dark:bg-slate-800 rounded-[14px]"></div>
+              </div>
+            )}
+            
+            {(() => {
+              const filteredNews = newsDateFilter
+                ? newsList.filter((n) => {
+                    if (!n.tanggal) return false;
+                    const d = safeDate(n.tanggal);
+                    const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+                    return ym === newsDateFilter;
+                  })
+                : newsList;
+
+              if (!loading && filteredNews.length === 0) {
+                return (
+                  <div className="text-center py-8 bg-white dark:bg-[#131c33] rounded-2xl border border-dashed border-gray-200 dark:border-slate-800/80 p-5">
+                    <Newspaper size={32} className="mx-auto mb-2 text-gray-300 dark:text-slate-600" />
+                    <p className="text-[13px] text-gray-555 dark:text-gray-400 m-0 font-semibold">
+                      {newsDateFilter ? "Tidak ada berita di bulan ini" : "Belum ada berita terbaru"}
+                    </p>
+                    {newsDateFilter && (
+                      <button
+                        type="button"
+                        className="mt-2 text-[12px] text-blue-600 dark:text-indigo-400 font-bold bg-transparent border-none cursor-pointer underline"
+                        onClick={() => setNewsDateFilter("")}
+                      >
+                        Tampilkan semua berita
+                      </button>
+                    )}
+                  </div>
+                );
+              }
+
+              return (
+                <div className="flex flex-col gap-4">
+                  {filteredNews.map((news) => {
+                    if (!news) return null;
+                    return (
+                      <div key={news.id_berita} className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-4.5 shadow-xs flex flex-col gap-3">
+                        <div className="flex justify-between items-start gap-2">
+                          <div className="flex flex-col gap-1">
+                            <h4 className="text-sm font-bold text-slate-855 dark:text-slate-100 m-0 leading-tight">{news.judul}</h4>
+                            <p className="text-[10px] text-slate-400 dark:text-slate-500 m-0 flex items-center gap-1 font-semibold">
+                              <CalendarDays size={12} />
+                              {news.tanggal ? safeDate(news.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""}
+                            </p>
+                          </div>
+                          {news.created_by_role && news.created_by_role !== "warga" && (
+                            <span className="text-[9px] font-extrabold uppercase bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/40">
+                              {news.created_by_role}
+                            </span>
+                          )}
+                        </div>
+                        
+                        <p className="text-xs text-slate-655 dark:text-slate-350 m-0 leading-relaxed line-clamp-3">
+                          {news.konten}
+                        </p>
+                        
+                        <button
+                          type="button"
+                          className="w-full mt-1.5 inline-flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 rounded-xl py-2.5 text-xs font-bold cursor-pointer transition-colors"
+                          onClick={() => openNewsDetail(news)}
+                        >
+                          <MessageCircle size={14} />
+                          Baca Selengkapnya & Diskusi
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+      )}
+
+      {/* ========== STANDALONE VIEW: TAMBAH BERITA (Admin Only) ========== */}
+      {openSheet === "tambahBerita" && (
+        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+          {/* Header */}
+          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
+            <button
+              type="button"
+              className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-700/60 active:scale-95"
               onClick={() => setOpenSheet("berita")}
             >
-              ← Kembali ke Daftar Berita
+              <ArrowLeft size={20} />
             </button>
-            <div className="flex flex-col gap-1">
-              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 m-0 leading-tight">{selectedNews.judul}</h3>
-              <p className="text-[11px] text-gray-400 m-0">{selectedNews.tanggal ? safeDate(selectedNews.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""}</p>
+            <div className="flex flex-col">
+              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Publikasi Berita Baru</h3>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Tulis berita atau pengumuman resmi pengurus RT/RW</p>
             </div>
-            <p className="text-[14px] text-gray-600 dark:text-gray-300 m-0 leading-relaxed whitespace-pre-wrap">{selectedNews.konten}</p>
-            
-            <div className="mt-2 flex flex-col gap-3 border-t border-gray-100 dark:border-slate-800/80 pt-4 flex-1 min-h-0">
-              <div className="flex items-center justify-between px-1">
-                <p className="text-[14px] font-bold text-gray-800 dark:text-gray-200 m-0">Diskusi Warga</p>
+          </div>
+
+          {/* Form Content */}
+          <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
+            <form className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-5 flex flex-col gap-4 shadow-xs" onSubmit={handlePublishNews}>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelCls}>Judul Berita</label>
+                <input
+                  type="text"
+                  className={inputCls}
+                  placeholder="Masukkan judul berita atau pengumuman"
+                  value={newsForm.judul}
+                  onChange={(e) => setNewsForm({ ...newsForm, judul: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelCls}>Isi Berita</label>
+                <textarea
+                  className={`${inputCls} resize-y`}
+                  rows="5"
+                  placeholder="Tulis isi berita atau pengumuman selengkapnya..."
+                  value={newsForm.konten}
+                  onChange={(e) => setNewsForm({ ...newsForm, konten: e.target.value })}
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl text-[13px] border-none cursor-pointer hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm mt-2 active:scale-95"
+                disabled={publishingNews}
+              >
+                <Send size={14} />
+                {publishingNews ? "Memublikasikan..." : "Publikasi Sekarang"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+      {/* ========== STANDALONE VIEW: NEWS DETAIL ========== */}
+      {openSheet === "newsDetail" && selectedNews && (
+        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+          {/* Header */}
+          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm z-10">
+            <button
+              type="button"
+              className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-205 dark:hover:bg-slate-700/60 active:scale-95"
+              onClick={() => setOpenSheet("berita")}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className="flex flex-col min-w-0 flex-1">
+              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 truncate">Detail Informasi</h3>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Baca pengumuman & diskusi antar tetangga</p>
+            </div>
+          </div>
+
+          {/* Scrollable container for news content + chat comments */}
+          <div className="flex-1 overflow-y-auto flex flex-col min-h-0">
+            {/* News content block */}
+            <div className="p-5 flex flex-col gap-3.5 bg-white dark:bg-[#131c33] border-b border-slate-200/60 dark:border-slate-800/60 shadow-xxs">
+              <h2 className="text-base font-extrabold text-slate-855 dark:text-slate-100 m-0 leading-snug">{selectedNews.judul}</h2>
+              <div className="flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 font-semibold">
+                <span className="flex items-center gap-1">
+                  <CalendarDays size={12} />
+                  {selectedNews.tanggal ? safeDate(selectedNews.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""}
+                </span>
+                {selectedNews.created_by_role && (
+                  <span className="text-[9px] font-extrabold uppercase bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/40">
+                    Pengurus {selectedNews.created_by_role}
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-slate-755 dark:text-slate-350 m-0 leading-relaxed whitespace-pre-wrap font-medium">
+                {selectedNews.konten}
+              </p>
+            </div>
+
+            {/* Comment Section container */}
+            <div className="p-5 flex flex-col gap-3 flex-1 min-h-[300px]">
+              <div className="flex items-center justify-between px-1 shrink-0">
+                <p className="text-[11px] font-extrabold text-slate-800 dark:text-slate-200 m-0 uppercase tracking-wider">Diskusi Warga</p>
                 {!loadingReplies && newsReplies.length > 0 && (
-                  <span className="text-[11px] font-extrabold bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full border border-blue-100 dark:border-blue-900/50">
-                    {newsReplies.length} Pesan
+                  <span className="text-[10px] font-extrabold bg-blue-50 dark:bg-blue-955/40 text-blue-600 dark:text-blue-400 px-2.5 py-0.5 rounded-full border border-blue-100 dark:border-blue-900/50">
+                    {newsReplies.length} Komentar
                   </span>
                 )}
               </div>
 
-              <div className="flex-1 min-h-[260px] overflow-y-auto bg-[#efeae2] dark:bg-[#0b141a] rounded-2xl p-4 flex flex-col gap-3.5 border border-gray-200/50 dark:border-slate-800/50 shadow-inner">
+              {/* Chat Feed */}
+              <div className="flex-1 overflow-y-auto bg-[#efeae2] dark:bg-[#0b141a] rounded-2xl p-4 flex flex-col gap-3.5 border border-slate-200/50 dark:border-slate-850/50 shadow-inner min-h-0">
                 {loadingReplies ? (
                   <div className="flex flex-col items-center justify-center py-12 gap-2">
                     <RefreshCw size={22} className="text-gray-400 animate-spin" />
-                    <span className="text-[12px] text-gray-500">Memuat komentar...</span>
+                    <span className="text-[12px] text-gray-555">Memuat komentar...</span>
                   </div>
                 ) : newsReplies.length === 0 ? (
                   <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
@@ -1103,7 +1224,7 @@ function ServiceHub() {
                           <div key={reply.id_balasan} className="flex flex-col gap-2">
                             {showDateHeader && (
                               <div className="flex justify-center my-2 sticky top-1 z-10">
-                                <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-gray-500 dark:text-gray-400 text-[10px] font-extrabold uppercase px-3 py-1 rounded-lg shadow-sm border border-gray-150/50 dark:border-transparent backdrop-blur-xs tracking-wider">
+                                <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-gray-555 dark:text-gray-450 text-[10px] font-extrabold uppercase px-3 py-1 rounded-lg shadow-sm border border-gray-150/50 dark:border-transparent backdrop-blur-xs tracking-wider">
                                   {currentDateHeader}
                                 </span>
                               </div>
@@ -1154,252 +1275,275 @@ function ServiceHub() {
                   </div>
                 )}
               </div>
-              <form onSubmit={handleSendReply} className="flex items-center gap-2 mt-1.5 pt-1.5 bg-white dark:bg-[#131c33] sticky bottom-0">
-                <input
-                  type="text"
-                  className="flex-1 bg-gray-50 dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] text-gray-900 dark:text-gray-100 rounded-full px-4 py-2.5 text-[13px] outline-none transition-colors focus:bg-white dark:focus:bg-[#1b2641] focus:border-blue-400"
-                  placeholder="Komentari berita ini..."
-                  value={replyForm}
-                  onChange={(e) => setReplyForm(e.target.value)}
-                  disabled={sendingReply}
-                  required
-                />
-                <button
-                  type="submit"
-                  className="w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full border-none cursor-pointer flex items-center justify-center transition-colors shrink-0 disabled:opacity-50"
-                  disabled={sendingReply || !replyForm.trim()}
-                >
-                  <Send size={15} className="text-white" />
-                </button>
-              </form>
             </div>
           </div>
-        )}
-      </BottomSheet>
- 
-      {/* ========== BOTTOM SHEET: PANTAUAN ========== */}
-      <BottomSheet isOpen={openSheet === "pantauan"} onClose={closeSheet} title="Pantauan Keluhan Warga" heightClass="h-[88vh]">
-        <div className="p-4 flex flex-col gap-3 overflow-y-auto flex-1">
-          <button
-            className="inline-flex items-center justify-center gap-2 text-[12px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 rounded-xl py-2.5 border-none cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors w-full"
-            onClick={() => fetchTickets(true)}
-            disabled={refreshing}
-          >
-            <RefreshCw size={13} className={refreshing ? "animate-spin" : ""} />
-            {refreshing ? "Memuat..." : "Refresh"}
-          </button>
- 
-          {loading && <Skeleton />}
-          {!loading && tickets.length === 0 && (
-            <div className="border border-dashed border-slate-300 rounded-2xl bg-white dark:bg-[#151f32] p-5 text-center">
-              <p className="text-sm font-bold m-0 mb-1 text-slate-850 dark:text-slate-100">Tidak ada tiket</p>
-              <span className="text-xs text-slate-500 dark:text-slate-400">Daftar pantauan akan terisi ketika ada laporan masuk.</span>
-            </div>
-          )}
-          {tickets.map((ticket) => {
-            if (!ticket) return null;
-            const isOpen = ticket.status === "open";
-            const isProses = ticket.status === "proses";
-            
-            return (
+
+          {/* Sticky input footer */}
+          <div className="safe-footer-padding bg-white dark:bg-[#131c33] border-t border-gray-100 dark:border-slate-800/80 shrink-0 flex items-center gap-2 z-10">
+            <form onSubmit={handleSendReply} className="flex items-center gap-2 flex-1">
+              <input
+                type="text"
+                className="flex-1 bg-gray-50 dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] text-gray-900 dark:text-gray-100 rounded-full px-4 py-2.5 text-[13px] outline-none transition-colors focus:bg-white dark:focus:bg-[#1b2641] focus:border-blue-400"
+                placeholder="Komentari berita ini..."
+                value={replyForm}
+                onChange={(e) => setReplyForm(e.target.value)}
+                disabled={sendingReply}
+                required
+              />
               <button
-                key={ticket.id_tiket}
-                type="button"
-                className="w-full text-left cursor-pointer transition-all duration-300 hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700/80 bg-white dark:bg-[#151f32] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-4 flex gap-4"
-                onClick={() => openTicketDetail(ticket)}
+                type="submit"
+                className="w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full border-none cursor-pointer flex items-center justify-center transition-colors shrink-0 disabled:opacity-50 active:scale-90"
+                disabled={sendingReply || !replyForm.trim()}
               >
-                {/* Status Indicator Icon Circle */}
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                  isOpen ? "bg-amber-500/10 text-[#78350f] dark:text-amber-400" :
-                  isProses ? "bg-blue-500/10 text-[#1e3a8a] dark:text-blue-400" :
-                  "bg-emerald-500/10 text-[#064e3b] dark:text-emerald-455"
-                }`}>
-                  {isOpen && <Clock3 size={18} className="stroke-[2.2]" />}
-                  {isProses && <RefreshCw size={18} className="stroke-[2.2] animate-pulse" />}
-                  {!isOpen && !isProses && <CheckCircle size={18} className="stroke-[2.2]" />}
-                </div>
-
-                {/* Content details */}
-                <div className="flex-1 flex flex-col gap-1.5 min-w-0">
-                  <div className="flex justify-between items-start gap-2">
-                    <span className="text-sm font-bold text-slate-850 dark:text-slate-100 leading-snug truncate">[{ticket.kategori}]</span>
-                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap">
-                      {safeDate(ticket.timestamp).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
-                    </span>
-                  </div>
-                  
-                  <p className="m-0 text-xs font-normal text-slate-600 dark:text-slate-350 line-clamp-3 leading-relaxed">
-                    {ticket.deskripsi}
-                  </p>
-                  
-                  <div className="flex items-center justify-between mt-1 text-[11px] font-bold text-slate-500 dark:text-slate-400 select-none">
-                    <span>Pelapor: <span className="text-slate-700 dark:text-slate-200 font-extrabold">{ticket.id_user_pelapor}</span></span>
-                    <span className={`px-2 py-0.5 rounded-md text-[9px] uppercase tracking-wider font-extrabold border ${
-                      isOpen ? "bg-amber-50 dark:bg-amber-500/10 text-[#78350f] dark:text-amber-300 border-amber-200/50 dark:border-amber-500/20" :
-                      isProses ? "bg-blue-50 dark:bg-blue-500/10 text-[#1e3a8a] dark:text-blue-300 border-blue-200/50 dark:border-blue-500/20" :
-                      "bg-emerald-50 dark:bg-emerald-500/10 text-[#064e3b] dark:text-emerald-300 border-emerald-200/50 dark:border-emerald-500/20"
-                    }`}>{ticket.status}</span>
-                  </div>
-                </div>
+                <Send size={15} className="text-white" />
               </button>
-            );
-          })}
+            </form>
+          </div>
         </div>
-      </BottomSheet>
-
-      {/* ========== BOTTOM SHEET: TICKET DETAIL ========== */}
-      <BottomSheet isOpen={openSheet === "ticketDetail" && !!selectedTicket} onClose={closeSheet} title="Detail Keluhan" heightClass="h-[88vh]">
-        {selectedTicket && (
-          <div className="p-4 flex flex-col gap-3 flex-1 min-h-0 overflow-hidden">
-            {/* Ringkasan Keluhan */}
-            <div className="bg-gray-50 dark:bg-[#1a2640]/40 border border-gray-100 dark:border-slate-800/80 rounded-2xl p-4 flex flex-col gap-2.5">
-              <div className="flex justify-between items-center">
-                <span className="text-[12px] font-bold text-gray-500 dark:text-gray-400 bg-gray-200/60 dark:bg-slate-800 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                  {selectedTicket.kategori}
-                </span>
-                <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                  selectedTicket.status === "open" ? "bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200" :
-                  selectedTicket.status === "proses" ? "bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200" :
-                  "bg-green-100 dark:bg-emerald-500/10 text-green-700 dark:text-emerald-400 border border-green-200"
-                }`}>{selectedTicket.status.toUpperCase()}</span>
-              </div>
-              
-              <div className="text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap font-medium">
-                {selectedTicket.deskripsi}
-              </div>
-
-              {selectedTicket.url_foto_kondisi && (
-                <div className="mt-1">
-                  <img src={selectedTicket.url_foto_kondisi} alt="Foto Kondisi" className="w-full max-h-[160px] object-cover rounded-xl border border-gray-200 dark:border-slate-700" />
-                </div>
-              )}
-
-              <div className="flex justify-between items-center text-[10px] text-gray-500 dark:text-gray-400 mt-2">
-                <span>{safeDate(selectedTicket.timestamp).toLocaleString("id-ID", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })}</span>
-                <span>ID Pelapor: <span className="font-bold">{selectedTicket.id_user_pelapor}</span></span>
-              </div>
-
-              {selectedTicket.id_petugas_pic && (
-                <div className="mt-1 bg-blue-50/50 dark:bg-blue-500/10 border border-blue-100/50 dark:border-blue-500/20 rounded-xl px-3 py-1.5 text-[11px] text-blue-700 dark:text-blue-400 flex justify-between items-center">
-                  <span>PIC Petugas:</span>
-                  <strong className="font-bold">{selectedTicket.id_petugas_pic}</strong>
-                </div>
-              )}
+      )}
+       {/* ========== STANDALONE VIEW: PANTAUAN ========== */}
+      {openSheet === "pantauan" && (
+        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+          {/* Header */}
+          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
+            <button
+              type="button"
+              className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-205 dark:hover:bg-slate-700/60 active:scale-95"
+              onClick={closeSheet}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className="flex flex-col">
+              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Pantau Keluhan Warga</h3>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Daftar laporan pengaduan hunian yang diajukan warga</p>
             </div>
+          </div>
 
-            {/* Area Tanya Jawab (WhatsApp Style) */}
-            <div className="flex flex-col gap-2 mt-2 flex-1 min-h-0">
-              <p className="text-[13px] font-bold text-gray-800 dark:text-gray-100 m-0 flex items-center gap-1.5 px-1">
-                <MessageCircle size={15} className="text-blue-500" />
-                Tanya Jawab Keluhan
-              </p>
+          {/* Body content */}
+          <div className="p-5 flex flex-col gap-4 overflow-y-auto flex-1">
+            {/* Refresh */}
+            <button
+              className="inline-flex items-center justify-center gap-2 text-[12px] font-bold text-slate-605 dark:text-slate-300 bg-slate-150 dark:bg-slate-800 rounded-xl py-2.5 border-none cursor-pointer hover:bg-slate-205 dark:hover:bg-slate-750 transition-colors w-full shrink-0 active:scale-[0.99]"
+              onClick={() => fetchTickets(true)}
+              disabled={refreshing}
+            >
+              <RefreshCw size={13} className={refreshing ? "animate-spin" : ""} />
+              {refreshing ? "Memuat..." : "Muat Ulang Laporan"}
+            </button>
 
-              <div className="flex-1 min-h-[220px] overflow-y-auto bg-[#efeae2] dark:bg-[#0b141a] rounded-2xl p-4 flex flex-col gap-3 border border-gray-200/50 dark:border-slate-800/50 shadow-inner">
-                {loadingTicketReplies ? (
-                  <div className="flex flex-col items-center justify-center py-10 gap-2">
-                    <RefreshCw size={24} className="text-gray-400 animate-spin" />
-                    <span className="text-[12px] text-gray-500">Memuat tanya jawab...</span>
-                  </div>
-                ) : ticketReplies.length === 0 ? (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-                    <div className="bg-white/95 dark:bg-[#1f2c34]/95 rounded-xl px-4.5 py-2.5 text-[11px] text-gray-500 dark:text-gray-400 max-w-[85%] shadow-sm border border-gray-100 dark:border-transparent">
-                      Belum ada obrolan. Gunakan form di bawah untuk bertanya jawab terkait keluhan ini.
+            {loading && <Skeleton />}
+            {!loading && tickets.length === 0 && (
+              <div className="border border-dashed border-slate-300 dark:border-slate-800/80 rounded-2xl bg-white dark:bg-[#131c33] p-5 text-center">
+                <p className="text-sm font-bold m-0 mb-1 text-slate-850 dark:text-slate-100">Tidak ada tiket</p>
+                <span className="text-xs text-slate-500 dark:text-slate-400">Daftar pantauan akan terisi ketika ada laporan masuk.</span>
+              </div>
+            )}
+            
+            <div className="flex flex-col gap-4.5">
+              {tickets.map((ticket) => {
+                if (!ticket) return null;
+                const isOpenStatus = ticket.status === "open";
+                const isProsesStatus = ticket.status === "proses";
+                
+                return (
+                  <button
+                    key={ticket.id_tiket}
+                    type="button"
+                    className="w-full text-left cursor-pointer transition-all duration-300 hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700/80 bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-4 flex gap-4"
+                    onClick={() => openTicketDetail(ticket)}
+                  >
+                    {/* Status Indicator Icon Circle */}
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                      isOpenStatus ? "bg-amber-500/10 text-[#78350f] dark:text-amber-400" :
+                      isProsesStatus ? "bg-blue-500/10 text-[#1e3a8a] dark:text-blue-400" :
+                      "bg-emerald-500/10 text-[#064e3b] dark:text-emerald-455"
+                    }`}>
+                      {isOpenStatus && <Clock3 size={18} className="stroke-[2.2]" />}
+                      {isProsesStatus && <RefreshCw size={18} className="stroke-[2.2] animate-pulse" />}
+                      {!isOpenStatus && !isProsesStatus && <CheckCircle size={18} className="stroke-[2.2]" />}
                     </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-2.5">
-                    {(() => {
-                      let lastDateHeader = null;
-                      return ticketReplies.map((reply) => {
-                        if (!reply) return null;
-                        const isOwn = String(reply.id_user) === String(user?.id_user);
-                        const currentDateHeader = formatChatDateHeader(reply.timestamp);
-                        const showDateHeader = currentDateHeader && currentDateHeader !== lastDateHeader;
-                        if (showDateHeader) {
-                          lastDateHeader = currentDateHeader;
-                        }
 
-                        return (
-                          <div key={reply.id_balasan} className="flex flex-col gap-1.5">
-                            {showDateHeader && (
-                              <div className="flex justify-center my-2 sticky top-1 z-10">
-                                <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-gray-500 dark:text-gray-400 text-[10px] font-extrabold uppercase px-3 py-1 rounded-lg shadow-sm border border-gray-150/50 dark:border-transparent backdrop-blur-xs tracking-wider">
-                                  {currentDateHeader}
-                                </span>
-                              </div>
-                            )}
-                            <div
-                              className={`flex flex-col gap-0.5 max-w-[85%] rounded-[18px] px-3.5 py-2 shadow-[0_1px_1px_rgba(0,0,0,0.1)] ${
-                                isOwn
-                                  ? "self-end bg-[#d9fdd3] dark:bg-[#005c4b] text-gray-900 dark:text-gray-100 rounded-tr-none ml-auto border border-[#e1f5fe]/10 dark:border-transparent"
-                                  : "self-start bg-white dark:bg-[#202c33] text-gray-900 dark:text-gray-100 rounded-tl-none mr-auto border border-gray-100 dark:border-transparent"
-                              }`}
-                            >
-                              {!isOwn && (
-                                <div className="flex items-center gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 mb-0.5">
-                                  <span>{reply.nama_pengirim || "Pengguna"}</span>
-                                  {reply.role_pengirim && reply.role_pengirim !== "warga" && (
-                                    <span className={`px-1.5 py-0.2 rounded text-[8px] font-extrabold uppercase tracking-wide ${
-                                      reply.role_pengirim === "admin" ? "bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-400 border border-red-200" :
-                                      "bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200"
-                                    }`}>
-                                      {reply.role_pengirim}
-                                    </span>
-                                  )}
-                                </div>
-                              )}
-                              {isOwn && reply.role_pengirim && reply.role_pengirim !== "warga" && (
-                                <div className="text-[9px] font-extrabold text-red-600 dark:text-red-400 uppercase tracking-wide self-end mb-0.5">
-                                  Anda ({reply.role_pengirim})
-                                </div>
-                              )}
-                              <p className="m-0 text-[13px] leading-relaxed whitespace-pre-wrap break-words">{reply.isi_balasan}</p>
-                              <span className="text-[9px] text-gray-400 dark:text-gray-550 shrink-0">
-                                {reply.timestamp ? safeDate(reply.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      });
-                    })()}
+                    {/* Content details */}
+                    <div className="flex-1 flex flex-col gap-1.5 min-w-0">
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="text-sm font-bold text-slate-855 dark:text-slate-100 leading-snug truncate">[{ticket.kategori}]</span>
+                        <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                          {safeDate(ticket.timestamp).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
+                        </span>
+                      </div>
+                      
+                      <p className="m-0 text-xs font-normal text-slate-655 dark:text-slate-350 line-clamp-3 leading-relaxed">
+                        {ticket.deskripsi}
+                      </p>
+                      
+                      <div className="flex items-center justify-between mt-1 text-[11px] font-bold text-slate-505 dark:text-slate-400 select-none">
+                        <span>Pelapor: <span className="text-slate-700 dark:text-slate-205 font-extrabold">{ticket.id_user_pelapor}</span></span>
+                        <span className={`px-2 py-0.5 rounded-md text-[9px] uppercase tracking-wider font-extrabold border ${
+                          isOpenStatus ? "bg-amber-50 dark:bg-amber-500/10 text-[#78350f] dark:text-amber-300 border-amber-200/50 dark:border-amber-500/20" :
+                          isProsesStatus ? "bg-blue-50 dark:bg-blue-500/10 text-[#1e3a8a] dark:text-blue-300 border-blue-200/50 dark:border-blue-500/20" :
+                          "bg-emerald-50 dark:bg-emerald-500/10 text-[#064e3b] dark:text-emerald-300 border-emerald-200/50 dark:border-emerald-500/20"
+                        }`}>{ticket.status}</span>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========== STANDALONE VIEW: TICKET DETAIL ========== */}
+      {openSheet === "ticketDetail" && selectedTicket && (
+        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+          {/* Header */}
+          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm z-10">
+            <button
+              type="button"
+              className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-205 dark:hover:bg-slate-700/60 active:scale-95"
+              onClick={() => {
+                if (tickets.length > 3) {
+                  setOpenSheet("pantauan");
+                } else {
+                  closeSheet();
+                }
+              }}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className="flex flex-col min-w-0 flex-1">
+              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 truncate">Detail Keluhan</h3>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Tanya jawab dan perkembangan laporan pengaduan</p>
+            </div>
+          </div>
+
+          {/* Scrollable body content */}
+          <div className="flex-1 overflow-y-auto flex flex-col min-h-0">
+            <div className="p-5 flex flex-col gap-3.5">
+              {/* Ringkasan Keluhan Card */}
+              <div className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-4.5 flex flex-col gap-3 shadow-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-extrabold text-gray-555 dark:text-gray-455 bg-gray-150 dark:bg-slate-800 px-2.5 py-0.75 rounded-md uppercase tracking-wider border border-gray-200/50 dark:border-transparent">
+                    {selectedTicket.kategori}
+                  </span>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-extrabold border ${
+                    selectedTicket.status === "open" ? "bg-amber-50 dark:bg-amber-500/10 text-[#78350f] dark:text-amber-300 border-amber-200/50 dark:border-amber-500/20" :
+                    selectedTicket.status === "proses" ? "bg-blue-50 dark:bg-blue-500/10 text-[#1e3a8a] dark:text-blue-300 border-blue-200/50 dark:border-blue-500/20" :
+                    "bg-emerald-50 dark:bg-emerald-500/10 text-[#064e3b] dark:text-emerald-300 border-emerald-200/50 dark:border-emerald-500/20"
+                  }`}>{selectedTicket.status}</span>
+                </div>
+                
+                <div className="text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap font-medium">
+                  {selectedTicket.deskripsi}
+                </div>
+
+                {selectedTicket.url_foto_kondisi && (
+                  <div className="mt-1">
+                    <img src={selectedTicket.url_foto_kondisi} alt="Foto Kondisi" className="w-full max-h-[160px] object-cover rounded-xl border border-gray-200 dark:border-slate-700 shadow-xxs" />
+                  </div>
+                )}
+
+                <div className="flex justify-between items-center text-[10px] text-gray-555 dark:text-gray-455 mt-2 font-semibold">
+                  <span>{safeDate(selectedTicket.timestamp).toLocaleString("id-ID", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })}</span>
+                  <span>ID Pelapor: <span className="font-extrabold text-slate-700 dark:text-slate-300">{selectedTicket.id_user_pelapor}</span></span>
+                </div>
+
+                {selectedTicket.id_petugas_pic && (
+                  <div className="mt-1 bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2 text-[11px] text-blue-700 dark:text-blue-400 flex justify-between items-center font-bold">
+                    <span>PIC Petugas:</span>
+                    <strong className="font-extrabold">{selectedTicket.id_petugas_pic}</strong>
                   </div>
                 )}
               </div>
- 
-              {/* Form Balasan Chat */}
-              {selectedTicket.status === "done" ? (
-                <div className="bg-gray-100 dark:bg-slate-900 border border-gray-200 dark:border-slate-800/80 text-gray-500 dark:text-gray-400 rounded-xl py-3 px-4 text-center text-[12px] font-bold mt-1 shadow-sm">
-                  Keluhan ini telah diselesaikan & ditutup. Tanya jawab dinonaktifkan.
+
+              {/* Area Tanya Jawab */}
+              <div className="flex flex-col gap-2 mt-2 flex-1 min-h-[220px]">
+                <p className="text-xs font-extrabold text-slate-800 dark:text-slate-205 m-0 flex items-center gap-1.5 px-1 uppercase tracking-wider">
+                  <MessageCircle size={15} className="text-blue-500" />
+                  Tanya Jawab Keluhan
+                </p>
+
+                <div className="flex-1 overflow-y-auto bg-[#efeae2] dark:bg-[#0b141a] rounded-2xl p-4 flex flex-col gap-3 border border-slate-200/50 dark:border-slate-850/50 shadow-inner min-h-0">
+                  {loadingTicketReplies ? (
+                    <div className="flex flex-col items-center justify-center py-10 gap-2">
+                      <RefreshCw size={24} className="text-gray-400 animate-spin" />
+                      <span className="text-[12px] text-gray-555">Memuat tanya jawab...</span>
+                    </div>
+                  ) : ticketReplies.length === 0 ? (
+                    <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
+                      <div className="bg-white/95 dark:bg-[#1f2c34]/95 rounded-xl px-4.5 py-2.5 text-[11px] text-gray-555 dark:text-gray-400 max-w-[85%] shadow-sm border border-gray-100 dark:border-transparent">
+                        Belum ada obrolan. Gunakan form di bawah untuk bertanya jawab terkait keluhan ini.
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-2.5">
+                      {(() => {
+                        let lastDateHeader = null;
+                        return ticketReplies.map((reply) => {
+                          if (!reply) return null;
+                          const isOwn = String(reply.id_user) === String(user?.id_user);
+                          const currentDateHeader = formatChatDateHeader(reply.timestamp);
+                          const showDateHeader = currentDateHeader && currentDateHeader !== lastDateHeader;
+                          if (showDateHeader) {
+                            lastDateHeader = currentDateHeader;
+                          }
+
+                          return (
+                            <div key={reply.id_balasan} className="flex flex-col gap-1.5">
+                              {showDateHeader && (
+                                <div className="flex justify-center my-2 sticky top-1 z-10">
+                                  <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-gray-555 dark:text-gray-400 text-[10px] font-extrabold uppercase px-3 py-1 rounded-lg shadow-sm border border-gray-150/50 dark:border-transparent backdrop-blur-xs tracking-wider">
+                                    {currentDateHeader}
+                                  </span>
+                                </div>
+                              )}
+                              <div
+                                className={`flex flex-col gap-0.5 max-w-[85%] rounded-[18px] px-3.5 py-2 shadow-[0_1px_1px_rgba(0,0,0,0.1)] ${
+                                  isOwn
+                                    ? "self-end bg-[#d9fdd3] dark:bg-[#005c4b] text-gray-900 dark:text-gray-100 rounded-tr-none ml-auto border border-[#e1f5fe]/10 dark:border-transparent"
+                                    : "self-start bg-white dark:bg-[#202c33] text-gray-900 dark:text-gray-100 rounded-tl-none mr-auto border border-gray-100 dark:border-transparent"
+                                }`}
+                              >
+                                {!isOwn && (
+                                  <div className="flex items-center gap-1 text-[10px] font-bold text-blue-605 dark:text-blue-400 mb-0.5">
+                                    <span>{reply.nama_pengirim || "Pengguna"}</span>
+                                    {reply.role_pengirim && reply.role_pengirim !== "warga" && (
+                                      <span className={`px-1.5 py-0.2 rounded text-[8px] font-extrabold uppercase tracking-wide ${
+                                        reply.role_pengirim === "admin" ? "bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-400 border border-red-200" :
+                                        "bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200"
+                                      }`}>
+                                        {reply.role_pengirim}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                                {isOwn && reply.role_pengirim && reply.role_pengirim !== "warga" && (
+                                  <div className="text-[9px] font-extrabold text-red-650 dark:text-red-400 uppercase tracking-wide self-end mb-0.5">
+                                    Anda ({reply.role_pengirim})
+                                  </div>
+                                )}
+                                <p className="m-0 text-[13px] leading-relaxed whitespace-pre-wrap break-words">{reply.isi_balasan}</p>
+                                <span className="text-[9px] text-gray-555 dark:text-gray-555 shrink-0">
+                                  {reply.timestamp ? safeDate(reply.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        });
+                      })()}
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <form onSubmit={handleSendTicketReply} className="flex items-center gap-2 mt-1 pt-1 bg-white dark:bg-[#131c33] sticky bottom-0">
-                  <input
-                    type="text"
-                    className="flex-1 bg-gray-50 dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] text-gray-900 dark:text-gray-100 rounded-full px-4 py-2.5 text-[13px] outline-none transition-colors focus:bg-white dark:focus:bg-[#1b2641] focus:border-blue-400"
-                    placeholder="Ketik pesan balasan..."
-                    value={ticketReplyForm}
-                    onChange={(e) => setTicketReplyForm(e.target.value)}
-                    disabled={sendingTicketReply}
-                    required
-                  />
-                  <button
-                    type="submit"
-                    className="w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full border-none cursor-pointer flex items-center justify-center transition-colors shrink-0 disabled:opacity-50"
-                    disabled={sendingTicketReply || !ticketReplyForm.trim()}
-                  >
-                    <Send size={15} className="text-white" />
-                  </button>
-                </form>
-              )}
+              </div>
             </div>
 
-            {/* Aksi Petugas & Admin (PIC / Status / Close) */}
+            {/* Officer & Admin Actions Form (PIC / Status / Close) */}
             {(user?.role === "admin" || user?.role === "petugas") && selectedTicket.status !== "done" && (
-              <div className="flex flex-col gap-2 mt-2 pt-3 border-t border-gray-150 dark:border-slate-800/50">
+              <div className="flex flex-col gap-2 p-5 bg-white dark:bg-[#131c33] border-t border-slate-100 dark:border-slate-800/80 shrink-0 z-10">
                 {selectedTicket.status === "open" && (
                   <button
                     type="button"
-                    className="w-full flex items-center justify-center gap-1.5 bg-blue-100 text-blue-700 font-bold py-3.5 px-4 rounded-xl text-[13px] border-none cursor-pointer transition-all hover:bg-blue-200 active:scale-95"
+                    className="w-full flex items-center justify-center gap-1.5 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-extrabold py-3.5 px-4 rounded-xl text-[13px] border-none cursor-pointer transition-all hover:bg-blue-205 dark:hover:bg-blue-900/40 active:scale-95 shadow-xxs"
                     onClick={() =>
                       showConfirm(
                         `Tandai keluhan ini sedang diproses?\n\n"${selectedTicket.deskripsi}"`,
@@ -1434,8 +1578,36 @@ function ServiceHub() {
               </div>
             )}
           </div>
-        )}
-      </BottomSheet>
+
+          {/* Sticky Reply Form */}
+          <div className="safe-footer-padding bg-white dark:bg-[#131c33] border-t border-gray-100 dark:border-slate-800/80 shrink-0 flex items-center gap-2 z-10">
+            {selectedTicket.status === "done" ? (
+              <div className="bg-gray-100 dark:bg-slate-900 border border-gray-200 dark:border-slate-800/80 text-gray-505 dark:text-gray-400 rounded-xl py-3 px-4 text-center text-[12px] font-bold w-full shadow-xxs">
+                Keluhan ini telah diselesaikan & ditutup. Tanya jawab dinonaktifkan.
+              </div>
+            ) : (
+              <form onSubmit={handleSendTicketReply} className="flex items-center gap-2 flex-1">
+                <input
+                  type="text"
+                  className="flex-1 bg-gray-50 dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] text-gray-900 dark:text-gray-100 rounded-full px-4 py-2.5 text-[13px] outline-none transition-colors focus:bg-white dark:focus:bg-[#1b2641] focus:border-blue-400"
+                  placeholder="Ketik pesan balasan..."
+                  value={ticketReplyForm}
+                  onChange={(e) => setTicketReplyForm(e.target.value)}
+                  disabled={sendingTicketReply}
+                  required
+                />
+                <button
+                  type="submit"
+                  className="w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full border-none cursor-pointer flex items-center justify-center transition-colors shrink-0 disabled:opacity-50 active:scale-90"
+                  disabled={sendingTicketReply || !ticketReplyForm.trim()}
+                >
+                  <Send size={15} className="text-white" />
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Notification Modal */}
       <NotificationModal

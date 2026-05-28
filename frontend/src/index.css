@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    background-color: #fafafa;
+    color-scheme: light;
+  }
   body {
     @apply bg-background text-text-primary antialiased;
   }
@@ -53,7 +57,21 @@
 
   /* Main Content Area */
   .main-content {
-    @apply p-6 pb-20;
+    @apply p-6 pb-[calc(80px+env(safe-area-inset-bottom,0px))];
+  }
+
+  /* Bottom Safe Nav */
+  .bottom-nav {
+    height: calc(80px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Safe Footer Padding for Sticky Forms */
+  .safe-footer-padding {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 12px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   }
 }
 

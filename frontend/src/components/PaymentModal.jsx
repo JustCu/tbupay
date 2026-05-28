@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import useStore from "../store/useStore";
 import imageCompression from "browser-image-compression";
-import { Camera, CalendarDays, X, Eye } from "lucide-react";
+import { Camera, CalendarDays, X, Eye, ArrowLeft } from "lucide-react";
 import {
   createTransaction,
   addTransactionCategory,
@@ -369,39 +369,34 @@ export default function PaymentModal({ isOpen, onClose }) {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex justify-center items-end bg-black/60 backdrop-blur-[2px] transition-opacity duration-300 ${
-        isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      className={`fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden transition-all duration-300 ${
+        isOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none translate-y-4"
       }`}
-      onClick={handleOverlayClick}
     >
-      <div 
-        className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-[32px] h-fit max-h-[96vh] flex flex-col shadow-[0_-8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.4)] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-          isOpen ? "translate-y-0" : "translate-y-full"
-        }`}
-      >
-        {/* Header */}
-        <div className="flex justify-between items-start py-5 px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
-          <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold m-0 text-slate-800 dark:text-slate-100">
-              {isAdmin ? "Input Kas Baru" : "Lapor Iuran Warga"}
-            </h2>
-            <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-1.5 m-0 leading-normal pr-4">
-              {isAdmin
-                ? "Catat pemasukan dan pengeluaran kas RT secara praktis"
-                : "Lapor bukti bayar iuran bulanan untuk verifikasi bendahara"}
-            </p>
-          </div>
-          <button 
-            type="button"
-            className="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full border-none cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-90 shrink-0 mt-0.5" 
-            onClick={onClose}
-          >
-            <X size={16} className="stroke-[2.5]" />
-          </button>
+      {/* Header */}
+      <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
+        <button
+          type="button"
+          className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-600 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-700/60 active:scale-95"
+          onClick={onClose}
+        >
+          <ArrowLeft size={20} />
+        </button>
+        <div className="flex flex-col">
+          <h2 className="text-xl font-bold m-0 text-slate-800 dark:text-slate-100 leading-tight">
+            {isAdmin ? "Input Kas Baru" : "Lapor Iuran Warga"}
+          </h2>
+          <p className="text-[12px] text-slate-500 dark:text-slate-400 m-0 mt-1 leading-normal">
+            {isAdmin
+              ? "Catat pemasukan & pengeluaran kas secara praktis"
+              : "Lapor iuran bulanan untuk verifikasi"}
+          </p>
         </div>
- 
-        <div className="relative p-6 overflow-y-auto min-h-0 no-scrollbar">
-          <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+      </div>
+
+      {/* Scrollable Form Body */}
+      <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
+        <form className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-5 flex flex-col gap-5 shadow-sm" onSubmit={handleSubmit}>
             {isAdmin && (
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Tipe Transaksi</label>
@@ -726,7 +721,6 @@ export default function PaymentModal({ isOpen, onClose }) {
               </p>
             </div>
           )}
-        </div>
       </div>
     </div>
   );
