@@ -703,102 +703,124 @@ function ServiceHub() {
         </div>
       </section>
 
-      {/* ========== STANDALONE VIEW: KELUHAN ========== */}
-      {openSheet === "keluhan" && (
-        <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+      {/* ========== BOTTOM MODAL: KELUHAN ========== */}
+      <div
+        className={`fixed inset-0 z-50 flex justify-center items-end bg-black/60 backdrop-blur-[1px] transition-opacity duration-300 ${
+          openSheet === "keluhan" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none overflow-hidden"
+        }`}
+        onClick={closeSheet}
+      >
+        <div
+          className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-[28px] h-fit max-h-[85vh] flex flex-col shadow-[0_-8px_30px_rgba(0,0,0,0.15)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.45)] transition-transform duration-300 ${
+            openSheet === "keluhan" ? "translate-y-0" : "translate-y-full"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Drag Handle */}
+          <div className="w-12 h-1 bg-slate-200 dark:bg-slate-800 rounded-full mx-auto my-3 shrink-0" />
+          
           {/* Header */}
-          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
-            <button
-              type="button"
-              className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-700/60 active:scale-95"
-              onClick={closeSheet}
-            >
-              <ArrowLeft size={20} />
-            </button>
-            <div className="flex flex-col">
+          <div className="flex justify-between items-start pb-4 px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
+            <div className="flex-1 min-w-0">
               <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Buat Keluhan Warga</h3>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Sampaikan pengaduan atau laporan fasilitas lingkungan</p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 m-0 mt-1 leading-normal pr-4">Sampaikan pengaduan atau laporan fasilitas lingkungan</p>
             </div>
-          </div>
-
-          {/* Scrollable Body */}
-          <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
-            <div className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-5 flex flex-col gap-4 shadow-xs">
-              <div className="flex flex-col gap-1.5">
-                <label className={labelCls}>Kategori Keluhan</label>
-                <select className={inputCls} value={keluhanForm.kategori} onChange={(e) => setKeluhanForm({ ...keluhanForm, kategori: e.target.value })}>
-                  <option>Lampu Penerangan</option>
-                  <option>Kebersihan / Sampah</option>
-                  <option>Keamanan</option>
-                  <option>Fasilitas Umum</option>
-                </select>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelCls}>Deskripsi Detail</label>
-                <textarea
-                  className={`${inputCls} resize-y`}
-                  rows="4"
-                  placeholder="Jelaskan masalah secara detail..."
-                  value={keluhanForm.deskripsi}
-                  onChange={(e) => setKeluhanForm({ ...keluhanForm, deskripsi: e.target.value })}
-                />
-              </div>
-              <button
-                type="button"
-                className="bg-red-600 hover:bg-red-700 text-white min-h-[48px] rounded-xl font-bold shadow-[0_8px_16px_rgba(239,68,68,0.25)] border-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-colors mt-2"
-                onClick={handleKeluhanSubmit}
-                disabled={loading || !keluhanForm.deskripsi.trim()}
-              >
-                {loading ? "Mengirim..." : "Kirim Keluhan"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ========== STANDALONE VIEW: SARAN ========== */}
-      {openSheet === "saran" && (
-        <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-          {/* Header */}
-          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
             <button
               type="button"
-              className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-650 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-205 dark:hover:bg-slate-700/60 active:scale-95"
+              className="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full border-none cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-90 shrink-0"
               onClick={closeSheet}
             >
-              <ArrowLeft size={20} />
+              <X size={16} className="stroke-[2.5]" />
             </button>
-            <div className="flex flex-col">
-              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Kotak Saran & Masukan</h3>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Salurkan aspirasi dan ide kreatif demi kemajuan bersama</p>
-            </div>
           </div>
 
-          {/* Scrollable Body */}
-          <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
-            <div className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-5 flex flex-col gap-4 shadow-xs">
-              <div className="flex flex-col gap-1.5">
-                <label className={labelCls}>Saran / Aspirasi</label>
-                <textarea
-                  className={`${inputCls} resize-y`}
-                  rows="5"
-                  placeholder="Tuliskan saran Anda di sini..."
-                  value={saranForm.deskripsi}
-                  onChange={(e) => setSaranForm({ deskripsi: e.target.value })}
-                />
-              </div>
-              <button
-                type="button"
-                className="bg-[#0f4c81] hover:bg-[#0d3d6b] text-white min-h-[48px] rounded-xl font-bold shadow-[0_8px_16px_rgba(15,76,129,0.25)] border-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-colors mt-2"
-                onClick={handleSaranSubmit}
-                disabled={loading || !saranForm.deskripsi.trim()}
-              >
-                {loading ? "Mengirim..." : "Kirim Saran"}
-              </button>
+          {/* Form Body */}
+          <div className="p-6 overflow-y-auto flex flex-col gap-4 min-h-0">
+            <div className="flex flex-col gap-1.5">
+              <label className={labelCls}>Kategori Keluhan</label>
+              <select className={inputCls} value={keluhanForm.kategori} onChange={(e) => setKeluhanForm({ ...keluhanForm, kategori: e.target.value })}>
+                <option>Lampu Penerangan</option>
+                <option>Kebersihan / Sampah</option>
+                <option>Keamanan</option>
+                <option>Fasilitas Umum</option>
+              </select>
             </div>
+            <div className="flex flex-col gap-1.5">
+              <label className={labelCls}>Deskripsi Detail</label>
+              <textarea
+                className={`${inputCls} resize-none`}
+                rows="4"
+                placeholder="Jelaskan masalah secara detail..."
+                value={keluhanForm.deskripsi}
+                onChange={(e) => setKeluhanForm({ ...keluhanForm, deskripsi: e.target.value })}
+              />
+            </div>
+            <button
+              type="button"
+              className="bg-red-600 hover:bg-red-700 text-white min-h-[44px] rounded-xl font-bold shadow-[0_4px_12px_rgba(239,68,68,0.2)] border-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-all active:scale-[0.98] mt-2 mb-2"
+              onClick={handleKeluhanSubmit}
+              disabled={loading || !keluhanForm.deskripsi.trim()}
+            >
+              {loading ? "Mengirim..." : "Kirim Keluhan"}
+            </button>
           </div>
         </div>
-      )}
+      </div>
+
+      {/* ========== BOTTOM MODAL: SARAN ========== */}
+      <div
+        className={`fixed inset-0 z-50 flex justify-center items-end bg-black/60 backdrop-blur-[1px] transition-opacity duration-300 ${
+          openSheet === "saran" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none overflow-hidden"
+        }`}
+        onClick={closeSheet}
+      >
+        <div
+          className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-[28px] h-fit max-h-[85vh] flex flex-col shadow-[0_-8px_30px_rgba(0,0,0,0.15)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.45)] transition-transform duration-300 ${
+            openSheet === "saran" ? "translate-y-0" : "translate-y-full"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Drag Handle */}
+          <div className="w-12 h-1 bg-slate-200 dark:bg-slate-800 rounded-full mx-auto my-3 shrink-0" />
+          
+          {/* Header */}
+          <div className="flex justify-between items-start pb-4 px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
+            <div className="flex-1 min-w-0">
+              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Kotak Saran & Masukan</h3>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 m-0 mt-1 leading-normal pr-4">Salurkan aspirasi dan ide kreatif demi kemajuan bersama</p>
+            </div>
+            <button
+              type="button"
+              className="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full border-none cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-90 shrink-0"
+              onClick={closeSheet}
+            >
+              <X size={16} className="stroke-[2.5]" />
+            </button>
+          </div>
+
+          {/* Form Body */}
+          <div className="p-6 overflow-y-auto flex flex-col gap-4 min-h-0">
+            <div className="flex flex-col gap-1.5">
+              <label className={labelCls}>Saran / Aspirasi</label>
+              <textarea
+                className={`${inputCls} resize-none`}
+                rows="5"
+                placeholder="Tuliskan saran Anda di sini..."
+                value={saranForm.deskripsi}
+                onChange={(e) => setSaranForm({ deskripsi: e.target.value })}
+              />
+            </div>
+            <button
+              type="button"
+              className="bg-[#0f4c81] hover:bg-[#0d3d6b] text-white min-h-[44px] rounded-xl font-bold shadow-[0_4px_12px_rgba(15,76,129,0.2)] border-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-all active:scale-[0.98] mt-2 mb-2"
+              onClick={handleSaranSubmit}
+              disabled={loading || !saranForm.deskripsi.trim()}
+            >
+              {loading ? "Mengirim..." : "Kirim Saran"}
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* ========== STANDALONE VIEW: GENERAL GROUP CHAT ========== */}
       {openSheet === "grupchat" && (
