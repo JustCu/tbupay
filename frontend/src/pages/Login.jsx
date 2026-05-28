@@ -19,7 +19,7 @@ export default function Login() {
     setError("");
 
     if (!username || !password) {
-      setError("Harap isi Nomor Blok/Username dan Password");
+      setError("Harap isi ID User dan kata sandi");
       return;
     }
 
@@ -90,13 +90,13 @@ export default function Login() {
           {/* Username Input Field */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider ml-1 select-none">
-              Nomor Blok / Username
+              ID User
             </label>
             <input
               type="text"
               autoComplete="username"
               className="w-full min-h-[44px] py-2.5 px-4 bg-white dark:bg-[#131c33]/50 border border-slate-200/80 dark:border-[#2c3c5e]/80 rounded-2xl font-sans text-sm text-slate-800 dark:text-slate-100 outline-none transition-all focus:bg-white dark:focus:bg-[#131c33] focus:border-blue-500 dark:focus:border-indigo-500 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-indigo-500/10 placeholder-slate-400 dark:placeholder-slate-500"
-              placeholder="Contoh: A-12"
+              placeholder="Masukkan ID User Anda"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />

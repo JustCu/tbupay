@@ -115,6 +115,7 @@ function handleLogin(data) {
     const url_foto_profil = row[7] || "";
 
     // Convert to String to prevent type mismatch (e.g. 123456 as Number vs '123456' as String)
+    const strIdUser = String(id_user).trim();
     const strBlok = String(blok_rumah).trim();
     const strHp = String(no_hp).trim();
     const strPass = String(password_hash).trim();
@@ -122,7 +123,7 @@ function handleLogin(data) {
     const inputPass = String(data.password).trim();
 
     if (
-      (strBlok === inputUser || strHp === inputUser) &&
+      (strIdUser === inputUser || strBlok === inputUser || strHp === inputUser) &&
       strPass === inputPass
     ) {
       return ContentService.createTextOutput(
