@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import useStore from "../store/useStore";
 import imageCompression from "browser-image-compression";
-import { Camera, CalendarDays, X, Eye, ArrowLeft } from "lucide-react";
+import { Camera, CalendarDays, X, Eye, ArrowLeft, Copy } from "lucide-react";
 import {
   createTransaction,
   addTransactionCategory,
@@ -397,6 +397,53 @@ export default function PaymentModal({ isOpen, onClose }) {
       {/* Scrollable Form Body */}
       <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
         <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+            {!isAdmin && (
+              <div className="relative overflow-hidden bg-gradient-to-br from-[#005eaa] to-[#003c73] rounded-2xl p-5 text-white shadow-lg border border-white/10 mb-2 mt-1">
+                {/* Decorative background shapes for ATM card look */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10 blur-xl"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#002d5c]/40 rounded-full -ml-8 -mb-8 blur-lg"></div>
+                
+                <div className="relative z-10 flex flex-col gap-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold text-blue-200 uppercase tracking-widest">Informasi Transfer</span>
+                      <span className="text-2xl font-black italic tracking-tighter mt-0.5">BCA</span>
+                    </div>
+                    {/* Chip Icon */}
+                    <div className="w-10 h-7 bg-gradient-to-br from-yellow-200 to-yellow-500 rounded-md opacity-90 shadow-sm border border-yellow-300/50 flex items-center justify-center overflow-hidden">
+                      <div className="w-full h-full border border-yellow-600/30 rounded flex flex-col justify-around px-1">
+                        <div className="w-full h-px bg-yellow-600/20"></div>
+                        <div className="w-full h-px bg-yellow-600/20"></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col mt-2">
+                    <span className="text-[10px] text-blue-200 font-bold uppercase tracking-widest mb-1.5 opacity-90">Nomor Rekening</span>
+                    <div className="flex items-center justify-between bg-black/15 backdrop-blur-md rounded-xl py-2 px-3 border border-white/10 shadow-inner">
+                      <span className="font-mono text-lg font-bold tracking-widest text-white">2221 4916 71</span>
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          navigator.clipboard.writeText("2221491671");
+                          showAlert("Nomor rekening disalin", { variant: "success", title: "Berhasil" });
+                        }}
+                        className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors cursor-pointer border-none text-white flex items-center justify-center active:scale-95"
+                        title="Salin Nomor Rekening"
+                      >
+                        <Copy size={16} />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col mt-1">
+                    <span className="text-[10px] text-blue-200 font-bold uppercase tracking-widest">Atas Nama</span>
+                    <span className="font-bold text-[14px] tracking-wide mt-0.5">UTOYO</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {isAdmin && (
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Tipe Transaksi</label>
