@@ -839,108 +839,113 @@ export default function Cashflow() {
             </div>
           </div>
         )}
-      </div>
-
-      {/* Riwayat Transaksi Terakhir */}
+        {/* Riwayat Transaksi Terakhir */}
       <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-4 text-[15px]">Riwayat Transaksi Terakhir</h3>
-      <div className="flex flex-col gap-3">
-        {loading && <div className="p-4 text-center text-xs text-gray-400">Memuat transaksi...</div>}
+      
+      <div className="bg-white dark:bg-[#131c33] border border-gray-200 dark:border-slate-800/80 rounded-2xl overflow-hidden shadow-sm">
+        {loading && <div className="p-5 text-center text-xs text-gray-400">Memuat transaksi...</div>}
         {!loading && transactions.length === 0 && (
-          <div className="p-4 text-center text-xs text-gray-400">Belum ada transaksi.</div>
+          <div className="p-5 text-center text-xs text-gray-400">Belum ada transaksi.</div>
         )}
 
-        {!loading &&
-          displayedTransactions.map((trx) => {
-            const isPemasukan = trx.jenis === "pemasukan";
-            const isVerified = String(trx.status).toLowerCase() === "verified";
-            const trxUser = userMap[trx.id_user] || {};
-            const userPhoto = trxUser.url_foto_profil;
-            const userName = trxUser.nama || "Warga";
-            
-            return (
-              <div
-                key={trx.id_transaksi || Math.random()}
-                className="bg-white dark:bg-[#1a2640] p-4 rounded-xl flex items-center justify-between border border-gray-100 dark:border-slate-800/80 shadow-sm relative overflow-hidden"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  {/* User Avatar with Cashflow Direction Indicator Badge */}
-                  <div className="relative shrink-0 select-none">
-                    {userPhoto ? (
-                      <img
-                        src={userPhoto}
-                        alt={userName}
-                        className="w-[40px] h-[40px] min-w-[40px] min-h-[40px] rounded-full object-cover border border-gray-100 dark:border-slate-700 shadow-sm"
-                      />
-                    ) : (
-                      <div className="w-[40px] h-[40px] min-w-[40px] min-h-[40px] rounded-full border border-gray-100 dark:border-slate-700 shadow-sm bg-gradient-to-br from-blue-400 to-indigo-500 text-white flex items-center justify-center text-sm font-black tracking-widest overflow-hidden">
-                        {getInitials(userName)}
-                      </div>
-                    )}
-                    {/* Small overlay badge in bottom-right corner */}
-                    <div 
-                      className={`absolute bottom-[-2px] right-[-2px] w-[18px] h-[18px] min-w-[18px] min-h-[18px] rounded-full flex items-center justify-center border border-white dark:border-[#1a2640] shadow-sm shrink-0 ${
-                        isPemasukan 
-                          ? "bg-green-500 text-white" 
-                          : "bg-red-500 text-white"
-                      }`}
-                    >
-                      {isPemasukan ? (
-                        <ArrowDownLeft size={10} className="stroke-[3]" />
-                      ) : (
-                        <ArrowUpRight size={10} className="stroke-[3]" />
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-[14px] font-bold text-gray-800 dark:text-gray-100 m-0 truncate">{trx.keterangan || "Tanpa Keterangan"}</p>
-                      {!isVerified && (
-                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-200 uppercase tracking-wide">
-                          Pending
-                        </span>
-                      )}
-                    </div>
-                    {/* Display user name who performed the transaction, along with the date */}
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold max-w-[80px] truncate leading-none">
-                        {userName}
-                      </span>
-                      <span className="text-[10px] text-gray-400 dark:text-slate-500 font-bold leading-none select-none">
-                        •
-                      </span>
-                      <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium whitespace-nowrap leading-none">
-                        {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric"
-                        })}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <p
-                  className={`text-[14px] font-bold tabular-nums shrink-0 m-0 ${
-                    isPemasukan ? "text-green-600 dark:text-green-400" : "text-rose-500 dark:text-rose-400"
-                  }`}
+        {!loading && transactions.length > 0 && (
+          <div className="flex flex-col">
+            {displayedTransactions.map((trx, index) => {
+              const isPemasukan = trx.jenis === "pemasukan";
+              const isVerified = String(trx.status).toLowerCase() === "verified";
+              const trxUser = userMap[trx.id_user] || {};
+              const userPhoto = trxUser.url_foto_profil;
+              const userName = trxUser.nama || "Warga";
+              
+              return (
+                <div
+                  key={trx.id_transaksi || Math.random()}
+                  className={`flex items-center justify-between gap-2.5 p-3.5 ${
+                    index !== displayedTransactions.length - 1 ? "border-b border-gray-100/60 dark:border-slate-800/40" : ""
+                  } transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/20`}
                 >
-                  {isPemasukan ? "+" : "-"} {formatRupiah(trx.nominal)}
-                </p>
-              </div>
-            );
-          })}
+                  <div className="flex items-center gap-3 min-w-0">
+                    {/* User Avatar with Cashflow Direction Indicator Badge */}
+                    <div className="relative shrink-0 select-none">
+                      {userPhoto ? (
+                        <img
+                          src={userPhoto}
+                          alt={userName}
+                          className="w-[36px] h-[36px] min-w-[36px] min-h-[36px] rounded-full object-cover border border-gray-100 dark:border-slate-700 shadow-sm"
+                        />
+                      ) : (
+                        <div className="w-[36px] h-[36px] min-w-[36px] min-h-[36px] rounded-full border border-gray-100 dark:border-slate-700 shadow-sm bg-gradient-to-br from-blue-400 to-indigo-500 text-white flex items-center justify-center text-xs font-black tracking-widest overflow-hidden">
+                          {getInitials(userName)}
+                        </div>
+                      )}
+                      {/* Small overlay badge in bottom-right corner */}
+                      <div 
+                        className={`absolute bottom-[-2px] right-[-2px] w-[16px] h-[16px] min-w-[16px] min-h-[16px] rounded-full flex items-center justify-center border border-white dark:border-[#131c33] shadow-sm shrink-0 ${
+                          isPemasukan 
+                            ? "bg-green-500 text-white" 
+                            : "bg-red-500 text-white"
+                        }`}
+                      >
+                        {isPemasukan ? (
+                          <ArrowDownLeft size={9} className="stroke-[3]" />
+                        ) : (
+                          <ArrowUpRight size={9} className="stroke-[3]" />
+                        )}
+                      </div>
+                    </div>
 
-        {!loading && transactions.length > 5 && (
-          <div className="flex justify-center mt-3 select-none">
-            <span
-              onClick={() => setShowAllTransactions(!showAllTransactions)}
-              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline cursor-pointer transition-colors active:scale-95"
-            >
-              {showAllTransactions ? "Sembunyikan Transaksi" : "Lihat Semua Transaksi"}
-            </span>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="text-[13px] font-bold text-gray-800 dark:text-gray-100 m-0 truncate leading-snug">{trx.keterangan || "Tanpa Keterangan"}</p>
+                        {!isVerified && (
+                          <span className="text-[8px] font-extrabold px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200/40 dark:border-amber-500/20 uppercase tracking-wider leading-none">
+                            Pending
+                          </span>
+                        )}
+                      </div>
+                      {/* Display user name who performed the transaction, along with the date */}
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold max-w-[80px] truncate leading-none">
+                          {userName}
+                        </span>
+                        <span className="text-[10px] text-gray-400 dark:text-slate-655 font-bold leading-none select-none">
+                          •
+                        </span>
+                        <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium whitespace-nowrap leading-none">
+                          {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric"
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <p
+                    className={`text-[13px] font-bold tabular-nums shrink-0 m-0 ${
+                      isPemasukan ? "text-green-600 dark:text-green-400" : "text-rose-500 dark:text-rose-400"
+                    }`}
+                  >
+                    {isPemasukan ? "+" : "-"} {formatRupiah(trx.nominal)}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
+
+      {!loading && transactions.length > 5 && (
+        <div className="flex justify-center mt-4 select-none">
+          <span
+            onClick={() => setShowAllTransactions(!showAllTransactions)}
+            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline cursor-pointer transition-colors active:scale-95"
+          >
+            {showAllTransactions ? "Sembunyikan Transaksi" : "Lihat Semua Transaksi"}
+          </span>
+        </div>
+      )}
+    </div>
 
       {/* Notification Modal */}
       <NotificationModal

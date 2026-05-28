@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, PieChart, MessageSquare, User, Plus } from "lucide-react";
+import { LayoutDashboard, Wallet, MessageSquare, User, Plus } from "lucide-react";
 import useStore from "../store/useStore";
 import PaymentModal from "../components/PaymentModal";
 import {
@@ -26,7 +26,7 @@ export default function MainLayout() {
     {
       id: "cashflow",
       path: "/cashflow",
-      icon: PieChart,
+      icon: Wallet,
       label: "Keuangan",
       roles: ["warga", "petugas", "admin"],
     },
