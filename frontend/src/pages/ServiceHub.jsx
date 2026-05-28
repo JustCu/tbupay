@@ -1417,9 +1417,10 @@ function ServiceHub() {
             </div>
           </div>
 
-          {/* Scrollable body content */}
-          <div className="flex-1 overflow-y-auto flex flex-col min-h-0">
-            <div className="p-5 flex flex-col gap-3.5">
+          {/* Constrained layout body container */}
+          <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+            {/* Top Complaint Card Wrapper */}
+            <div className="p-5 pb-0 shrink-0">
               {/* Ringkasan Keluhan Card */}
               <div className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-4.5 flex flex-col gap-3 shadow-xs">
                 <div className="flex justify-between items-center">
@@ -1455,15 +1456,16 @@ function ServiceHub() {
                   </div>
                 )}
               </div>
+            </div>
 
-              {/* Area Tanya Jawab */}
-              <div className="flex flex-col gap-2 mt-2 flex-1 min-h-[220px]">
-                <p className="text-xs font-extrabold text-slate-800 dark:text-slate-205 m-0 flex items-center gap-1.5 px-1 uppercase tracking-wider">
-                  <MessageCircle size={15} className="text-blue-500" />
-                  Tanya Jawab Keluhan
-                </p>
+            {/* Area Tanya Jawab Container */}
+            <div className="flex-1 flex flex-col min-h-0 px-5 pb-5 pt-2 overflow-hidden">
+              <p className="text-xs font-extrabold text-slate-800 dark:text-slate-205 mb-2 flex items-center gap-1.5 px-1 uppercase tracking-wider shrink-0">
+                <MessageCircle size={15} className="text-blue-500" />
+                Tanya Jawab Keluhan
+              </p>
 
-                <div className="flex-1 overflow-y-auto bg-[#efeae2] dark:bg-[#0b141a] rounded-2xl p-4 flex flex-col gap-3 border border-slate-200/50 dark:border-slate-850/50 shadow-inner min-h-0">
+              <div className="flex-1 overflow-y-auto bg-[#efeae2] dark:bg-[#0b141a] rounded-2xl p-4 flex flex-col gap-3 border border-slate-200/50 dark:border-slate-850/50 shadow-inner min-h-0">
                   {loadingTicketReplies ? (
                     <div className="flex flex-col items-center justify-center py-10 gap-2">
                       <RefreshCw size={24} className="text-gray-400 animate-spin" />
@@ -1535,7 +1537,6 @@ function ServiceHub() {
                   )}
                 </div>
               </div>
-            </div>
 
             {/* Officer & Admin Actions Form (PIC / Status / Close) */}
             {(user?.role === "admin" || user?.role === "petugas") && selectedTicket.status !== "done" && (
