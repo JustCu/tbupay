@@ -324,23 +324,33 @@ function ServiceHub() {
     if (!id_berita) return;
     setLoadingReplies(true);
     try {
-      const data = await getNewsReplies(id_berita);
-      const sorted = [...data].sort((a, b) => safeDate(a.timestamp || 0) - safeDate(b.timestamp || 0));
+      const res = await getNewsReplies(id_berita);
+      const list = res?.status === "success" && Array.isArray(res.data) ? res.data : [];
+      const sorted = [...list].sort((a, b) => safeDate(a.timestamp || 0) - safeDate(b.timestamp || 0));
       setNewsReplies(sorted);
-    } catch (e) { setNewsReplies([]); }
-    finally { setLoadingReplies(false); }
+    } catch (e) { 
+      console.error("Error fetching news replies:", e);
+      setNewsReplies([]); 
+    } finally { 
+      setLoadingReplies(false); 
+    }
   };
 
   const fetchTicketReplies = async (id_tiket) => {
     if (!id_tiket) return;
     setLoadingTicketReplies(true);
     try {
-      const data = await getTicketReplies(id_tiket);
-      const sorted = [...data].sort((a, b) => safeDate(a.timestamp || 0) - safeDate(b.timestamp || 0));
+      const res = await getTicketReplies(id_tiket);
+      const list = res?.status === "success" && Array.isArray(res.data) ? res.data : [];
+      const sorted = [...list].sort((a, b) => safeDate(a.timestamp || 0) - safeDate(b.timestamp || 0));
       setTicketReplies(sorted);
       setSelectedTicket((prev) => (prev && prev.id_tiket === id_tiket ? { ...prev, replies: sorted } : prev));
-    } catch (e) { setTicketReplies([]); }
-    finally { setLoadingTicketReplies(false); }
+    } catch (e) { 
+      console.error("Error fetching ticket replies:", e);
+      setTicketReplies([]); 
+    } finally { 
+      setLoadingTicketReplies(false); 
+    }
   };
 
   const fetchGeneralChats = async (forceRefresh = false) => {
