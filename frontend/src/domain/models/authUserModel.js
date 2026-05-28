@@ -5,4 +5,5 @@ export const toAuthUserModel = (raw = {}) => ({
   no_hp: String(raw.no_hp || ""),
   role: String(raw.role || "warga"),
   status_warga: String(raw.status_warga || "tetap"),
+  url_foto_profil: String(raw.url_foto_profil || ""),
 });
