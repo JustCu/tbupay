@@ -372,7 +372,7 @@ function ServiceHub() {
     setSelectedTicket(ticket);
     setOpenSheet("ticketDetail");
     setTicketReplyForm("");
-    await fetchTicketReplies(ticket.id_tiket);
+    await fetchTicketReplies(ticket.id_tiket, true);
   };
 
   const handleSendTicketReply = async (e) => {
@@ -390,7 +390,7 @@ function ServiceHub() {
       });
       if (res.status === "success") {
         setTicketReplyForm("");
-        await fetchTicketReplies(selectedTicket.id_tiket);
+        await fetchTicketReplies(selectedTicket.id_tiket, true);
       } else {
         showAlert(res.message || "Gagal mengirim balasan.", { variant: "danger", title: "Gagal" });
       }
@@ -406,7 +406,7 @@ function ServiceHub() {
     setSelectedNews(news);
     setOpenSheet("newsDetail");
     setReplyForm("");
-    await fetchNewsReplies(news.id_berita);
+    await fetchNewsReplies(news.id_berita, true);
   };
 
   const handleSendReply = async (e) => {
@@ -424,7 +424,7 @@ function ServiceHub() {
       });
       if (res.status === "success") {
         setReplyForm("");
-        await fetchNewsReplies(selectedNews.id_berita);
+        await fetchNewsReplies(selectedNews.id_berita, true);
       } else {
         showAlert(res.message || "Gagal mengirim balasan.", { variant: "danger", title: "Gagal" });
       }
