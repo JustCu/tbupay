@@ -387,8 +387,8 @@ export default function PaymentModal({ isOpen, onClose }) {
             </h2>
             <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-1.5 m-0 leading-normal pr-4">
               {isAdmin
-                ? "Catat pemasukan atau pengeluaran kas perumahan secara langsung untuk pembukuan RT."
-                : "Kirim bukti transfer pembayaran iuran rutin bulanan Anda untuk diverifikasi oleh bendahara."}
+                ? "Catat pemasukan dan pengeluaran kas RT secara praktis"
+                : "Lapor bukti bayar iuran bulanan untuk verifikasi bendahara"}
             </p>
           </div>
           <button 
