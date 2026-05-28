@@ -987,7 +987,7 @@ export default function Home() {
         onOpenNews={setSelectedNews}
       />
       {/* ── Quick Actions ── */}
-      <section className="grid grid-cols-4 gap-3">
+      <section className="grid grid-cols-3 gap-3">
         <button
           className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer"
           onClick={() => navigate("/admin/users")}
@@ -996,15 +996,6 @@ export default function Home() {
             <Users size={22} />
           </div>
           <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center leading-tight">Data Warga</span>
-        </button>
-        <button
-          className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer"
-          onClick={() => navigate("/service", { state: { openSheet: "saran" } })}
-        >
-          <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 flex items-center justify-center shrink-0">
-            <Lightbulb size={22} />
-          </div>
-          <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center leading-tight">Kotak Saran</span>
         </button>
         <button
           className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer"
