@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import useStore from "../store/useStore";
 import imageCompression from "browser-image-compression";
-import { Camera, CalendarDays, X, Eye, ArrowLeft, Copy } from "lucide-react";
+import { Camera, CalendarDays, X, Eye, ArrowLeft, Info, Copy } from "lucide-react";
 import {
   createTransaction,
   addTransactionCategory,
@@ -28,6 +28,7 @@ export default function PaymentModal({ isOpen, onClose }) {
   const [addingCategory, setAddingCategory] = useState(false);
   const [sortingCategory, setSortingCategory] = useState(false);
   const [isCategoryEditorOpen, setIsCategoryEditorOpen] = useState(false);
+  const [showBankInfo, setShowBankInfo] = useState(false);
   const [newCategory, setNewCategory] = useState("");
   const [dragIndex, setDragIndex] = useState(null);
   const [uploadMeta, setUploadMeta] = useState({ name: "", size: "", type: "" });
@@ -382,7 +383,7 @@ export default function PaymentModal({ isOpen, onClose }) {
         >
           <ArrowLeft size={20} />
         </button>
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-1">
           <h2 className="text-xl font-bold m-0 text-slate-800 dark:text-slate-100 leading-tight">
             {isAdmin ? "Input Kas Baru" : "Lapor Iuran Warga"}
           </h2>
@@ -392,58 +393,19 @@ export default function PaymentModal({ isOpen, onClose }) {
               : "Lapor iuran bulanan untuk verifikasi"}
           </p>
         </div>
+        <button
+          type="button"
+          className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-full text-indigo-600 dark:text-indigo-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-indigo-100 dark:hover:bg-indigo-900/50 active:scale-95 shrink-0"
+          onClick={() => setShowBankInfo(true)}
+          title="Informasi Pembayaran"
+        >
+          <Info size={20} />
+        </button>
       </div>
 
       {/* Scrollable Form Body */}
       <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
         <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-            {!isAdmin && (
-              <div className="relative overflow-hidden bg-gradient-to-br from-[#005eaa] to-[#003c73] rounded-2xl p-5 text-white shadow-lg border border-white/10 mb-2 mt-1">
-                {/* Decorative background shapes for ATM card look */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10 blur-xl"></div>
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#002d5c]/40 rounded-full -ml-8 -mb-8 blur-lg"></div>
-                
-                <div className="relative z-10 flex flex-col gap-4">
-                  <div className="flex justify-between items-start">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-bold text-blue-200 uppercase tracking-widest">Informasi Transfer</span>
-                      <span className="text-2xl font-black italic tracking-tighter mt-0.5">BCA</span>
-                    </div>
-                    {/* Chip Icon */}
-                    <div className="w-10 h-7 bg-gradient-to-br from-yellow-200 to-yellow-500 rounded-md opacity-90 shadow-sm border border-yellow-300/50 flex items-center justify-center overflow-hidden">
-                      <div className="w-full h-full border border-yellow-600/30 rounded flex flex-col justify-around px-1">
-                        <div className="w-full h-px bg-yellow-600/20"></div>
-                        <div className="w-full h-px bg-yellow-600/20"></div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex flex-col mt-2">
-                    <span className="text-[10px] text-blue-200 font-bold uppercase tracking-widest mb-1.5 opacity-90">Nomor Rekening</span>
-                    <div className="flex items-center justify-between bg-black/15 backdrop-blur-md rounded-xl py-2 px-3 border border-white/10 shadow-inner">
-                      <span className="font-mono text-lg font-bold tracking-widest text-white">2221 4916 71</span>
-                      <button 
-                        type="button" 
-                        onClick={() => {
-                          navigator.clipboard.writeText("2221491671");
-                          showAlert("Nomor rekening disalin", { variant: "success", title: "Berhasil" });
-                        }}
-                        className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors cursor-pointer border-none text-white flex items-center justify-center active:scale-95"
-                        title="Salin Nomor Rekening"
-                      >
-                        <Copy size={16} />
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <div className="flex flex-col mt-1">
-                    <span className="text-[10px] text-blue-200 font-bold uppercase tracking-widest">Atas Nama</span>
-                    <span className="font-bold text-[14px] tracking-wide mt-0.5">UTOYO</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {isAdmin && (
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Tipe Transaksi</label>
@@ -731,43 +693,117 @@ export default function PaymentModal({ isOpen, onClose }) {
               </div>
             </div>
           )}
- 
-          {/* Zoom Lightbox Preview */}
-          {isZoomOpen && previewUrl && (
-            <div
-              className="fixed inset-0 z-[210] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-5 cursor-zoom-out"
+      </div>
+
+      {/* Zoom Lightbox Preview */}
+      {isZoomOpen && previewUrl && (
+        <div
+          className="fixed inset-0 z-[210] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-5 cursor-zoom-out animate-[fadeIn_0.2s_ease-out]"
+          onClick={() => setIsZoomOpen(false)}
+        >
+          {/* Top Bar */}
+          <div className="w-full max-w-[440px] flex items-center justify-between text-white mb-4 z-10" onClick={(e) => e.stopPropagation()}>
+            <div className="min-w-0 pr-4">
+              <p className="text-[11px] font-extrabold m-0 truncate text-white">{uploadMeta.name || "bukti_pembayaran.jpg"}</p>
+              <p className="text-[9px] font-bold text-gray-400 m-0 mt-0.5">{uploadMeta.size} • {uploadMeta.type} • Preview</p>
+            </div>
+            <button
+              type="button"
+              className="bg-white/10 hover:bg-white/20 text-white border-none rounded-full p-2 cursor-pointer flex items-center justify-center transition-all active:scale-90 shrink-0"
               onClick={() => setIsZoomOpen(false)}
             >
-              {/* Top Bar */}
-              <div className="w-full max-w-[440px] flex items-center justify-between text-white mb-4 z-10" onClick={(e) => e.stopPropagation()}>
-                <div className="min-w-0 pr-4">
-                  <p className="text-[11px] font-extrabold m-0 truncate text-white">{uploadMeta.name || "bukti_pembayaran.jpg"}</p>
-                  <p className="text-[9px] font-bold text-gray-400 m-0 mt-0.5">{uploadMeta.size} • {uploadMeta.type} • Preview</p>
+              <X size={16} className="stroke-[2.5]" />
+            </button>
+          </div>
+
+          {/* Full Image */}
+          <div className="relative max-w-full max-h-[72vh] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-950 flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            <img 
+              src={previewUrl} 
+              alt="Bukti Transfer Zoom" 
+              className="max-w-full max-h-[72vh] object-contain block" 
+            />
+          </div>
+
+          {/* Guidance Info */}
+          <p className="text-[10px] font-bold text-gray-400 mt-4 text-center max-w-[280px] leading-relaxed">
+            Pastikan nominal transfer, nama rekening tujuan, tanggal, dan status berhasil terlihat jelas.
+          </p>
+        </div>
+      )}
+
+      {/* Bank Info Modal */}
+      <div 
+        className={`fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 ${
+          showBankInfo ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`} 
+        onClick={() => setShowBankInfo(false)}
+      >
+        <div 
+          className={`w-full max-w-[340px] transition-transform duration-300 ${
+            showBankInfo ? "scale-100 translate-y-0" : "scale-95 translate-y-4"
+          }`} 
+          onClick={e => e.stopPropagation()}
+        >
+          {/* Header Action */}
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-white font-bold text-base m-0 drop-shadow-md">Info Pembayaran</h3>
+            <button
+              type="button"
+              className="p-1.5 bg-white/20 hover:bg-white/30 text-white rounded-full border-none cursor-pointer transition-colors active:scale-95"
+              onClick={() => setShowBankInfo(false)}
+            >
+              <X size={18} />
+            </button>
+          </div>
+
+          {/* BCA Card Design */}
+          <div className="relative w-full aspect-[1.586/1] rounded-[20px] overflow-hidden shadow-2xl p-5 flex flex-col justify-between border border-white/10" style={{ background: "linear-gradient(135deg, #0b2265 0%, #1a41a8 50%, #0d52d6 100%)" }}>
+             {/* Abstract Waves/Gradients */}
+             <div className="absolute top-0 right-0 w-full h-full opacity-30 pointer-events-none" style={{ background: "radial-gradient(circle at 80% 20%, rgba(255,255,255,0.4) 0%, transparent 50%)" }}></div>
+             <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full border-[10px] border-white/10 pointer-events-none"></div>
+
+             {/* decorative chip */}
+             <div className="w-10 h-[30px] rounded-md bg-gradient-to-br from-[#ffd700] via-[#daa520] to-[#b8860b] mt-2 flex flex-col justify-evenly px-1.5 shadow-sm relative z-10 border border-black/20">
+                <div className="h-px w-full bg-black/20"></div>
+                <div className="h-px w-full bg-black/20"></div>
+                <div className="h-px w-full bg-black/20"></div>
+             </div>
+
+             {/* logo */}
+             <div className="absolute top-5 right-5 font-bold italic text-white text-2xl tracking-wider select-none" style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.3)" }}>
+                BCA
+             </div>
+
+             {/* details */}
+             <div className="mt-4 flex flex-col relative z-10">
+                <div className="text-white/80 text-[10px] uppercase tracking-widest font-medium mb-1">Nomor Rekening</div>
+                <div className="flex items-center justify-between">
+                   <div className="font-mono text-white text-xl tracking-[0.1em] drop-shadow-md select-all">
+                     2221 4916 71
+                   </div>
+                   <button 
+                     type="button"
+                     className="bg-white/20 hover:bg-white/30 text-white rounded-lg p-2 cursor-pointer backdrop-blur-md border border-white/10 transition-colors active:scale-95"
+                     onClick={() => {
+                        navigator.clipboard.writeText("2221491671");
+                        showAlert("Nomor rekening disalin", { variant: "success", title: "Berhasil" });
+                     }}
+                     title="Salin Nomor Rekening"
+                   >
+                     <Copy size={16} />
+                   </button>
                 </div>
-                <button
-                  type="button"
-                  className="bg-white/10 hover:bg-white/20 text-white border-none rounded-full p-2 cursor-pointer flex items-center justify-center transition-all active:scale-90 shrink-0"
-                  onClick={() => setIsZoomOpen(false)}
-                >
-                  <X size={16} className="stroke-[2.5]" />
-                </button>
-              </div>
- 
-              {/* Full Image */}
-              <div className="relative max-w-full max-h-[72vh] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-950 flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-                <img 
-                  src={previewUrl} 
-                  alt="Bukti Transfer Zoom" 
-                  className="max-w-full max-h-[72vh] object-contain block" 
-                />
-              </div>
- 
-              {/* Guidance Info */}
-              <p className="text-[10px] font-bold text-gray-400 mt-4 text-center max-w-[280px] leading-relaxed">
-                Pastikan nominal transfer, nama rekening tujuan, tanggal, dan status berhasil terlihat jelas.
-              </p>
-            </div>
-          )}
+                <div className="font-bold text-white text-[15px] tracking-[0.15em] uppercase mt-4 drop-shadow-md">
+                  UTOYO
+                </div>
+             </div>
+          </div>
+          
+          <div className="text-center text-white/70 text-xs mt-4 drop-shadow-md">
+            Pastikan nama penerima sesuai sebelum transfer.
+          </div>
+        </div>
       </div>
     </div>
   );
