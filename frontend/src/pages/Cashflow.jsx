@@ -931,12 +931,14 @@ export default function Cashflow() {
           })}
 
         {!loading && transactions.length > 5 && (
-          <button
-            onClick={() => setShowAllTransactions(!showAllTransactions)}
-            className="mt-2 w-full py-3 bg-gray-50 dark:bg-[#1a2640]/50 border border-gray-100 dark:border-slate-800/80 text-xs font-extrabold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800/50 transition-all flex items-center justify-center gap-1 active:scale-95"
-          >
-            {showAllTransactions ? "Sembunyikan" : "Lihat Semua"}
-          </button>
+          <div className="flex justify-center mt-3 select-none">
+            <span
+              onClick={() => setShowAllTransactions(!showAllTransactions)}
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline cursor-pointer transition-colors active:scale-95"
+            >
+              {showAllTransactions ? "Sembunyikan Transaksi" : "Lihat Semua Transaksi"}
+            </span>
+          </div>
         )}
       </div>
 

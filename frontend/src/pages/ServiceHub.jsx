@@ -591,14 +591,12 @@ function ServiceHub() {
       <section className="mb-6">
         <div className="flex justify-between items-center mb-3">
           <h3 className="m-0 text-base font-bold text-slate-850 dark:text-slate-205 tracking-[-0.01em]">Berita Terkini</h3>
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 border-none bg-blue-50/70 hover:bg-blue-100/90 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-blue-700 dark:text-indigo-400 rounded-full px-3 py-1.5 text-[11px] font-bold cursor-pointer active:scale-95 transition-all select-none"
+          <span
+            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer hover:underline transition-all select-none"
             onClick={() => setOpenSheet("berita")}
           >
-            <Newspaper size={12} />
             Lihat Semua
-          </button>
+          </span>
         </div>
         <div className="flex flex-col gap-3">
           {loading && newsList.length === 0 && <Skeleton />}
@@ -635,14 +633,12 @@ function ServiceHub() {
       <section className="mb-6">
         <div className="flex justify-between items-center mb-3">
           <h3 className="m-0 text-base font-bold text-slate-850 dark:text-slate-205 tracking-[-0.01em]">Pantau Keluhan</h3>
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/80 rounded-full px-3 py-1.5 text-[11px] font-bold cursor-pointer transition-all select-none"
+          <span
+            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer hover:underline transition-all select-none"
             onClick={() => setOpenSheet("pantauan")}
           >
-            <ClipboardList size={12} />
             Lihat Semua
-          </button>
+          </span>
         </div>
         <div className="flex flex-col gap-3">
           {loading && tickets.length === 0 && <Skeleton />}
