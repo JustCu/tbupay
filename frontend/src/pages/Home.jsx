@@ -402,7 +402,7 @@ function HeroCarousel({ totalKas, totalPemasukan, totalPengeluaran, latestNews, 
                 {/* Pendapatan */}
                 <div className="flex flex-col gap-0.5">
                   <div className="flex items-center gap-1 text-emerald-400">
-                    <ArrowUpRight size={13} />
+                    <ArrowDownLeft size={13} />
                     <span className="text-[10px] font-bold uppercase tracking-wide">Pendapatan</span>
                   </div>
                   {loading ? (
@@ -417,7 +417,7 @@ function HeroCarousel({ totalKas, totalPemasukan, totalPengeluaran, latestNews, 
                 {/* Pengeluaran */}
                 <div className="flex flex-col gap-0.5">
                   <div className="flex items-center gap-1 text-rose-400">
-                    <ArrowDownRight size={13} />
+                    <ArrowUpRight size={13} />
                     <span className="text-[10px] font-bold uppercase tracking-wide">Pengeluaran</span>
                   </div>
                   {loading ? (
