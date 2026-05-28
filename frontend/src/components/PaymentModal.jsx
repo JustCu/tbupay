@@ -380,13 +380,13 @@ export default function PaymentModal({ isOpen, onClose }) {
         }`}
       >
         {/* Header */}
-        <div className="flex justify-between items-center py-4 px-6 border-b border-gray-100 dark:border-slate-800/80 shrink-0">
-          <h3 className="font-extrabold text-[16px] text-gray-900 dark:text-gray-150 m-0">
+        <div className="flex justify-between items-center py-4 px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
+          <h3 className="font-bold text-[16px] text-slate-850 dark:text-slate-100 m-0">
             {isAdmin ? "Input Kas Baru" : "Lapor Iuran Warga"}
           </h3>
           <button 
             type="button"
-            className="p-1.5 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-500 dark:text-gray-400 rounded-full border-none cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-90" 
+            className="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full border-none cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-90" 
             onClick={onClose}
           >
             <X size={16} className="stroke-[2.5]" />
@@ -394,23 +394,23 @@ export default function PaymentModal({ isOpen, onClose }) {
         </div>
  
         <div className="relative p-6 overflow-y-auto min-h-0 no-scrollbar">
-          <p className="text-[11px] font-medium leading-relaxed text-gray-400 m-0 mb-4">
+          <p className="text-[11px] font-medium leading-relaxed text-slate-500 dark:text-slate-400 m-0 mb-4">
             {isAdmin
               ? "Catat pemasukan atau pengeluaran kas perumahan secara langsung untuk pembukuan RT."
               : "Kirim bukti transfer pembayaran iuran rutin bulanan Anda untuk diverifikasi oleh bendahara."}
           </p>
  
-          <form className="flex flex-col gap-4.5" onSubmit={handleSubmit}>
+          <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
             {isAdmin && (
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Tipe Transaksi</label>
-                <div className="p-1 rounded-xl flex gap-1 bg-gray-100/80 dark:bg-[#1a2640]/80" role="tablist" aria-label="Tipe transaksi">
+                <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Tipe Transaksi</label>
+                <div className="p-1 rounded-xl flex gap-1 bg-slate-100 dark:bg-[#1a2640]/80" role="tablist" aria-label="Tipe transaksi">
                   <button
                     type="button"
-                    className={`flex-1 py-1.5 text-center text-xs font-extrabold rounded-lg cursor-pointer transition-all duration-200 border-none outline-none ${
+                    className={`flex-1 py-1.5 text-center text-xs font-bold rounded-lg cursor-pointer transition-all duration-200 border-none outline-none ${
                       transactionType === "pemasukan" 
                         ? "bg-emerald-500 text-white shadow-sm" 
-                        : "bg-transparent text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                        : "bg-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
                     }`}
                     onClick={() => setTransactionType("pemasukan")}
                   >
@@ -418,10 +418,10 @@ export default function PaymentModal({ isOpen, onClose }) {
                   </button>
                   <button
                     type="button"
-                    className={`flex-1 py-1.5 text-center text-xs font-extrabold rounded-lg cursor-pointer transition-all duration-200 border-none outline-none ${
+                    className={`flex-1 py-1.5 text-center text-xs font-bold rounded-lg cursor-pointer transition-all duration-200 border-none outline-none ${
                       transactionType === "pengeluaran" 
                         ? "bg-rose-500 text-white shadow-sm" 
-                        : "bg-transparent text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                        : "bg-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
                     }`}
                     onClick={() => setTransactionType("pengeluaran")}
                   >
@@ -432,13 +432,13 @@ export default function PaymentModal({ isOpen, onClose }) {
             )}
  
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+              <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
                 {transactionType === "pengeluaran" ? "Kategori Pengeluaran" : "Jenis Iuran"}
               </label>
               <div className="flex gap-2">
                 <div className="flex-1">
                   <select
-                    className="w-full min-h-[44px] px-4 py-2.5 rounded-xl text-[12px] font-semibold bg-[#fcfdff] dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] outline-none font-sans text-gray-800 dark:text-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer"
+                    className="w-full min-h-[44px] px-4 py-3 rounded-xl text-[13px] font-semibold bg-slate-50 dark:bg-[#1b2641] border border-slate-200 dark:border-[#2c3c5e] outline-none font-sans text-slate-850 dark:text-slate-200 focus:bg-white dark:focus:bg-[#1b2641] focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer"
                     value={kategori}
                     onChange={(e) => setKategori(e.target.value)}
                   >
@@ -451,7 +451,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                 {isAdmin && (
                   <button
                     type="button"
-                    className="border-none rounded-xl bg-indigo-50 dark:bg-indigo-950/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 px-4 min-h-[44px] text-xs font-extrabold cursor-pointer transition-all duration-200 active:scale-95 shrink-0 flex items-center justify-center"
+                    className="border-none rounded-xl bg-indigo-50 dark:bg-indigo-950/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 px-4 min-h-[44px] text-xs font-bold cursor-pointer transition-all duration-200 active:scale-95 shrink-0 flex items-center justify-center"
                     onClick={() => setIsCategoryEditorOpen(true)}
                   >
                     Kelola
@@ -461,27 +461,27 @@ export default function PaymentModal({ isOpen, onClose }) {
             </div>
  
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Bulan Penagihan</label>
-              <div className="relative flex items-center bg-[#fcfdff] dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] rounded-xl focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all min-h-[44px]">
-                <CalendarDays size={16} className="absolute left-3.5 text-gray-400 pointer-events-none stroke-[1.75]" />
+              <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Bulan Penagihan</label>
+              <div className="relative flex items-center bg-slate-50 dark:bg-[#1b2641] border border-slate-200 dark:border-[#2c3c5e] rounded-xl focus-within:bg-white dark:focus-within:bg-[#1b2641] focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all min-h-[44px]">
+                <CalendarDays size={16} className="absolute left-4 text-slate-450 dark:text-slate-400 pointer-events-none stroke-[1.75]" />
                 <input
                   type="month"
-                  className="w-full min-h-[44px] pl-10 pr-3 bg-transparent border-none font-semibold text-gray-800 dark:text-gray-200 text-[12px] outline-none font-sans cursor-pointer"
+                  className="w-full min-h-[44px] pl-10 pr-4 bg-transparent border-none font-semibold text-slate-850 dark:text-slate-200 text-[13px] outline-none font-sans cursor-pointer"
                   value={bulan}
                   onChange={(e) => setBulan(e.target.value)}
                   required
                 />
               </div>
-              <span className="text-[9px] text-gray-400 font-medium">Periode iuran yang dilaporkan</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">Periode iuran yang dilaporkan</span>
             </div>
  
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Nominal Transaksi</label>
-              <div className="flex items-center bg-[#fcfdff] dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] rounded-xl px-3.5 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all min-h-[44px]">
-                <span className="text-gray-500 dark:text-gray-400 font-extrabold text-xs pr-3 border-r border-gray-200/80 dark:border-[#2c3c5e]/80 mr-3.5 pointer-events-none">Rp</span>
+              <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Nominal Transaksi</label>
+              <div className="flex items-center bg-slate-50 dark:bg-[#1b2641] border border-slate-200 dark:border-[#2c3c5e] rounded-xl px-4 focus-within:bg-white dark:focus-within:bg-[#1b2641] focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all min-h-[44px]">
+                <span className="text-slate-500 dark:text-slate-400 font-extrabold text-[13px] pr-3 border-r border-slate-200 dark:border-[#2c3c5e]/80 mr-4 pointer-events-none">Rp</span>
                 <input
                   type="text"
-                  className="w-full min-h-[44px] bg-transparent border-none outline-none font-sans text-gray-800 dark:text-gray-200 text-[12px] font-extrabold tabular-nums placeholder-gray-300"
+                  className="w-full min-h-[44px] bg-transparent border-none outline-none font-sans text-slate-850 dark:text-slate-200 text-[13px] font-bold pr-0 tabular-nums placeholder-slate-350 dark:placeholder-slate-600"
                   placeholder="0"
                   value={nominal}
                   onChange={handleNominalChange}
@@ -491,9 +491,9 @@ export default function PaymentModal({ isOpen, onClose }) {
             </div>
  
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Catatan Tambahan (Opsional)</label>
+              <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Catatan Tambahan (Opsional)</label>
               <textarea
-                className="w-full min-h-[72px] px-4 py-2.5 rounded-xl text-[12px] bg-[#fcfdff] dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] outline-none font-sans text-gray-800 dark:text-gray-200 resize-y focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder-gray-300"
+                className="w-full min-h-[72px] px-4 py-3 rounded-xl text-[13px] bg-slate-50 dark:bg-[#1b2641] border border-slate-200 dark:border-[#2c3c5e] outline-none font-sans text-slate-850 dark:text-slate-200 resize-y focus:bg-white dark:focus:bg-[#1b2641] focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder-slate-300 dark:placeholder-slate-600"
                 placeholder="Contoh: Titip iuran sekalian buat Pak RT"
                 value={catatan}
                 onChange={(e) => setCatatan(e.target.value)}
@@ -501,7 +501,7 @@ export default function PaymentModal({ isOpen, onClose }) {
             </div>
  
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+              <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
                 {transactionType === "pengeluaran" && isAdmin
                   ? "Upload Lampiran (Opsional)"
                   : "Upload Bukti Transfer"}
@@ -509,25 +509,25 @@ export default function PaymentModal({ isOpen, onClose }) {
   
               {!previewUrl ? (
                 <div
-                  className="border-2 border-dashed border-indigo-200/85 bg-indigo-50/10 hover:border-indigo-500 hover:bg-indigo-50/20 rounded-2xl py-7 px-5 flex flex-col items-center justify-center text-gray-400 cursor-pointer transition-all duration-300 active:scale-[0.99] gap-1.5"
+                  className="border-2 border-dashed border-indigo-200 dark:border-indigo-500/30 bg-indigo-50/10 dark:bg-indigo-500/5 hover:border-indigo-500 hover:bg-indigo-50/20 dark:hover:bg-indigo-500/10 rounded-2xl py-8 px-6 flex flex-col items-center justify-center text-slate-450 dark:text-slate-400 cursor-pointer transition-all duration-300 active:scale-[0.99] gap-2"
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Camera size={26} className="text-indigo-500 stroke-[1.5]" />
-                  <p className="text-[12px] font-bold text-gray-600 m-0 text-center">
+                  <Camera size={26} className="text-indigo-500 dark:text-indigo-400 stroke-[1.5]" />
+                  <p className="text-[13px] font-bold text-slate-700 dark:text-slate-200 m-0 text-center">
                     Klik untuk ambil foto / galeri
                   </p>
                   {transactionType === "pengeluaran" && isAdmin && (
-                    <p className="text-[9.5px] text-gray-400 m-0 font-medium text-center">
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500 m-0 font-medium text-center">
                       Boleh dikosongkan jika tidak ada lampiran.
                     </p>
                   )}
-                  <p className="text-[9.5px] text-gray-400 m-0 font-medium text-center">Format JPG/PNG, maks. 500KB</p>
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500 m-0 font-medium text-center">Format JPG/PNG, maks. 500KB</p>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 bg-indigo-50/30 border border-indigo-100/80 rounded-2xl p-3 shadow-sm hover:border-indigo-200 transition-all duration-200">
+                <div className="flex items-center gap-3 bg-indigo-50/30 dark:bg-indigo-500/5 border border-indigo-100/80 dark:border-indigo-550/20 rounded-2xl p-3 shadow-sm hover:border-indigo-200 transition-all duration-200">
                   {/* Thumbnail */}
                   <div 
-                    className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 cursor-pointer shrink-0 group"
+                    className="relative w-12 h-12 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-750 cursor-pointer shrink-0 group"
                     onClick={() => setIsZoomOpen(true)}
                   >
                     <img 
@@ -539,28 +539,28 @@ export default function PaymentModal({ isOpen, onClose }) {
                       <span className="text-[8px] text-white font-extrabold bg-black/40 px-1 py-0.5 rounded shadow">ZOOM</span>
                     </div>
                   </div>
-
+ 
                   {/* Metadata */}
                   <div className="flex-1 min-w-0 flex flex-col justify-center">
-                    <p className="text-[11px] font-extrabold text-gray-700 m-0 truncate leading-snug">
+                    <p className="text-[12px] font-bold text-slate-700 dark:text-slate-200 m-0 truncate leading-snug">
                       {uploadMeta.name || "bukti_pembayaran.jpg"}
                     </p>
-                    <div className="text-[9.5px] font-bold text-emerald-600 m-0 mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 leading-none">
+                    <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-450 m-0 mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 leading-none">
                       <span>{uploadMeta.size || "0 KB"}</span>
-                      <span className="text-gray-300">•</span>
+                      <span className="text-slate-350 dark:text-slate-650">•</span>
                       <span>{uploadMeta.type || "JPG"}</span>
-                      <span className="text-gray-300">•</span>
-                      <span className="inline-flex items-center gap-0.5 bg-emerald-500/10 px-1 py-0.2 rounded text-[8px] text-emerald-700">
+                      <span className="text-slate-350 dark:text-slate-650">•</span>
+                      <span className="inline-flex items-center gap-0.5 bg-emerald-500/10 px-1.5 py-0.5 rounded text-[9px] text-emerald-700 dark:text-emerald-400">
                         Terkompresi ✓
                       </span>
                     </div>
                   </div>
-
+ 
                   {/* Actions */}
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       type="button"
-                      className="border-none bg-indigo-100/60 hover:bg-indigo-100 text-indigo-700 rounded-lg p-2 cursor-pointer flex items-center justify-center transition-all active:scale-90"
+                      className="border-none bg-indigo-100/60 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 text-indigo-700 dark:text-indigo-400 rounded-lg p-2 cursor-pointer flex items-center justify-center transition-all active:scale-90"
                       onClick={() => setIsZoomOpen(true)}
                       title="Perbesar Bukti"
                     >
@@ -568,7 +568,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                     </button>
                     <button
                       type="button"
-                      className="border-none bg-rose-50 hover:bg-rose-100 text-rose-500 rounded-lg p-2 cursor-pointer flex items-center justify-center transition-all active:scale-90"
+                      className="border-none bg-rose-50 dark:bg-rose-950/20 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-500 dark:text-rose-455 rounded-lg p-2 cursor-pointer flex items-center justify-center transition-all active:scale-90"
                       onClick={handleClearImage}
                       title="Hapus Bukti"
                     >
@@ -589,7 +589,7 @@ export default function PaymentModal({ isOpen, onClose }) {
  
             <button
               type="submit"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white border-none rounded-xl mt-3.5 min-h-[46px] text-[11px] font-extrabold tracking-wide uppercase cursor-pointer w-full flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white border-none rounded-xl mt-4 min-h-[46px] text-[12px] font-bold tracking-wide uppercase cursor-pointer w-full flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading}
             >
               {loading
@@ -599,7 +599,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                   : "Kirim Bukti Pembayaran"}
             </button>
           </form>
-
+ 
           {isAdmin && isCategoryEditorOpen && (
             <div
               className="absolute inset-0 z-[5] bg-slate-900/45 flex items-center justify-center p-4 max-h-[820px]:fixed max-h-[820px]:z-[120] max-h-[820px]:p-0 max-[480px]:items-stretch"
@@ -607,8 +607,8 @@ export default function PaymentModal({ isOpen, onClose }) {
                 if (e.target === e.currentTarget) setIsCategoryEditorOpen(false);
               }}
             >
-              <div className="w-full max-w-[420px] max-h-[78vh] overflow-y-auto bg-white dark:bg-[#131c33] rounded-[14px] p-3 border border-slate-200 dark:border-slate-800/80 shadow-[0_14px_40px_rgba(15,23,42,0.2)] dark:shadow-[0_14px_40px_rgba(0,0,0,0.5)] max-[480px]:max-w-none max-[480px]:max-h-none max-[480px]:h-full max-[480px]:rounded-none max-[480px]:border-none max-[480px]:shadow-none max-[480px]:p-[14px_14px_18px] max-[480px]:flex max-[480px]:flex-col">
-                <div className="flex items-center justify-between mb-1.5 max-[480px]:sticky max-[480px]:top-0 max-[480px]:z-[2] max-[480px]:bg-white dark:max-[480px]:bg-[#131c33] max-[480px]:pb-2 max-[480px]:mb-2 max-[480px]:border-b max-[480px]:border-slate-200 dark:border-slate-800/80">
+              <div className="w-full max-w-[420px] max-h-[78vh] overflow-y-auto bg-white dark:bg-[#131c33] rounded-2xl p-4 border border-slate-200 dark:border-slate-800/80 shadow-[0_14px_40px_rgba(15,23,42,0.2)] dark:shadow-[0_14px_40px_rgba(0,0,0,0.5)] max-[480px]:max-w-none max-[480px]:max-h-none max-[480px]:h-full max-[480px]:rounded-none max-[480px]:border-none max-[480px]:shadow-none max-[480px]:p-4 max-[480px]:flex max-[480px]:flex-col">
+                <div className="flex items-center justify-between mb-4 max-[480px]:sticky max-[480px]:top-0 max-[480px]:z-[2] max-[480px]:bg-white dark:max-[480px]:bg-[#131c33] max-[480px]:pb-2 max-[480px]:mb-2 max-[480px]:border-b max-[480px]:border-slate-200 dark:border-slate-800/80">
                   <h4 className="m-0 text-[13px] font-bold text-slate-900 dark:text-gray-100">
                     {transactionType === "pengeluaran" ? "Kelola Kategori Pengeluaran" : "Kelola Jenis Iuran"}
                   </h4>
@@ -621,33 +621,33 @@ export default function PaymentModal({ isOpen, onClose }) {
                   </button>
                 </div>
  
-                <p className="m-0 mb-2.5 text-[11px] text-slate-500 dark:text-gray-400 max-[480px]:mb-2">
+                <p className="m-0 mb-3 text-[11px] text-slate-500 dark:text-gray-400 max-[480px]:mb-2">
                   Tambah, hapus, atau drag kategori untuk mengatur urutan dropdown.
                 </p>
  
-                <div className="grid grid-cols-[1fr_auto] gap-2 mb-2 max-[480px]:mb-2">
+                <div className="grid grid-cols-[1fr_auto] gap-2 mb-3 max-[480px]:mb-2">
                   <input
                     type="text"
-                    className="w-full min-h-[40px] px-3 py-[9px] rounded-[10px] text-[13px] bg-[#fcfdff] dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] outline-none font-sans text-gray-900 dark:text-gray-100 focus:border-blue-500"
+                    className="w-full min-h-[44px] px-4 py-3 rounded-xl text-[13px] bg-[#fcfdff] dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] outline-none font-sans text-gray-900 dark:text-gray-100 focus:border-blue-500"
                     placeholder={transactionType === "pengeluaran" ? "Tambah kategori pengeluaran" : "Tambah jenis iuran"}
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
                   />
                   <button
                     type="button"
-                    className="border-none rounded-[9px] bg-teal-700 text-white text-[11px] font-bold px-3 min-h-[34px] cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="border-none rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[12px] font-bold px-4 min-h-[44px] cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                     onClick={handleAddCategory}
                     disabled={addingCategory}
                   >
                     {addingCategory ? "..." : "Tambah"}
                   </button>
                 </div>
-
-                <div className="flex flex-col gap-2 mt-3 max-h-[42vh] overflow-y-auto pr-1">
+ 
+                <div className="flex flex-col gap-2 mt-4 max-h-[42vh] overflow-y-auto pr-1">
                   {getActiveOptions().map((opt, idx) => (
                     <div
                       key={opt}
-                      className={`flex items-center justify-between bg-slate-50 dark:bg-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/40 border rounded-xl p-3 cursor-grab transition-all ${
+                      className={`flex items-center justify-between bg-slate-50 dark:bg-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/40 border rounded-xl p-3.5 cursor-grab transition-all ${
                         kategori === opt 
                           ? "border-indigo-300 dark:border-indigo-500/50 bg-indigo-50/20 dark:bg-indigo-500/10" 
                           : "border-slate-100 dark:border-slate-800/80"
@@ -668,7 +668,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                       </div>
                       <button
                         type="button"
-                        className="border-none bg-transparent hover:bg-rose-50 text-rose-500 rounded-lg p-1.5 cursor-pointer flex items-center justify-center transition-all duration-200"
+                        className="border-none bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 text-rose-500 rounded-lg p-1.5 cursor-pointer flex items-center justify-center transition-all duration-200"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteCategory(opt);
@@ -688,7 +688,7 @@ export default function PaymentModal({ isOpen, onClose }) {
               </div>
             </div>
           )}
-
+ 
           {/* Zoom Lightbox Preview */}
           {isZoomOpen && previewUrl && (
             <div
@@ -709,7 +709,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                   <X size={16} className="stroke-[2.5]" />
                 </button>
               </div>
-
+ 
               {/* Full Image */}
               <div className="relative max-w-full max-h-[72vh] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-950 flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
                 <img 
@@ -718,7 +718,7 @@ export default function PaymentModal({ isOpen, onClose }) {
                   className="max-w-full max-h-[72vh] object-contain block" 
                 />
               </div>
-
+ 
               {/* Guidance Info */}
               <p className="text-[10px] font-bold text-gray-400 mt-4 text-center max-w-[280px] leading-relaxed">
                 Pastikan nominal transfer, nama rekening tujuan, tanggal, dan status berhasil terlihat jelas.
