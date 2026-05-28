@@ -72,7 +72,7 @@ function BottomSheet({ isOpen, onClose, title, children, heightClass = "h-[82vh]
           </button>
         </div>
         {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto flex flex-col">
           {children}
         </div>
       </div>
@@ -762,7 +762,7 @@ function ServiceHub() {
 
       {/* ========== BOTTOM SHEET: GENERAL GROUP CHAT ========== */}
       <BottomSheet isOpen={openSheet === "grupchat"} onClose={closeSheet} title="Grup Obrolan Warga" heightClass="h-[88vh]">
-        <div className="flex flex-col h-[78vh] bg-[#efeae2] dark:bg-[#0b141a] transition-colors duration-300">
+        <div className="flex flex-col flex-1 min-h-0 bg-[#efeae2] dark:bg-[#0b141a] transition-colors duration-300">
           
           {/* Main chat messages list */}
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5 shadow-inner">
@@ -1017,7 +1017,7 @@ function ServiceHub() {
       {/* ========== BOTTOM SHEET: NEWS DETAIL ========== */}
       <BottomSheet isOpen={openSheet === "newsDetail" && !!selectedNews} onClose={closeSheet} title="Detail Informasi" heightClass="h-[88vh]">
         {selectedNews && (
-          <div className="p-4 flex flex-col gap-3">
+          <div className="p-4 flex flex-col gap-3 flex-1 min-h-0">
             <button
               type="button"
               className="inline-flex items-center gap-1 text-[12px] font-medium text-gray-500 bg-gray-100 border-none rounded-full px-3 py-1.5 w-fit cursor-pointer hover:bg-gray-200 transition-colors"
@@ -1031,7 +1031,7 @@ function ServiceHub() {
             </div>
             <p className="text-[14px] text-gray-600 m-0 leading-relaxed whitespace-pre-wrap">{selectedNews.konten}</p>
             
-            <div className="mt-2 flex flex-col gap-3 border-t border-gray-100 pt-4">
+            <div className="mt-2 flex flex-col gap-3 border-t border-gray-100 dark:border-slate-800/80 pt-4 flex-1 min-h-0">
               <div className="flex items-center justify-between px-1">
                 <p className="text-[14px] font-bold text-gray-800 m-0">Diskusi Warga</p>
                 {!loadingReplies && newsReplies.length > 0 && (
@@ -1041,7 +1041,7 @@ function ServiceHub() {
                 )}
               </div>
 
-              <div className="flex-1 min-h-[260px] max-h-[38vh] overflow-y-auto bg-[#efeae2] rounded-2xl p-4 flex flex-col gap-3.5 border border-gray-200/50 shadow-inner">
+              <div className="flex-1 min-h-[260px] overflow-y-auto bg-[#efeae2] dark:bg-[#0b141a] rounded-2xl p-4 flex flex-col gap-3.5 border border-gray-200/50 dark:border-slate-800/50 shadow-inner">
                 {loadingReplies ? (
                   <div className="flex flex-col items-center justify-center py-12 gap-2">
                     <RefreshCw size={22} className="text-gray-400 animate-spin" />
@@ -1049,7 +1049,7 @@ function ServiceHub() {
                   </div>
                 ) : newsReplies.length === 0 ? (
                   <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-                    <div className="bg-white/95 rounded-xl px-4.5 py-2.5 text-[11px] text-gray-500 max-w-[85%] shadow-sm">
+                    <div className="bg-white/95 dark:bg-[#1f2c34]/95 rounded-xl px-4.5 py-2.5 text-[11px] text-gray-500 dark:text-gray-400 max-w-[85%] shadow-sm border border-gray-100 dark:border-transparent">
                       Belum ada tanggapan. Jadilah warga pertama yang berdiskusi terkait berita ini!
                     </div>
                   </div>
@@ -1194,7 +1194,7 @@ function ServiceHub() {
       {/* ========== BOTTOM SHEET: TICKET DETAIL ========== */}
       <BottomSheet isOpen={openSheet === "ticketDetail" && !!selectedTicket} onClose={closeSheet} title="Detail Keluhan" heightClass="h-[88vh]">
         {selectedTicket && (
-          <div className="p-4 flex flex-col gap-3 h-full overflow-y-auto">
+          <div className="p-4 flex flex-col gap-3 flex-1 min-h-0">
             {/* Ringkasan Keluhan */}
             <div className="bg-gray-50 dark:bg-[#1a2640]/40 border border-gray-100 dark:border-slate-800/80 rounded-2xl p-4 flex flex-col gap-2.5">
               <div className="flex justify-between items-center">
@@ -1232,13 +1232,13 @@ function ServiceHub() {
             </div>
 
             {/* Area Tanya Jawab (WhatsApp Style) */}
-            <div className="flex flex-col gap-2 mt-2 flex-1">
+            <div className="flex flex-col gap-2 mt-2 flex-1 min-h-0">
               <p className="text-[13px] font-bold text-gray-800 dark:text-gray-100 m-0 flex items-center gap-1.5 px-1">
                 <MessageCircle size={15} className="text-blue-500" />
                 Tanya Jawab Keluhan
               </p>
 
-              <div className="flex-1 min-h-[220px] max-h-[35vh] overflow-y-auto bg-[#efeae2] rounded-2xl p-4 flex flex-col gap-3 border border-gray-200/50 shadow-inner">
+              <div className="flex-1 min-h-[220px] overflow-y-auto bg-[#efeae2] dark:bg-[#0b141a] rounded-2xl p-4 flex flex-col gap-3 border border-gray-200/50 dark:border-slate-800/50 shadow-inner">
                 {loadingTicketReplies ? (
                   <div className="flex flex-col items-center justify-center py-10 gap-2">
                     <RefreshCw size={24} className="text-gray-400 animate-spin" />
@@ -1246,7 +1246,7 @@ function ServiceHub() {
                   </div>
                 ) : ticketReplies.length === 0 ? (
                   <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-                    <div className="bg-white/90 dark:bg-slate-900 rounded-xl px-4 py-2 text-[11px] text-gray-500 dark:text-gray-400 max-w-[85%] shadow-sm">
+                    <div className="bg-white/95 dark:bg-[#1f2c34]/95 rounded-xl px-4.5 py-2.5 text-[11px] text-gray-500 dark:text-gray-400 max-w-[85%] shadow-sm border border-gray-100 dark:border-transparent">
                       Belum ada obrolan. Gunakan form di bawah untuk bertanya jawab terkait keluhan ini.
                     </div>
                   </div>
@@ -1316,7 +1316,7 @@ function ServiceHub() {
                   Keluhan ini telah diselesaikan & ditutup. Tanya jawab dinonaktifkan.
                 </div>
               ) : (
-                <form onSubmit={handleSendTicketReply} className="flex items-center gap-2 mt-1 pt-1 bg-white dark:bg-[#131c33]">
+                <form onSubmit={handleSendTicketReply} className="flex items-center gap-2 mt-1 pt-1 bg-white dark:bg-[#131c33] sticky bottom-0">
                   <input
                     type="text"
                     className="flex-1 border border-gray-200 rounded-full px-4 py-2.5 text-[13px] bg-gray-50 focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
