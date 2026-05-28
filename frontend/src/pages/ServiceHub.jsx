@@ -704,22 +704,19 @@ function ServiceHub() {
 
       {/* ========== BOTTOM MODAL: KELUHAN ========== */}
       <div
-        className={`fixed inset-0 z-[70] flex justify-center items-end bg-black/60 backdrop-blur-[1px] transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[70] flex justify-center items-center p-4 bg-black/60 backdrop-blur-[1px] transition-opacity duration-300 ${
           openSheet === "keluhan" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none overflow-hidden"
         }`}
         onClick={closeSheet}
       >
         <div
-          className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-[28px] h-fit max-h-[85vh] flex flex-col shadow-[0_-8px_30px_rgba(0,0,0,0.15)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.45)] transition-transform duration-300 ${
-            openSheet === "keluhan" ? "translate-y-0" : "translate-y-full"
+          className={`w-full max-w-[400px] bg-white dark:bg-[#131c33] rounded-[24px] h-fit max-h-[85vh] flex flex-col shadow-[0_10px_40px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)] transition-all duration-300 ${
+            openSheet === "keluhan" ? "translate-y-0 scale-100" : "translate-y-4 scale-95"
           }`}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Drag Handle */}
-          <div className="w-12 h-1 bg-slate-200 dark:bg-slate-800 rounded-full mx-auto my-3 shrink-0" />
-          
           {/* Header */}
-          <div className="flex justify-between items-start pb-4 px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
+          <div className="flex justify-between items-start pt-6 pb-4 px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
             <div className="flex-1 min-w-0">
               <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Buat Keluhan Warga</h3>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 m-0 mt-1 leading-normal pr-4">Sampaikan pengaduan atau laporan fasilitas lingkungan</p>
@@ -768,22 +765,19 @@ function ServiceHub() {
 
       {/* ========== BOTTOM MODAL: SARAN ========== */}
       <div
-        className={`fixed inset-0 z-[70] flex justify-center items-end bg-black/60 backdrop-blur-[1px] transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[70] flex justify-center items-center p-4 bg-black/60 backdrop-blur-[1px] transition-opacity duration-300 ${
           openSheet === "saran" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none overflow-hidden"
         }`}
         onClick={closeSheet}
       >
         <div
-          className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-[28px] h-fit max-h-[85vh] flex flex-col shadow-[0_-8px_30px_rgba(0,0,0,0.15)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.45)] transition-transform duration-300 ${
-            openSheet === "saran" ? "translate-y-0" : "translate-y-full"
+          className={`w-full max-w-[400px] bg-white dark:bg-[#131c33] rounded-[24px] h-fit max-h-[85vh] flex flex-col shadow-[0_10px_40px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)] transition-all duration-300 ${
+            openSheet === "saran" ? "translate-y-0 scale-100" : "translate-y-4 scale-95"
           }`}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Drag Handle */}
-          <div className="w-12 h-1 bg-slate-200 dark:bg-slate-800 rounded-full mx-auto my-3 shrink-0" />
-          
           {/* Header */}
-          <div className="flex justify-between items-start pb-4 px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
+          <div className="flex justify-between items-start pt-6 pb-4 px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
             <div className="flex-1 min-w-0">
               <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Kotak Saran & Masukan</h3>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 m-0 mt-1 leading-normal pr-4">Salurkan aspirasi dan ide kreatif demi kemajuan bersama</p>
