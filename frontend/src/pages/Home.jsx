@@ -15,7 +15,7 @@ import {
   X,
   ArrowRight,
   ArrowUpRight,
-  ArrowDownRight,
+  ArrowDownLeft,
   Megaphone,
   MessageSquareWarning,
   Landmark,
@@ -187,8 +187,8 @@ function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
               return (
                 <div key={trx.id_transaksi} className={`flex items-center justify-between gap-2.5 p-4 ${index !== transactions.length - 1 ? 'border-b border-gray-100' : ''} hover:bg-slate-50 transition-colors`}>
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${isPemasukan ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"}`}>
-                      {isPemasukan ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${isPemasukan ? "bg-green-100 text-green-600 dark:bg-green-950/30 dark:text-green-400" : "bg-red-100 text-red-600 dark:bg-rose-950/30 dark:text-rose-400"}`}>
+                      {isPemasukan ? <ArrowDownLeft size={18} /> : <ArrowUpRight size={18} />}
                     </div>
                     <div className="min-w-0">
                       <p className="text-[14px] font-bold text-gray-800 leading-snug m-0 truncate">
@@ -1111,8 +1111,8 @@ export default function Home() {
                 return (
                   <div key={trx.id_transaksi} className={`flex items-center justify-between gap-2.5 p-3.5 ${index !== myLatestTransactions.length - 1 ? 'border-b border-gray-100' : ''} transition-colors hover:bg-slate-50`}>
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className={`w-7.5 h-7.5 min-w-[30px] rounded-full flex items-center justify-center shrink-0 ${isPemasukan ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"}`}>
-                        {isPemasukan ? <CheckCircle size={14} /> : <AlertCircle size={14} />}
+                      <div className={`w-[30px] h-[30px] min-w-[30px] min-h-[30px] rounded-full flex items-center justify-center shrink-0 ${isPemasukan ? "bg-green-100 text-green-600 dark:bg-green-950/30 dark:text-green-400" : "bg-red-100 text-red-600 dark:bg-rose-950/30 dark:text-rose-400"}`}>
+                        {isPemasukan ? <ArrowDownLeft size={14} /> : <ArrowUpRight size={14} />}
                       </div>
                       <div className="min-w-0">
                         <p className="text-[13px] font-bold text-gray-800 leading-snug m-0 truncate">
