@@ -652,46 +652,48 @@ function ServiceHub() {
             if (!ticket) return null;
             const isOpen = ticket.status === "open";
             const isProses = ticket.status === "proses";
+            const borderClr = isOpen ? "border-l-[#f59e0b]" : isProses ? "border-l-[#3b82f6]" : "border-l-[#10b981]";
             
             return (
               <button
                 key={ticket.id_tiket}
                 type="button"
-                className="w-full text-left cursor-pointer transition-all duration-300 hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700/80 border border-slate-200/60 dark:border-slate-800/60 rounded-2xl bg-white dark:bg-[#151f32] shadow-sm dark:shadow-none p-4 flex gap-4"
+                className={`w-full text-left cursor-pointer transition-all duration-200 hover:shadow-xs hover:border-slate-300/80 dark:hover:border-slate-700/80 border border-slate-100 dark:border-slate-800/80 border-l-4 ${borderClr} rounded-xl bg-white dark:bg-[#131c33] shadow-xs p-3 flex flex-col gap-2 active:scale-[0.99]`}
                 onClick={() => openTicketDetail(ticket)}
               >
-                {/* Status Indicator Icon Circle */}
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                  isOpen ? "bg-amber-500/10 text-[#78350f] dark:text-amber-400" :
-                  isProses ? "bg-blue-500/10 text-[#1e3a8a] dark:text-blue-400" :
-                  "bg-emerald-500/10 text-[#064e3b] dark:text-emerald-455"
-                }`}>
-                  {isOpen && <Clock3 size={18} className="stroke-[2.2]" />}
-                  {isProses && <RefreshCw size={18} className="stroke-[2.2] animate-pulse" />}
-                  {!isOpen && !isProses && <CheckCircle size={18} className="stroke-[2.2]" />}
-                </div>
-
-                {/* Content details */}
-                <div className="flex-1 flex flex-col gap-1.5 min-w-0">
-                  <div className="flex justify-between items-start gap-2">
-                    <span className="text-sm font-bold text-slate-850 dark:text-slate-100 leading-snug truncate">{ticket.kategori}</span>
-                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap">
-                      {safeDate(ticket.timestamp).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
+                {/* Header Row: Category + Ticket ID + Date */}
+                <div className="flex justify-between items-center w-full gap-2 shrink-0 select-none">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                      {ticket.kategori}
+                    </span>
+                    <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                    <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 tracking-wider">
+                      #{ticket.id_tiket ? ticket.id_tiket.slice(-5).toUpperCase() : ""}
                     </span>
                   </div>
+                  <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 flex items-center gap-1 whitespace-nowrap">
+                    <Clock3 size={10} className="stroke-[2.5]" />
+                    {safeDate(ticket.timestamp).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
+                  </span>
+                </div>
+
+                {/* Footer Section: Reporter & Status Badge (Clean, line-free design) */}
+                <div className="flex items-center justify-between w-full shrink-0 select-none text-[10px]">
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold">
+                    Pelapor:{" "}
+                    <span className="ml-1 bg-slate-50 dark:bg-slate-800/80 text-slate-655 dark:text-slate-355 font-bold px-1.5 py-0.5 rounded text-[9px] border border-slate-100/50 dark:border-transparent">
+                      {ticket.id_user_pelapor || "Warga"}
+                    </span>
+                  </span>
                   
-                  <p className="m-0 text-xs font-normal text-slate-600 dark:text-slate-350 line-clamp-2 leading-relaxed">
-                    {ticket.deskripsi}
-                  </p>
-                  
-                  <div className="flex items-center justify-between mt-1 text-[11px] font-bold text-slate-500 dark:text-slate-400 select-none">
-                    <span>Pelapor: <span className="text-slate-700 dark:text-slate-200 font-extrabold">{ticket.id_user_pelapor}</span></span>
-                    <span className={`px-2 py-0.5 rounded-md text-[9px] uppercase tracking-wider font-extrabold border ${
-                      isOpen ? "bg-amber-50 dark:bg-amber-500/10 text-[#78350f] dark:text-amber-300 border-amber-200/50 dark:border-amber-500/20" :
-                      isProses ? "bg-blue-50 dark:bg-blue-500/10 text-[#1e3a8a] dark:text-blue-300 border-blue-200/50 dark:border-blue-500/20" :
-                      "bg-emerald-50 dark:bg-emerald-500/10 text-[#064e3b] dark:text-emerald-300 border-emerald-200/50 dark:border-emerald-500/20"
-                    }`}>{ticket.status}</span>
-                  </div>
+                  <span className={`px-2 py-0.5 rounded text-[8px] uppercase tracking-wider font-extrabold border ${
+                    isOpen ? "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200/50 dark:border-amber-500/20" :
+                    isProses ? "bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200/50 dark:border-blue-500/20" :
+                    "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200/50 dark:border-emerald-500/20"
+                  }`}>
+                    {ticket.status}
+                  </span>
                 </div>
               </button>
             );
@@ -1357,51 +1359,53 @@ function ServiceHub() {
               </div>
             )}
             
-            <div className="flex flex-col gap-4.5">
+            <div className="flex flex-col gap-3">
               {tickets.map((ticket) => {
                 if (!ticket) return null;
                 const isOpenStatus = ticket.status === "open";
                 const isProsesStatus = ticket.status === "proses";
+                const borderClr = isOpenStatus ? "border-l-[#f59e0b]" : isProsesStatus ? "border-l-[#3b82f6]" : "border-l-[#10b981]";
                 
                 return (
                   <button
                     key={ticket.id_tiket}
                     type="button"
-                    className="w-full text-left cursor-pointer transition-all duration-300 hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700/80 bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-4 flex gap-4"
+                    className={`w-full text-left cursor-pointer transition-all duration-200 hover:shadow-xs hover:border-slate-300/80 dark:hover:border-slate-700/80 border border-slate-100 dark:border-slate-800/80 border-l-4 ${borderClr} rounded-xl bg-white dark:bg-[#131c33] shadow-xs p-3 flex flex-col gap-2 active:scale-[0.99]`}
                     onClick={() => openTicketDetail(ticket)}
                   >
-                    {/* Status Indicator Icon Circle */}
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                      isOpenStatus ? "bg-amber-500/10 text-[#78350f] dark:text-amber-400" :
-                      isProsesStatus ? "bg-blue-500/10 text-[#1e3a8a] dark:text-blue-400" :
-                      "bg-emerald-500/10 text-[#064e3b] dark:text-emerald-455"
-                    }`}>
-                      {isOpenStatus && <Clock3 size={18} className="stroke-[2.2]" />}
-                      {isProsesStatus && <RefreshCw size={18} className="stroke-[2.2] animate-pulse" />}
-                      {!isOpenStatus && !isProsesStatus && <CheckCircle size={18} className="stroke-[2.2]" />}
-                    </div>
-
-                    {/* Content details */}
-                    <div className="flex-1 flex flex-col gap-1.5 min-w-0">
-                      <div className="flex justify-between items-start gap-2">
-                        <span className="text-sm font-bold text-slate-855 dark:text-slate-100 leading-snug truncate">[{ticket.kategori}]</span>
-                        <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap">
-                          {safeDate(ticket.timestamp).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
+                    {/* Header Row: Category + Ticket ID + Date */}
+                    <div className="flex justify-between items-center w-full gap-2 shrink-0 select-none">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                          {ticket.kategori}
+                        </span>
+                        <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                        <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 tracking-wider">
+                          #{ticket.id_tiket ? ticket.id_tiket.slice(-5).toUpperCase() : ""}
                         </span>
                       </div>
+                      <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 flex items-center gap-1 whitespace-nowrap">
+                        <Clock3 size={10} className="stroke-[2.5]" />
+                        {safeDate(ticket.timestamp).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
+                      </span>
+                    </div>
+
+                    {/* Footer Section: Reporter & Status Badge (Clean, line-free design) */}
+                    <div className="flex items-center justify-between w-full shrink-0 select-none text-[10px]">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold">
+                        Pelapor:{" "}
+                        <span className="ml-1 bg-slate-50 dark:bg-slate-800/80 text-slate-655 dark:text-slate-355 font-bold px-1.5 py-0.5 rounded text-[9px] border border-slate-100/50 dark:border-transparent">
+                          {ticket.id_user_pelapor || "Warga"}
+                        </span>
+                      </span>
                       
-                      <p className="m-0 text-xs font-normal text-slate-655 dark:text-slate-350 line-clamp-3 leading-relaxed">
-                        {ticket.deskripsi}
-                      </p>
-                      
-                      <div className="flex items-center justify-between mt-1 text-[11px] font-bold text-slate-505 dark:text-slate-400 select-none">
-                        <span>Pelapor: <span className="text-slate-700 dark:text-slate-205 font-extrabold">{ticket.id_user_pelapor}</span></span>
-                        <span className={`px-2 py-0.5 rounded-md text-[9px] uppercase tracking-wider font-extrabold border ${
-                          isOpenStatus ? "bg-amber-50 dark:bg-amber-500/10 text-[#78350f] dark:text-amber-300 border-amber-200/50 dark:border-amber-500/20" :
-                          isProsesStatus ? "bg-blue-50 dark:bg-blue-500/10 text-[#1e3a8a] dark:text-blue-300 border-blue-200/50 dark:border-blue-500/20" :
-                          "bg-emerald-50 dark:bg-emerald-500/10 text-[#064e3b] dark:text-emerald-300 border-emerald-200/50 dark:border-emerald-500/20"
-                        }`}>{ticket.status}</span>
-                      </div>
+                      <span className={`px-2 py-0.5 rounded text-[8px] uppercase tracking-wider font-extrabold border ${
+                        isOpenStatus ? "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200/50 dark:border-amber-500/20" :
+                        isProsesStatus ? "bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200/50 dark:border-blue-500/20" :
+                        "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200/50 dark:border-emerald-500/20"
+                      }`}>
+                        {ticket.status}
+                      </span>
                     </div>
                   </button>
                 );
@@ -1430,49 +1434,157 @@ function ServiceHub() {
               <ArrowLeft size={20} />
             </button>
             <div className="flex flex-col min-w-0 flex-1">
-              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 truncate">Detail Keluhan</h3>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Tanya jawab dan perkembangan laporan pengaduan</p>
+              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 truncate">Detail Laporan Warga</h3>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Rincian informasi keluhan, aspirasi, dan saran hunian</p>
             </div>
           </div>
 
           {/* Constrained layout body container */}
           <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
             {/* Top Complaint Card Wrapper */}
-            <div className="p-5 pb-0 shrink-0">
+            <div className="p-5 pb-0 shrink-0 flex flex-col gap-4">
+              {/* Dynamic Visual Status Timeline */}
+              <div className="flex items-center justify-between px-6 py-4 bg-white dark:bg-[#131c33] border border-slate-100 dark:border-slate-800/80 rounded-2xl select-none text-[11px] font-bold shadow-xxs relative">
+                {/* Absolute background track line centered mathematically at 30px */}
+                <div className="absolute left-[52px] right-[52px] top-[30px] h-[2px] bg-slate-100 dark:bg-slate-800/60 z-0">
+                  {/* Dynamic progress fill */}
+                  <div 
+                    className="h-full bg-emerald-500 transition-all duration-500"
+                    style={{
+                      width: selectedTicket.status === "open" ? "0%" : selectedTicket.status === "proses" ? "50%" : "100%"
+                    }}
+                  />
+                </div>
+                
+                {/* Step 1 */}
+                <div className="flex flex-col items-center gap-1.5 z-10">
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                    selectedTicket.status === "open"
+                      ? "bg-amber-500 border-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.35)]"
+                      : "bg-emerald-500 border-emerald-500 text-white"
+                  }`}>
+                    {selectedTicket.status === "open" ? <Clock3 size={11} className="stroke-[2.5]" /> : <CheckCircle size={11} className="stroke-[2.5]" />}
+                  </div>
+                  <span className={`text-[9px] uppercase tracking-wider ${
+                    selectedTicket.status === "open" ? "text-amber-600 dark:text-amber-400 font-black" : "text-slate-400 dark:text-slate-500 font-semibold"
+                  }`}>Diajukan</span>
+                </div>
+
+                {/* Step 2 */}
+                <div className="flex flex-col items-center gap-1.5 z-10">
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                    selectedTicket.status === "proses"
+                      ? "bg-blue-500 border-blue-500 text-white shadow-[0_0_10px_rgba(59,130,246,0.35)] animate-pulse"
+                      : selectedTicket.status === "done"
+                      ? "bg-emerald-500 border-emerald-500 text-white"
+                      : "bg-white dark:bg-[#131c33] border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500"
+                  }`}>
+                    {selectedTicket.status === "done" ? <CheckCircle size={11} className="stroke-[2.5]" /> : <RefreshCw size={11} className={`stroke-[2.5] ${selectedTicket.status === "proses" ? "animate-spin" : ""}`} />}
+                  </div>
+                  <span className={`text-[9px] uppercase tracking-wider ${
+                    selectedTicket.status === "proses"
+                      ? "text-blue-600 dark:text-blue-400 font-black"
+                      : selectedTicket.status === "done"
+                      ? "text-emerald-600 dark:text-emerald-400 font-bold"
+                      : "text-slate-400 dark:text-slate-500 font-semibold"
+                  }`}>Diproses</span>
+                </div>
+
+                {/* Step 3 */}
+                <div className="flex flex-col items-center gap-1.5 z-10">
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                    selectedTicket.status === "done"
+                      ? "bg-emerald-500 border-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.35)]"
+                      : "bg-white dark:bg-[#131c33] border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500"
+                  }`}>
+                    <CheckCircle size={11} className="stroke-[2.5]" />
+                  </div>
+                  <span className={`text-[9px] uppercase tracking-wider ${
+                    selectedTicket.status === "done" ? "text-emerald-600 dark:text-emerald-400 font-black" : "text-slate-400 dark:text-slate-500 font-semibold"
+                  }`}>Selesai</span>
+                </div>
+              </div>
+
               {/* Ringkasan Keluhan Card */}
-              <div className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-4.5 flex flex-col gap-3 shadow-xs">
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-extrabold text-gray-555 dark:text-gray-455 bg-gray-150 dark:bg-slate-800 px-2.5 py-0.75 rounded-md uppercase tracking-wider border border-gray-200/50 dark:border-transparent">
-                    {selectedTicket.kategori}
-                  </span>
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-extrabold border ${
-                    selectedTicket.status === "open" ? "bg-amber-50 dark:bg-amber-500/10 text-[#78350f] dark:text-amber-300 border-amber-200/50 dark:border-amber-500/20" :
-                    selectedTicket.status === "proses" ? "bg-blue-50 dark:bg-blue-500/10 text-[#1e3a8a] dark:text-blue-300 border-blue-200/50 dark:border-blue-500/20" :
-                    "bg-emerald-50 dark:bg-emerald-500/10 text-[#064e3b] dark:text-emerald-300 border-emerald-200/50 dark:border-emerald-500/20"
+              <div className="bg-white dark:bg-[#131c33] border border-slate-100 dark:border-slate-800/80 rounded-2xl p-4 flex flex-col gap-3.5 shadow-xs relative overflow-hidden">
+                {/* Header: Category Badge + Status Badge */}
+                <div className="flex justify-between items-center w-full shrink-0 select-none">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                      {selectedTicket.kategori}
+                    </span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                    <span className="text-[10px] font-extrabold text-slate-500 dark:text-slate-400">
+                      #{selectedTicket.id_tiket ? selectedTicket.id_tiket.slice(-5).toUpperCase() : ""}
+                    </span>
+                  </div>
+                  
+                  <span className={`px-2.5 py-0.75 rounded-full text-[9px] uppercase tracking-wider font-extrabold border ${
+                    selectedTicket.status === "open" ? "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200/50 dark:border-amber-500/20" :
+                    selectedTicket.status === "proses" ? "bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200/50 dark:border-blue-500/20" :
+                    "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200/50 dark:border-emerald-500/20"
                   }`}>{selectedTicket.status}</span>
                 </div>
                 
-                <div className="text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap font-medium">
-                  {selectedTicket.deskripsi}
+                {/* Main Content: Description */}
+                <div className="border-l-2 border-indigo-500/30 pl-3.5 my-1">
+                  <p className="m-0 text-[13px] leading-relaxed text-slate-700 dark:text-slate-200 font-medium font-sans whitespace-pre-wrap">
+                    {selectedTicket.deskripsi}
+                  </p>
                 </div>
 
+                {/* Attachment Image (if any) */}
                 {selectedTicket.url_foto_kondisi && (
-                  <div className="mt-1">
-                    <img src={selectedTicket.url_foto_kondisi} alt="Foto Kondisi" className="w-full max-h-[160px] object-cover rounded-xl border border-gray-200 dark:border-slate-700 shadow-xxs" />
+                  <div className="mt-1 relative overflow-hidden rounded-xl border border-slate-100 dark:border-slate-800/80 shadow-xxs group cursor-pointer"
+                       onClick={() => window.open(selectedTicket.url_foto_kondisi, '_blank')}>
+                    <img src={selectedTicket.url_foto_kondisi} alt="Foto Kondisi" className="w-full max-h-[160px] object-cover transition-transform duration-300 group-hover:scale-102" />
+                    <div className="absolute inset-0 bg-black/35 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[11px] font-bold transition-opacity">
+                      Klik untuk memperbesar gambar ↗
+                    </div>
                   </div>
                 )}
 
-                <div className="flex justify-between items-center text-[10px] text-gray-555 dark:text-gray-455 mt-2 font-semibold">
-                  <span>{safeDate(selectedTicket.timestamp).toLocaleString("id-ID", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })}</span>
-                  <span>ID Pelapor: <span className="font-extrabold text-slate-700 dark:text-slate-300">{selectedTicket.id_user_pelapor}</span></span>
+                {/* Metadata Grid (Reporter & Date) */}
+                <div className="mt-1 pt-3 border-t border-dashed border-slate-150 dark:border-slate-800/80 grid grid-cols-2 gap-3 w-full shrink-0 select-none text-[10px] leading-normal font-semibold text-slate-400 dark:text-slate-500">
+                  <div className="flex flex-col gap-0.5">
+                    <span>Pelapor:</span>
+                    <span className="text-slate-700 dark:text-slate-355 font-bold bg-slate-50 dark:bg-slate-800/80 px-2 py-0.75 rounded border border-slate-100/50 dark:border-transparent w-fit">
+                      {selectedTicket.id_user_pelapor || "Warga"}
+                    </span>
+                  </div>
+                  
+                  <div className="flex flex-col gap-0.5 items-end">
+                    <span>Diajukan pada:</span>
+                    <span className="text-slate-700 dark:text-slate-355 font-bold">
+                      {safeDate(selectedTicket.timestamp).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+                    </span>
+                  </div>
                 </div>
 
-                {selectedTicket.id_petugas_pic && (
-                  <div className="mt-1 bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2 text-[11px] text-blue-700 dark:text-blue-400 flex justify-between items-center font-bold">
-                    <span>PIC Petugas:</span>
-                    <strong className="font-extrabold">{selectedTicket.id_petugas_pic}</strong>
-                  </div>
-                )}
+                {/* PIC Assignment Status Indicator */}
+                <div className="mt-1 shrink-0 select-none">
+                  {selectedTicket.id_petugas_pic ? (
+                    <div className="bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/25 dark:border-blue-500/20 rounded-xl px-3.5 py-2.5 text-[11px] text-blue-700 dark:text-blue-400 flex justify-between items-center font-bold shadow-xxs">
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                        Petugas PIC:
+                      </span>
+                      <strong className="font-extrabold uppercase tracking-wide bg-blue-100 dark:bg-blue-900/30 px-2 py-0.5 rounded text-[10px]">
+                        {selectedTicket.id_petugas_pic}
+                      </strong>
+                    </div>
+                  ) : (
+                    <div className="bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/25 dark:border-amber-500/20 rounded-xl px-3.5 py-2.5 text-[11px] text-amber-700 dark:text-amber-400 flex justify-between items-center font-bold shadow-xxs">
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                        Petugas PIC:
+                      </span>
+                      <strong className="font-extrabold uppercase tracking-wide bg-amber-100 dark:bg-amber-900/30 px-2 py-0.5 rounded text-[10px]">
+                        Belum Ditugaskan
+                      </strong>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -1483,14 +1595,16 @@ function ServiceHub() {
                 Tanya Jawab Keluhan
               </p>
 
-              <div className="flex-1 overflow-y-auto bg-[#efeae2] dark:bg-[#0b141a] rounded-2xl p-4 flex flex-col gap-3 border border-slate-200/50 dark:border-slate-850/50 shadow-inner min-h-0">
+              <div className="flex-1 flex flex-col min-h-0 bg-[#efeae2] dark:bg-[#0b141a] rounded-2xl p-4 border border-slate-200/50 dark:border-slate-850/50 shadow-inner">
+                {/* Scrollable Chat Feed */}
+                <div className="flex-1 overflow-y-auto min-h-0 pr-1">
                   {loadingTicketReplies ? (
                     <div className="flex flex-col items-center justify-center py-10 gap-2">
                       <RefreshCw size={24} className="text-gray-400 animate-spin" />
                       <span className="text-[12px] text-gray-555">Memuat tanya jawab...</span>
                     </div>
                   ) : ticketReplies.length === 0 ? (
-                    <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
+                    <div className="h-full flex flex-col items-center justify-center text-center p-4">
                       <div className="bg-white/95 dark:bg-[#1f2c34]/95 rounded-xl px-4.5 py-2.5 text-[11px] text-gray-555 dark:text-gray-400 max-w-[85%] shadow-sm border border-gray-100 dark:border-transparent">
                         Belum ada obrolan. Gunakan form di bawah untuk bertanya jawab terkait keluhan ini.
                       </div>
@@ -1525,7 +1639,7 @@ function ServiceHub() {
                                 }`}
                               >
                                 {!isOwn && (
-                                  <div className="flex items-center gap-1 text-[10px] font-bold text-blue-605 dark:text-blue-400 mb-0.5">
+                                  <div className="flex items-center gap-1 text-[10px] font-bold text-blue-650 dark:text-blue-400 mb-0.5">
                                     <span>{reply.nama_pengirim || "Pengguna"}</span>
                                     {reply.role_pengirim && reply.role_pengirim !== "warga" && (
                                       <span className={`px-1.5 py-0.2 rounded text-[8px] font-extrabold uppercase tracking-wide ${
@@ -1554,77 +1668,78 @@ function ServiceHub() {
                     </div>
                   )}
                 </div>
+
+                {/* Reply Form placed directly below the Q&A Chat Feed */}
+                <div className="mt-3 pt-2 border-t border-slate-200/40 dark:border-slate-800/80 shrink-0">
+                  {selectedTicket.status === "done" ? (
+                    <div className="bg-white/80 dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 text-slate-500 dark:text-slate-400 rounded-xl py-2 px-3 text-center text-[11px] font-bold w-full shadow-xxs">
+                      Laporan selesai & ditutup. Tanya jawab dinonaktifkan.
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSendTicketReply} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        className="flex-1 bg-white dark:bg-[#1b2641] border border-slate-200 dark:border-[#2c3c5e] text-slate-950 dark:text-slate-100 rounded-full px-4 py-2 text-[12px] outline-none transition-colors focus:bg-white dark:focus:bg-[#1b2641] focus:border-blue-400"
+                        placeholder="Ketik pesan balasan..."
+                        value={ticketReplyForm}
+                        onChange={(e) => setTicketReplyForm(e.target.value)}
+                        disabled={sendingTicketReply}
+                        required
+                      />
+                      <button
+                        type="submit"
+                        className="w-9 h-9 bg-blue-600 hover:bg-blue-700 text-white rounded-full border-none cursor-pointer flex items-center justify-center transition-colors shrink-0 disabled:opacity-50 active:scale-90"
+                        disabled={sendingTicketReply || !ticketReplyForm.trim()}
+                      >
+                        <Send size={14} className="text-white" />
+                      </button>
+                    </form>
+                  )}
+                </div>
               </div>
+            </div>
+          </div>
 
-            {/* Officer & Admin Actions Form (PIC / Status / Close) */}
-            {(user?.role === "admin" || user?.role === "petugas") && selectedTicket.status !== "done" && (
-              <div className="flex flex-col gap-2 p-5 bg-white dark:bg-[#131c33] border-t border-slate-100 dark:border-slate-800/80 shrink-0 z-10">
-                {selectedTicket.status === "open" && (
-                  <button
-                    type="button"
-                    className="w-full flex items-center justify-center gap-1.5 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-extrabold py-3.5 px-4 rounded-xl text-[13px] border-none cursor-pointer transition-all hover:bg-blue-205 dark:hover:bg-blue-900/40 active:scale-95 shadow-xxs"
-                    onClick={() =>
-                      showConfirm(
-                        `Tandai keluhan ini sedang diproses?\n\n"${selectedTicket.deskripsi}"`,
-                        async () => {
-                          await updateStatus(selectedTicket.id_tiket, "proses");
-                          setSelectedTicket(prev => prev ? { ...prev, status: "proses", id_petugas_pic: user.id_user } : null);
-                        },
-                        { title: "Konfirmasi Proses", variant: "warning" }
-                      )
-                    }
-                  >
-                    <MessageSquareWarning size={16} /> Tandai Sedang Diproses
-                  </button>
-                )}
-
+          {/* Sticky Officer/Admin Actions Form (Close & Done) placed as sticky bottom drawer */}
+          {(user?.role === "admin" || user?.role === "petugas") && selectedTicket.status !== "done" && (
+            <div className="safe-footer-padding bg-white dark:bg-[#131c33] border-t border-slate-100 dark:border-slate-800/80 shrink-0 flex flex-col gap-2 p-5 z-10 shadow-[0_-4px_12px_rgba(0,0,0,0.04)]">
+              {selectedTicket.status === "open" && (
                 <button
                   type="button"
-                  className="w-full flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl text-[13px] border-none shadow-[0_4px_12px_rgba(16,185,129,0.25)] cursor-pointer transition-all active:scale-95"
-                  onClick={() => {
+                  className="w-full flex items-center justify-center gap-1.5 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-extrabold py-3.5 px-4 rounded-xl text-[13px] border-none cursor-pointer transition-all hover:bg-blue-205 dark:hover:bg-blue-900/40 active:scale-95 shadow-xxs"
+                  onClick={() =>
                     showConfirm(
-                      `Tutup dan tandai keluhan ini sebagai selesai?\n\n"${selectedTicket.deskripsi}"`,
+                      `Tandai keluhan ini sedang diproses?\n\n"${selectedTicket.deskripsi}"`,
                       async () => {
-                        await updateStatus(selectedTicket.id_tiket, "done");
-                        setSelectedTicket(prev => prev ? { ...prev, status: "done", id_petugas_pic: user.id_user } : null);
+                        await updateStatus(selectedTicket.id_tiket, "proses");
+                        setSelectedTicket(prev => prev ? { ...prev, status: "proses", id_petugas_pic: user.id_user } : null);
                       },
-                      { title: "Selesaikan Keluhan", variant: "success" }
-                    );
-                  }}
+                      { title: "Konfirmasi Proses", variant: "warning" }
+                    )
+                  }
                 >
-                  <CheckCircle size={16} /> Tutup & Selesaikan Keluhan (Done)
+                  <MessageSquareWarning size={16} /> Tandai Sedang Diproses
                 </button>
-              </div>
-            )}
-          </div>
+              )}
 
-          {/* Sticky Reply Form */}
-          <div className="safe-footer-padding bg-white dark:bg-[#131c33] border-t border-gray-100 dark:border-slate-800/80 shrink-0 flex items-center gap-2 z-10">
-            {selectedTicket.status === "done" ? (
-              <div className="bg-gray-100 dark:bg-slate-900 border border-gray-200 dark:border-slate-800/80 text-gray-505 dark:text-gray-400 rounded-xl py-3 px-4 text-center text-[12px] font-bold w-full shadow-xxs">
-                Keluhan ini telah diselesaikan & ditutup. Tanya jawab dinonaktifkan.
-              </div>
-            ) : (
-              <form onSubmit={handleSendTicketReply} className="flex items-center gap-2 flex-1">
-                <input
-                  type="text"
-                  className="flex-1 bg-gray-50 dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] text-gray-900 dark:text-gray-100 rounded-full px-4 py-2.5 text-[13px] outline-none transition-colors focus:bg-white dark:focus:bg-[#1b2641] focus:border-blue-400"
-                  placeholder="Ketik pesan balasan..."
-                  value={ticketReplyForm}
-                  onChange={(e) => setTicketReplyForm(e.target.value)}
-                  disabled={sendingTicketReply}
-                  required
-                />
-                <button
-                  type="submit"
-                  className="w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full border-none cursor-pointer flex items-center justify-center transition-colors shrink-0 disabled:opacity-50 active:scale-90"
-                  disabled={sendingTicketReply || !ticketReplyForm.trim()}
-                >
-                  <Send size={15} className="text-white" />
-                </button>
-              </form>
-            )}
-          </div>
+              <button
+                type="button"
+                className="w-full flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl text-[13px] border-none shadow-[0_4px_12px_rgba(16,185,129,0.25)] cursor-pointer transition-all active:scale-95"
+                onClick={() => {
+                  showConfirm(
+                    `Tutup dan tandai keluhan ini sebagai selesai?\n\n"${selectedTicket.deskripsi}"`,
+                    async () => {
+                      await updateStatus(selectedTicket.id_tiket, "done");
+                      setSelectedTicket(prev => prev ? { ...prev, status: "done", id_petugas_pic: user.id_user } : null);
+                    },
+                    { title: "Selesaikan Keluhan", variant: "success" }
+                  );
+                }}
+              >
+                <CheckCircle size={16} /> Tutup & Selesaikan Keluhan (Done)
+              </button>
+            </div>
+          )}
         </div>
       )}
 
