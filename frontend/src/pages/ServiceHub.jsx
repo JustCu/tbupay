@@ -97,8 +97,9 @@ const getDeterministicColor = (name) => {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
   const hue = Math.abs(hash % 360);
-  // Ensure readable contrast on white background: 40% lightness
-  return `hsl(${hue}, 65%, 40%)`;
+  const isDark = document.documentElement.classList.contains("dark");
+  const lightness = isDark ? "70%" : "40%";
+  return `hsl(${hue}, 65%, ${lightness})`;
 };
 
 const formatChatDateHeader = (dateStr) => {
@@ -1050,7 +1051,7 @@ function ServiceHub() {
           <div className="p-4 flex flex-col gap-3 flex-1 min-h-0 overflow-hidden">
             <button
               type="button"
-              className="inline-flex items-center gap-1 text-[12px] font-medium text-gray-500 bg-gray-100 border-none rounded-full px-3 py-1.5 w-fit cursor-pointer hover:bg-gray-200 transition-colors"
+              className="inline-flex items-center gap-1 text-[12px] font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 border-none rounded-full px-3 py-1.5 w-fit cursor-pointer transition-colors"
               onClick={() => setOpenSheet("berita")}
             >
               ← Kembali ke Daftar Berita
@@ -1059,13 +1060,13 @@ function ServiceHub() {
               <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 m-0 leading-tight">{selectedNews.judul}</h3>
               <p className="text-[11px] text-gray-400 m-0">{selectedNews.tanggal ? safeDate(selectedNews.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""}</p>
             </div>
-            <p className="text-[14px] text-gray-600 m-0 leading-relaxed whitespace-pre-wrap">{selectedNews.konten}</p>
+            <p className="text-[14px] text-gray-600 dark:text-gray-300 m-0 leading-relaxed whitespace-pre-wrap">{selectedNews.konten}</p>
             
             <div className="mt-2 flex flex-col gap-3 border-t border-gray-100 dark:border-slate-800/80 pt-4 flex-1 min-h-0">
               <div className="flex items-center justify-between px-1">
-                <p className="text-[14px] font-bold text-gray-800 m-0">Diskusi Warga</p>
+                <p className="text-[14px] font-bold text-gray-800 dark:text-gray-200 m-0">Diskusi Warga</p>
                 {!loadingReplies && newsReplies.length > 0 && (
-                  <span className="text-[11px] font-extrabold bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full border border-blue-100">
+                  <span className="text-[11px] font-extrabold bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full border border-blue-100 dark:border-blue-900/50">
                     {newsReplies.length} Pesan
                   </span>
                 )}
@@ -1101,7 +1102,7 @@ function ServiceHub() {
                           <div key={reply.id_balasan} className="flex flex-col gap-2">
                             {showDateHeader && (
                               <div className="flex justify-center my-2 sticky top-1 z-10">
-                                <span className="bg-white/90 text-gray-500 text-[10px] font-extrabold uppercase px-3 py-1 rounded-lg shadow-sm border border-gray-150/50 backdrop-blur-xs tracking-wider">
+                                <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-gray-500 dark:text-gray-400 text-[10px] font-extrabold uppercase px-3 py-1 rounded-lg shadow-sm border border-gray-150/50 dark:border-transparent backdrop-blur-xs tracking-wider">
                                   {currentDateHeader}
                                 </span>
                               </div>
@@ -1120,8 +1121,8 @@ function ServiceHub() {
                               <div
                                 className={`flex flex-col gap-0.5 rounded-[18px] px-3.5 py-2 shadow-[0_1px_1.5px_rgba(0,0,0,0.08)] ${
                                   isOwn
-                                    ? "bg-[#d9fdd3] text-gray-800 rounded-tr-none border border-[#e1f5fe]/10"
-                                    : "bg-white text-gray-800 rounded-tl-none border border-gray-100"
+                                    ? "bg-[#d9fdd3] dark:bg-[#005c4b] text-gray-900 dark:text-gray-100 rounded-tr-none border border-[#e1f5fe]/10 dark:border-transparent"
+                                    : "bg-white dark:bg-[#202c33] text-gray-900 dark:text-gray-100 rounded-tl-none border border-gray-100 dark:border-transparent"
                                 }`}
                               >
                                 {!isOwn && (
@@ -1133,14 +1134,14 @@ function ServiceHub() {
                                   </span>
                                 )}
                                 {isOwn && (
-                                  <span className="text-[9px] font-extrabold text-emerald-700 uppercase tracking-wide self-end mb-0.5">
+                                  <span className="text-[9px] font-extrabold text-emerald-700 dark:text-emerald-300 uppercase tracking-wide self-end mb-0.5">
                                     Anda
                                   </span>
                                 )}
-                                <p className="m-0 text-[13px] leading-relaxed whitespace-pre-wrap break-words text-gray-700 font-medium">
+                                <p className="m-0 text-[13px] leading-relaxed whitespace-pre-wrap break-words font-medium">
                                   {reply.isi_balasan}
                                 </p>
-                                <span className="text-[9px] text-gray-400/80 shrink-0">
+                                <span className="text-[9px] text-gray-400 dark:text-gray-500 shrink-0">
                                   {reply.timestamp ? safeDate(reply.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
                                 </span>
                               </div>
@@ -1155,7 +1156,7 @@ function ServiceHub() {
               <form onSubmit={handleSendReply} className="flex items-center gap-2 mt-1.5 pt-1.5 bg-white dark:bg-[#131c33] sticky bottom-0">
                 <input
                   type="text"
-                  className="flex-1 border border-gray-200 rounded-full px-4 py-2.5 text-[13px] bg-gray-50 focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                  className="flex-1 bg-gray-50 dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] text-gray-900 dark:text-gray-100 rounded-full px-4 py-2.5 text-[13px] outline-none transition-colors focus:bg-white dark:focus:bg-[#1b2641] focus:border-blue-400"
                   placeholder="Komentari berita ini..."
                   value={replyForm}
                   onChange={(e) => setReplyForm(e.target.value)}
@@ -1321,7 +1322,7 @@ function ServiceHub() {
                           <div key={reply.id_balasan} className="flex flex-col gap-1.5">
                             {showDateHeader && (
                               <div className="flex justify-center my-2 sticky top-1 z-10">
-                                <span className="bg-white/90 dark:bg-slate-900 text-gray-500 dark:text-gray-400 text-[10px] font-extrabold uppercase px-3 py-1 rounded-lg shadow-sm border border-gray-150/50 backdrop-blur-xs tracking-wider">
+                                <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-gray-500 dark:text-gray-400 text-[10px] font-extrabold uppercase px-3 py-1 rounded-lg shadow-sm border border-gray-150/50 dark:border-transparent backdrop-blur-xs tracking-wider">
                                   {currentDateHeader}
                                 </span>
                               </div>
@@ -1329,8 +1330,8 @@ function ServiceHub() {
                             <div
                               className={`flex flex-col gap-0.5 max-w-[85%] rounded-[18px] px-3.5 py-2 shadow-[0_1px_1px_rgba(0,0,0,0.1)] ${
                                 isOwn
-                                  ? "self-end bg-[#d9fdd3] text-gray-800 rounded-tr-none ml-auto border border-[#e1f5fe]/10"
-                                  : "self-start bg-white text-gray-800 rounded-tl-none mr-auto border border-gray-100"
+                                  ? "self-end bg-[#d9fdd3] dark:bg-[#005c4b] text-gray-900 dark:text-gray-100 rounded-tr-none ml-auto border border-[#e1f5fe]/10 dark:border-transparent"
+                                  : "self-start bg-white dark:bg-[#202c33] text-gray-900 dark:text-gray-100 rounded-tl-none mr-auto border border-gray-100 dark:border-transparent"
                               }`}
                             >
                               {!isOwn && (
@@ -1352,7 +1353,7 @@ function ServiceHub() {
                                 </div>
                               )}
                               <p className="m-0 text-[13px] leading-relaxed whitespace-pre-wrap break-words">{reply.isi_balasan}</p>
-                              <span className="text-[9px] text-gray-400/80 shrink-0">
+                              <span className="text-[9px] text-gray-400 dark:text-gray-550 shrink-0">
                                 {reply.timestamp ? safeDate(reply.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
                               </span>
                             </div>
@@ -1363,7 +1364,7 @@ function ServiceHub() {
                   </div>
                 )}
               </div>
-
+ 
               {/* Form Balasan Chat */}
               {selectedTicket.status === "done" ? (
                 <div className="bg-gray-100 dark:bg-slate-900 border border-gray-200 dark:border-slate-800/80 text-gray-500 dark:text-gray-400 rounded-xl py-3 px-4 text-center text-[12px] font-bold mt-1 shadow-sm">
@@ -1373,7 +1374,7 @@ function ServiceHub() {
                 <form onSubmit={handleSendTicketReply} className="flex items-center gap-2 mt-1 pt-1 bg-white dark:bg-[#131c33] sticky bottom-0">
                   <input
                     type="text"
-                    className="flex-1 border border-gray-200 rounded-full px-4 py-2.5 text-[13px] bg-gray-50 focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+                    className="flex-1 bg-gray-50 dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] text-gray-900 dark:text-gray-100 rounded-full px-4 py-2.5 text-[13px] outline-none transition-colors focus:bg-white dark:focus:bg-[#1b2641] focus:border-blue-400"
                     placeholder="Ketik pesan balasan..."
                     value={ticketReplyForm}
                     onChange={(e) => setTicketReplyForm(e.target.value)}
