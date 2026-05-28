@@ -30,8 +30,12 @@ export default function Login() {
         login(result.user);
         navigate("/");
       } else {
+        const friendlyMessage =
+          result.message === "Invalid credentials"
+            ? "ID User atau Kata Sandi salah. Silakan coba lagi."
+            : result.message;
         setError(
-          result.message || "Kredensial tidak valid. Silakan coba lagi.",
+          friendlyMessage || "Gagal masuk. Silakan coba lagi."
         );
       }
     } catch (err) {
