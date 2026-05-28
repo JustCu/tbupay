@@ -396,7 +396,7 @@ export default function PaymentModal({ isOpen, onClose }) {
 
       {/* Scrollable Form Body */}
       <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
-        <form className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-5 flex flex-col gap-5 shadow-sm" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
             {isAdmin && (
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Tipe Transaksi</label>
