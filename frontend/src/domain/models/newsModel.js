@@ -16,5 +16,6 @@ export const toNewsReplyModel = (raw = {}) => ({
   id_user: String(raw.id_user || ""),
   nama_pengirim: String(raw.nama_pengirim || "Pengguna"),
   isi_balasan: String(raw.isi_balasan || ""),
+  role_pengirim: String(raw.role_pengirim || ""),
   timestamp: toValidDateString(raw.timestamp) || String(raw.timestamp || ""),
 });

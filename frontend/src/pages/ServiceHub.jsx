@@ -419,6 +419,7 @@ function ServiceHub() {
         id_berita: selectedNews.id_berita,
         id_user: user?.id_user || "",
         nama_pengirim: user?.nama || "Warga",
+        role_pengirim: user?.role || "warga",
         isi_balasan: text,
       });
       if (res.status === "success") {
@@ -1201,11 +1202,13 @@ function ServiceHub() {
                 {selectedNews.konten}
               </p>
             </div>
-
-            {/* Comment Section container */}
-            <div className="p-5 flex flex-col gap-3 flex-1 min-h-[300px]">
-              <div className="flex items-center justify-between px-1 shrink-0">
-                <p className="text-[11px] font-extrabold text-slate-800 dark:text-slate-200 m-0 uppercase tracking-wider">Diskusi Warga</p>
+            {/* Area Tanya Jawab Container */}
+            <div className="flex-1 flex flex-col min-h-0 px-5 pb-5 pt-2 overflow-hidden">
+              <div className="flex items-center justify-between mb-2 px-1 shrink-0">
+                <p className="text-xs font-extrabold text-slate-800 dark:text-slate-205 m-0 flex items-center gap-1.5 uppercase tracking-wider">
+                  <MessageCircle size={15} className="text-blue-500" />
+                  Tanya Jawab Berita
+                </p>
                 {!loadingReplies && newsReplies.length > 0 && (
                   <span className="text-[10px] font-extrabold bg-blue-50 dark:bg-blue-955/40 text-blue-600 dark:text-blue-400 px-2.5 py-0.5 rounded-full border border-blue-100 dark:border-blue-900/50">
                     {newsReplies.length} Komentar
@@ -1213,111 +1216,109 @@ function ServiceHub() {
                 )}
               </div>
 
-              {/* Chat Feed */}
-              <div className="flex-1 overflow-y-auto bg-[#efeae2] dark:bg-[#0b141a] rounded-2xl p-4 flex flex-col gap-3.5 border border-slate-200/50 dark:border-slate-850/50 shadow-inner min-h-0">
-                {loadingReplies ? (
-                  <div className="flex flex-col items-center justify-center py-12 gap-2">
-                    <RefreshCw size={22} className="text-gray-400 animate-spin" />
-                    <span className="text-[12px] text-gray-555">Memuat komentar...</span>
-                  </div>
-                ) : newsReplies.length === 0 ? (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-                    <div className="bg-white/95 dark:bg-[#1f2c34]/95 rounded-xl px-4.5 py-2.5 text-[11px] text-gray-500 dark:text-gray-400 max-w-[85%] shadow-sm border border-gray-100 dark:border-transparent">
-                      Belum ada tanggapan. Jadilah warga pertama yang berdiskusi terkait berita ini!
+              {/* Chat Feed & Input Box Container */}
+              <div className="flex-1 flex flex-col min-h-0 bg-[#efeae2] dark:bg-[#0b141a] rounded-2xl p-4 border border-slate-200/50 dark:border-slate-850/50 shadow-inner">
+                {/* Scrollable Comments List */}
+                <div className="flex-1 overflow-y-auto min-h-0 pr-1">
+                  {loadingReplies ? (
+                    <div className="flex flex-col items-center justify-center py-10 gap-2">
+                      <RefreshCw size={24} className="text-gray-400 animate-spin" />
+                      <span className="text-[12px] text-gray-555">Memuat tanya jawab...</span>
                     </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-3">
-                    {(() => {
-                      let lastDateHeader = null;
-                      return newsReplies.map((reply) => {
-                        if (!reply) return null;
-                        const isOwn = String(reply.id_user) === String(user?.id_user);
-                        const bubbleColor = getDeterministicColor(reply.nama_pengirim);
-                        const currentDateHeader = formatChatDateHeader(reply.timestamp);
-                        const showDateHeader = currentDateHeader && currentDateHeader !== lastDateHeader;
-                        if (showDateHeader) {
-                          lastDateHeader = currentDateHeader;
-                        }
-                        
-                        return (
-                          <div key={reply.id_balasan} className="flex flex-col gap-2">
-                            {showDateHeader && (
-                              <div className="flex justify-center my-2 sticky top-1 z-10">
-                                <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-gray-555 dark:text-gray-450 text-[10px] font-extrabold uppercase px-3 py-1 rounded-lg shadow-sm border border-gray-150/50 dark:border-transparent backdrop-blur-xs tracking-wider">
-                                  {currentDateHeader}
-                                </span>
-                              </div>
-                            )}
-                            <div className={`flex gap-2 items-end max-w-[85%] ${isOwn ? "self-end ml-auto" : "self-start mr-auto"}`}>
-                              {!isOwn && (
-                                <div 
-                                  className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white shrink-0 shadow-sm mb-0.5"
-                                  style={{ backgroundColor: bubbleColor }}
-                                  title={reply.nama_pengirim}
-                                >
-                                  {getInitials(reply.nama_pengirim)}
+                  ) : newsReplies.length === 0 ? (
+                    <div className="h-full flex flex-col items-center justify-center text-center p-4">
+                      <div className="bg-white/95 dark:bg-[#1f2c34]/95 rounded-xl px-4.5 py-2.5 text-[11px] text-gray-555 dark:text-gray-400 max-w-[85%] shadow-sm border border-gray-100 dark:border-transparent">
+                        Belum ada obrolan. Gunakan form di bawah untuk bertanya jawab terkait berita ini.
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-2.5">
+                      {(() => {
+                        let lastDateHeader = null;
+                        return newsReplies.map((reply) => {
+                          if (!reply) return null;
+                          const isOwn = String(reply.id_user) === String(user?.id_user);
+                          const currentDateHeader = formatChatDateHeader(reply.timestamp);
+                          const showDateHeader = currentDateHeader && currentDateHeader !== lastDateHeader;
+                          if (showDateHeader) {
+                            lastDateHeader = currentDateHeader;
+                          }
+                          
+                          return (
+                            <div key={reply.id_balasan} className="flex flex-col gap-1.5">
+                              {showDateHeader && (
+                                <div className="flex justify-center my-2 sticky top-1 z-10">
+                                  <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-gray-555 dark:text-gray-400 text-[10px] font-extrabold uppercase px-3 py-1 rounded-lg shadow-sm border border-gray-150/50 dark:border-transparent backdrop-blur-xs tracking-wider">
+                                    {currentDateHeader}
+                                  </span>
                                 </div>
                               )}
-                              
                               <div
-                                className={`flex flex-col gap-0.5 rounded-[18px] px-3.5 py-2 shadow-[0_1px_1.5px_rgba(0,0,0,0.08)] ${
+                                className={`flex flex-col gap-0.5 max-w-[85%] rounded-[18px] px-3.5 py-2 shadow-[0_1px_1px_rgba(0,0,0,0.1)] ${
                                   isOwn
-                                    ? "bg-[#d9fdd3] dark:bg-[#005c4b] text-gray-900 dark:text-gray-100 rounded-tr-none border border-[#e1f5fe]/10 dark:border-transparent"
-                                    : "bg-white dark:bg-[#202c33] text-gray-900 dark:text-gray-100 rounded-tl-none border border-gray-100 dark:border-transparent"
+                                    ? "self-end bg-[#d9fdd3] dark:bg-[#005c4b] text-gray-900 dark:text-gray-100 rounded-tr-none ml-auto border border-[#e1f5fe]/10 dark:border-transparent"
+                                    : "self-start bg-white dark:bg-[#202c33] text-gray-900 dark:text-gray-100 rounded-tl-none mr-auto border border-gray-100 dark:border-transparent"
                                 }`}
                               >
                                 {!isOwn && (
-                                  <span 
-                                    className="text-[10px] font-extrabold uppercase tracking-wide mb-0.5"
-                                    style={{ color: bubbleColor }}
-                                  >
-                                    {reply.nama_pengirim || "Warga"}
-                                  </span>
+                                  <div className="flex items-center gap-1 text-[10px] font-bold text-blue-655 dark:text-blue-400 mb-0.5">
+                                    <span>{reply.nama_pengirim || "Pengguna"}</span>
+                                    {reply.role_pengirim && reply.role_pengirim !== "warga" && (
+                                      <span className={`px-1.5 py-0.2 rounded text-[8px] font-extrabold uppercase tracking-wide ${
+                                        reply.role_pengirim === "admin" ? "bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-400 border border-red-200" :
+                                        "bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200"
+                                      }`}>
+                                        {reply.role_pengirim}
+                                      </span>
+                                    )}
+                                  </div>
                                 )}
-                                {isOwn && (
+                                {isOwn && reply.role_pengirim && reply.role_pengirim !== "warga" && (
+                                  <div className="text-[9px] font-extrabold text-red-655 dark:text-red-400 uppercase tracking-wide self-end mb-0.5">
+                                    Anda ({reply.role_pengirim})
+                                  </div>
+                                )}
+                                {isOwn && (!reply.role_pengirim || reply.role_pengirim === "warga") && (
                                   <span className="text-[9px] font-extrabold text-emerald-700 dark:text-emerald-300 uppercase tracking-wide self-end mb-0.5">
                                     Anda
                                   </span>
                                 )}
-                                <p className="m-0 text-[13px] leading-relaxed whitespace-pre-wrap break-words font-medium">
-                                  {reply.isi_balasan}
-                                </p>
-                                <span className="text-[9px] text-gray-400 dark:text-gray-500 shrink-0">
+                                <p className="m-0 text-[13px] leading-relaxed whitespace-pre-wrap break-words">{reply.isi_balasan}</p>
+                                <span className="text-[9px] text-gray-555 dark:text-gray-555 shrink-0">
                                   {reply.timestamp ? safeDate(reply.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
                                 </span>
                               </div>
                             </div>
-                          </div>
-                        );
-                      });
-                    })()}
-                  </div>
-                )}
+                          );
+                        });
+                      })()}
+                    </div>
+                  )}
+                </div>
+
+                {/* Reply Form placed directly below the Chat Feed inside the container */}
+                <div className="mt-3 pt-2 border-t border-slate-200/40 dark:border-slate-800/80 shrink-0">
+                  <form onSubmit={handleSendReply} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      className="flex-1 bg-white dark:bg-[#1b2641] border border-slate-200 dark:border-[#2c3c5e] text-slate-950 dark:text-slate-100 rounded-full px-4 py-2 text-[12px] outline-none transition-colors focus:bg-white dark:focus:bg-[#1b2641] focus:border-blue-400"
+                      placeholder="Ketik pesan balasan..."
+                      value={replyForm}
+                      onChange={(e) => setReplyForm(e.target.value)}
+                      disabled={sendingReply}
+                      required
+                    />
+                    <button
+                      type="submit"
+                      className="w-9 h-9 bg-blue-600 hover:bg-blue-700 text-white rounded-full border-none cursor-pointer flex items-center justify-center transition-colors shrink-0 disabled:opacity-50 active:scale-90"
+                      disabled={sendingReply || !replyForm.trim()}
+                    >
+                      <Send size={14} className="text-white" />
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Sticky input footer */}
-          <div className="safe-footer-padding bg-white dark:bg-[#131c33] border-t border-gray-100 dark:border-slate-800/80 shrink-0 flex items-center gap-2 z-10">
-            <form onSubmit={handleSendReply} className="flex items-center gap-2 flex-1">
-              <input
-                type="text"
-                className="flex-1 bg-gray-50 dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] text-gray-900 dark:text-gray-100 rounded-full px-4 py-2.5 text-[13px] outline-none transition-colors focus:bg-white dark:focus:bg-[#1b2641] focus:border-blue-400"
-                placeholder="Komentari berita ini..."
-                value={replyForm}
-                onChange={(e) => setReplyForm(e.target.value)}
-                disabled={sendingReply}
-                required
-              />
-              <button
-                type="submit"
-                className="w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full border-none cursor-pointer flex items-center justify-center transition-colors shrink-0 disabled:opacity-50 active:scale-90"
-                disabled={sendingReply || !replyForm.trim()}
-              >
-                <Send size={15} className="text-white" />
-              </button>
-            </form>
           </div>
         </div>
       )}
