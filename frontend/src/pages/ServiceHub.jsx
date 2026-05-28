@@ -704,7 +704,7 @@ function ServiceHub() {
 
       {/* ========== BOTTOM MODAL: KELUHAN ========== */}
       <div
-        className={`fixed inset-0 z-50 flex justify-center items-end bg-black/60 backdrop-blur-[1px] transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[70] flex justify-center items-end bg-black/60 backdrop-blur-[1px] transition-opacity duration-300 ${
           openSheet === "keluhan" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none overflow-hidden"
         }`}
         onClick={closeSheet}
@@ -768,7 +768,7 @@ function ServiceHub() {
 
       {/* ========== BOTTOM MODAL: SARAN ========== */}
       <div
-        className={`fixed inset-0 z-50 flex justify-center items-end bg-black/60 backdrop-blur-[1px] transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[70] flex justify-center items-end bg-black/60 backdrop-blur-[1px] transition-opacity duration-300 ${
           openSheet === "saran" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none overflow-hidden"
         }`}
         onClick={closeSheet}
