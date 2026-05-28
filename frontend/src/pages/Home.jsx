@@ -16,6 +16,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   ArrowDownLeft,
+  ArrowDownRight,
   Megaphone,
   MessageSquareWarning,
   Landmark,
