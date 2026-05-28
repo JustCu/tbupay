@@ -705,7 +705,7 @@ function ServiceHub() {
 
       {/* ========== STANDALONE VIEW: KELUHAN ========== */}
       {openSheet === "keluhan" && (
-        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+        <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
           <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
             <button
@@ -758,7 +758,7 @@ function ServiceHub() {
 
       {/* ========== STANDALONE VIEW: SARAN ========== */}
       {openSheet === "saran" && (
-        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+        <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
           <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
             <button
@@ -802,7 +802,7 @@ function ServiceHub() {
 
       {/* ========== STANDALONE VIEW: GENERAL GROUP CHAT ========== */}
       {openSheet === "grupchat" && (
-        <div className="fixed inset-0 z-[60] bg-[#efeae2] dark:bg-[#0b141a] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+        <div className="fixed inset-0 z-[60] w-full bg-[#efeae2] dark:bg-[#0b141a] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-3.5 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm z-10">
             <div className="flex items-center gap-3">
@@ -948,7 +948,7 @@ function ServiceHub() {
       )}
       {/* ========== STANDALONE VIEW: BERITA ========== */}
       {openSheet === "berita" && (
-        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+        <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
           <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
             <button
@@ -1090,7 +1090,7 @@ function ServiceHub() {
 
       {/* ========== STANDALONE VIEW: TAMBAH BERITA (Admin Only) ========== */}
       {openSheet === "tambahBerita" && (
-        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+        <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
           <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
             <button
@@ -1145,7 +1145,7 @@ function ServiceHub() {
       )}
       {/* ========== STANDALONE VIEW: NEWS DETAIL ========== */}
       {openSheet === "newsDetail" && selectedNews && (
-        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+        <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
           <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm z-10">
             <button
@@ -1303,7 +1303,7 @@ function ServiceHub() {
       )}
        {/* ========== STANDALONE VIEW: PANTAUAN ========== */}
       {openSheet === "pantauan" && (
-        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+        <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
           <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
             <button
@@ -1395,7 +1395,7 @@ function ServiceHub() {
 
       {/* ========== STANDALONE VIEW: TICKET DETAIL ========== */}
       {openSheet === "ticketDetail" && selectedTicket && (
-        <div className="fixed inset-0 z-[60] bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+        <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
           <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm z-10">
             <button
