@@ -55,17 +55,17 @@ function BottomSheet({ isOpen, onClose, title, children, heightClass = "h-[82vh]
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-[28px] shadow-[0_-4px_24px_rgba(0,0,0,0.15)] flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${heightClass} ${
+        className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${heightClass} ${
           isOpen ? "translate-y-0" : "translate-y-full"
         }`}
       >
         {/* Drag handle */}
-        <div className="w-[44px] h-[5px] rounded-full bg-gray-200 dark:bg-slate-700 mx-auto mt-3 mb-1 shrink-0" />
+        <div className="w-[44px] h-[4px] rounded-full bg-gray-200 dark:bg-slate-700 mx-auto mt-3 mb-1 shrink-0" />
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 dark:border-slate-800/80 shrink-0">
-          <h3 className="m-0 text-[17px] font-bold text-gray-800 dark:text-gray-100">{title}</h3>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
+          <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100">{title}</h3>
           <button
-            className="p-2 bg-gray-100 dark:bg-slate-800/60 rounded-full text-gray-600 dark:text-gray-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-gray-200 dark:hover:bg-slate-700/60"
+            className="p-2 bg-gray-100 dark:bg-slate-800/60 rounded-full text-slate-600 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-gray-200 dark:hover:bg-slate-700/60"
             onClick={onClose}
           >
             <X size={18} />
@@ -508,20 +508,20 @@ function ServiceHub() {
 
   // -------- Skeleton --------
   const Skeleton = () => (
-    <div className="border border-gray-200 rounded-[14px] bg-white p-[14px] flex flex-col gap-2">
+    <div className="border border-gray-200 rounded-2xl bg-white p-4 flex flex-col gap-3">
       <span className="h-2.5 rounded-full bg-[linear-gradient(90deg,#f1f5f9_0%,#e2e8f0_50%,#f1f5f9_100%)] bg-[length:180%_100%] animate-[skeletonShimmer_1.2s_ease-in-out_infinite]" />
       <span className="h-2.5 rounded-full bg-[linear-gradient(90deg,#f1f5f9_0%,#e2e8f0_50%,#f1f5f9_100%)] bg-[length:180%_100%] animate-[skeletonShimmer_1.2s_ease-in-out_infinite] w-[62%]" />
     </div>
   );
 
   // -------- Form Field Styles --------
-  const inputCls = "bg-gray-50 border border-gray-200 rounded-xl p-[12px_14px] text-[14px] font-sans text-gray-900 outline-none w-full focus:bg-white focus:border-blue-400 focus:ring-[3px] focus:ring-blue-500/10 transition-colors";
-  const labelCls = "text-[11px] text-gray-500 uppercase tracking-[0.5px] font-bold";
+  const inputCls = "bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-[14px] font-sans text-gray-900 outline-none w-full focus:bg-white focus:border-blue-400 focus:ring-[3px] focus:ring-blue-500/10 transition-colors";
+  const labelCls = "text-[11px] text-slate-500 uppercase tracking-[0.5px] font-bold";
 
   return (
     <div className="flex flex-col" {...pull.bind}>
       {pull.showPullHint && (
-        <div className={`sticky top-2 z-[31] mx-auto mb-2.5 w-fit px-3 py-[7px] rounded-full border text-xs font-semibold ${pull.isReady ? "border-green-300 bg-green-50 text-green-800" : "border-indigo-200 bg-indigo-50 text-indigo-800"}`}>
+        <div className={`sticky top-2 z-[31] mx-auto mb-2 w-fit px-3 py-1.5 rounded-full border text-xs font-semibold ${pull.isReady ? "border-green-300 bg-green-50 text-green-800" : "border-indigo-200 bg-indigo-50 text-indigo-800"}`}>
           {pull.isReady ? "Lepas untuk muat ulang" : "Tarik untuk muat ulang"}
         </div>
       )}
@@ -530,11 +530,11 @@ function ServiceHub() {
       {/* ========== HUB (always rendered) ========== */}
       <div className="pt-1 pb-4 flex justify-between items-start">
         <div>
-          <h2 className="text-xl font-bold m-0 text-gray-800 dark:text-gray-100">Layanan Warga</h2>
-          <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-1 m-0">Pusat informasi dan pengaduan</p>
+          <h2 className="text-xl font-bold m-0 text-slate-800 dark:text-slate-100">Layanan Warga</h2>
+          <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-1 m-0">Pusat informasi dan pengaduan hunian terpadu</p>
         </div>
         <div
-          className="cursor-pointer relative transition-all duration-200 flex items-center justify-center p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full active:scale-95 shrink-0 mt-1"
+          className="cursor-pointer relative transition-all duration-200 flex items-center justify-center p-2 hover:bg-slate-100 dark:hover:bg-slate-850 rounded-full active:scale-95 shrink-0 mt-1"
           onClick={() => {
             setIsNotifOpen(true);
             setHasUnreadNotif(false);
@@ -542,46 +542,46 @@ function ServiceHub() {
         >
           <Bell 
             size={24} 
-            className={`stroke-[1.75] transition-all duration-500 ${(loading || refreshing) ? "text-gray-400 dark:text-gray-500 fill-transparent" : "fill-amber-400 text-amber-500"}`} 
+            className={`stroke-[1.75] transition-all duration-500 ${(loading || refreshing) ? "text-slate-400 dark:text-slate-500 fill-transparent" : "fill-amber-400 text-amber-500"}`} 
           />
           {hasUnreadNotif && !loading && !refreshing && (
-            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 border border-white rounded-full animate-pulse z-10"></span>
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 border border-white rounded-full animate-pulse z-10"></span>
           )}
         </div>
       </div>
 
       {/* Quick action cards */}
-      <div className="grid grid-cols-2 gap-3 mb-5">
+      <div className="grid grid-cols-2 gap-4 mb-6">
         <button
-          className="bg-white dark:bg-[#1a2640] border border-gray-100 dark:border-slate-800/80 border-l-4 border-l-red-500 rounded-2xl p-4 flex flex-col items-start gap-2.5 cursor-pointer text-left transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 active:scale-[0.98] shadow-sm dark:shadow-none"
+          className="bg-white dark:bg-[#151f32] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-4 flex flex-col items-start gap-3 cursor-pointer text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700/80 active:scale-[0.98] shadow-sm dark:shadow-none"
           onClick={() => setOpenSheet("keluhan")}
         >
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-red-50 dark:bg-red-500/10 text-red-500 dark:text-red-400 shrink-0">
+          <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-red-500/10 text-[#dc2626] dark:bg-red-500/15 dark:text-red-400 shrink-0">
             <MessageSquareWarning size={20} className="stroke-[2.2]" />
           </div>
           <div>
-            <span className="block text-[14px] font-extrabold text-gray-800 dark:text-gray-100 leading-tight">Buat Keluhan</span>
-            <span className="block text-[10px] font-semibold text-gray-400 dark:text-gray-400 mt-0.5 leading-none">Lapor fasilitas rusak</span>
+            <span className="block text-sm font-bold text-slate-800 dark:text-slate-100 leading-tight">Buat Keluhan</span>
+            <span className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-1 leading-normal">Lapor fasilitas rusak</span>
           </div>
         </button>
 
         <button
-          className="bg-white dark:bg-[#1a2640] border border-gray-100 dark:border-slate-800/80 border-l-4 border-l-amber-500 rounded-2xl p-4 flex flex-col items-start gap-2.5 cursor-pointer text-left transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 active:scale-[0.98] shadow-sm dark:shadow-none"
+          className="bg-white dark:bg-[#151f32] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-4 flex flex-col items-start gap-3 cursor-pointer text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700/80 active:scale-[0.98] shadow-sm dark:shadow-none"
           onClick={() => setOpenSheet("saran")}
         >
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-50 dark:bg-amber-500/10 text-amber-500 dark:text-amber-400 shrink-0">
+          <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-amber-500/10 text-[#b45309] dark:bg-amber-500/15 dark:text-amber-300 shrink-0">
             <Lightbulb size={20} className="stroke-[2.2]" />
           </div>
           <div>
-            <span className="block text-[14px] font-extrabold text-gray-800 dark:text-gray-100 leading-tight">Kotak Saran</span>
-            <span className="block text-[10px] font-semibold text-gray-400 dark:text-gray-400 mt-0.5 leading-none">Aspirasi untuk RT/RW</span>
+            <span className="block text-sm font-bold text-slate-800 dark:text-slate-100 leading-tight">Kotak Saran</span>
+            <span className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-1 leading-normal">Aspirasi untuk RT/RW</span>
           </div>
         </button>
       </div>
 
       {/* General Group Chat Banner Card */}
       <button
-        className="w-full relative overflow-hidden rounded-2xl p-4.5 mb-6 text-left cursor-pointer border border-transparent shadow-[0_4px_12px_rgba(15,76,129,0.15)] dark:shadow-none transition-all duration-300 hover:shadow-[0_6px_20px_rgba(15,76,129,0.25)] active:scale-[0.99] flex items-center justify-between gap-4 select-none"
+        className="w-full relative overflow-hidden rounded-2xl p-5 mb-6 text-left cursor-pointer border border-transparent shadow-[0_4px_12px_rgba(15,76,129,0.15)] dark:shadow-none transition-all duration-300 hover:shadow-[0_6px_20px_rgba(15,76,129,0.25)] active:scale-[0.99] flex items-center justify-between gap-4 select-none"
         style={{
           background: "linear-gradient(135deg, #0a3460 0%, #0f4c81 100%)",
         }}
@@ -594,13 +594,13 @@ function ServiceHub() {
         {/* Background watermark icon */}
         <MessageCircle className="absolute right-4 bottom-[-10px] w-28 h-28 text-white opacity-[0.06] pointer-events-none rotate-[-15deg]" />
 
-        <div className="relative z-10 flex-1 flex gap-3.5 items-center">
+        <div className="relative z-10 flex-1 flex gap-4 items-center">
           <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-white/20 text-white shrink-0 shadow-inner">
             <MessageCircle size={24} className="stroke-[2.2]" />
           </div>
           <div>
-            <h4 className="text-[15px] font-extrabold text-white m-0 tracking-wide uppercase">Grup Obrolan Warga</h4>
-            <p className="text-[12px] text-indigo-100 mt-1 m-0 leading-tight">Ruang interaksi & koordinasi santai antar tetangga</p>
+            <h4 className="text-base font-extrabold text-white m-0 tracking-wide uppercase">Grup Obrolan Warga</h4>
+            <p className="text-xs text-indigo-100 mt-1 m-0 leading-normal">Ruang interaksi & koordinasi santai antar tetangga</p>
           </div>
         </div>
         
@@ -612,22 +612,22 @@ function ServiceHub() {
       {/* Berita section */}
       <section className="mb-6">
         <div className="flex justify-between items-center mb-3">
-          <h3 className="m-0 text-[17px] font-bold text-gray-700 dark:text-gray-200 tracking-[-0.01em]">Berita Terkini</h3>
+          <h3 className="m-0 text-base font-bold text-slate-850 dark:text-slate-205 tracking-[-0.01em]">Berita Terkini</h3>
           <button
             type="button"
-            className="inline-flex items-center gap-1 border-none bg-blue-50 hover:bg-blue-100 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-blue-600 dark:text-indigo-400 rounded-full px-3 py-1 text-[11px] font-bold cursor-pointer active:scale-95 transition-all select-none"
+            className="inline-flex items-center gap-1.5 border-none bg-blue-50/70 hover:bg-blue-100/90 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-blue-700 dark:text-indigo-400 rounded-full px-3 py-1.5 text-[11px] font-bold cursor-pointer active:scale-95 transition-all select-none"
             onClick={() => setOpenSheet("berita")}
           >
             <Newspaper size={12} />
             Lihat Semua
           </button>
         </div>
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-3">
           {loading && newsList.length === 0 && <Skeleton />}
           {!loading && newsList.length === 0 && (
-            <div className="border border-dashed border-gray-300 dark:border-slate-800/80 rounded-[14px] bg-white dark:bg-[#1a2640] p-4 text-center">
-              <p className="text-[14px] font-bold m-0 mb-1 text-gray-800 dark:text-gray-150">Belum ada berita</p>
-              <span className="text-[12px] text-gray-500 dark:text-gray-400">Informasi dari pengurus akan muncul di sini.</span>
+            <div className="border border-dashed border-slate-300 dark:border-slate-800/80 rounded-2xl bg-white dark:bg-[#151f32] p-5 text-center">
+              <p className="text-sm font-bold m-0 mb-1 text-slate-850 dark:text-slate-100">Belum ada berita</p>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Informasi dari pengurus akan muncul di sini.</span>
             </div>
           )}
           {newsList.slice(0, 2).map((news) => {
@@ -636,17 +636,17 @@ function ServiceHub() {
               <button
                 key={news.id_berita}
                 type="button"
-                className="w-full border border-gray-100 dark:border-slate-800/80 border-l-4 border-l-blue-500 rounded-2xl bg-white dark:bg-[#1a2640] shadow-sm dark:shadow-none p-3.5 flex gap-3 text-left cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:shadow-md active:scale-[0.99]"
+                className="w-full border border-slate-200/60 dark:border-slate-800/60 rounded-2xl bg-white dark:bg-[#151f32] shadow-sm dark:shadow-none p-4 flex gap-4 text-left cursor-pointer transition-all duration-300 hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 active:scale-[0.99]"
                 onClick={() => openNewsDetail(news)}
               >
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 shrink-0">
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-blue-500/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400 shrink-0 shadow-xs">
                   <Newspaper size={18} className="stroke-[2.2]" />
                 </div>
-                <div className="flex flex-col min-w-0 flex-1">
-                  <p className="m-0 text-[13px] font-extrabold text-gray-800 dark:text-gray-100 leading-tight">{news.judul}</p>
-                  <p className="m-0 mt-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2">{news.konten}</p>
+                <div className="flex flex-col min-w-0 flex-1 gap-1">
+                  <p className="m-0 text-sm font-bold text-slate-800 dark:text-slate-100 leading-snug">{news.judul}</p>
+                  <p className="m-0 mt-1 text-xs font-normal text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">{news.konten}</p>
                 </div>
-                <ChevronRight size={16} className="self-center text-gray-400 dark:text-gray-500 shrink-0" />
+                <ChevronRight size={16} className="self-center text-slate-500 dark:text-slate-400 shrink-0" />
               </button>
             );
           })}
@@ -656,49 +656,69 @@ function ServiceHub() {
       {/* Pantauan section */}
       <section className="mb-6">
         <div className="flex justify-between items-center mb-3">
-          <h3 className="m-0 text-[17px] font-bold text-gray-700 tracking-[-0.01em]">Pantau Keluhan</h3>
+          <h3 className="m-0 text-base font-bold text-slate-850 dark:text-slate-205 tracking-[-0.01em]">Pantau Keluhan</h3>
           <button
             type="button"
-            className="inline-flex items-center gap-1 border border-slate-200 bg-slate-50 text-slate-700 rounded-full px-2.5 py-1 text-[11px] font-semibold cursor-pointer"
+            className="inline-flex items-center gap-1.5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/80 rounded-full px-3 py-1.5 text-[11px] font-bold cursor-pointer transition-all select-none"
             onClick={() => setOpenSheet("pantauan")}
           >
             <ClipboardList size={12} />
             Lihat Semua
           </button>
         </div>
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-3">
           {loading && tickets.length === 0 && <Skeleton />}
           {!loading && tickets.length === 0 && (
-            <div className="border border-dashed border-gray-300 rounded-[14px] bg-white p-4 text-center">
-              <p className="text-[14px] font-bold m-0 mb-1 text-gray-800">Belum ada tiket</p>
-              <span className="text-[12px] text-gray-500">Warga dapat membuat laporan baru.</span>
+            <div className="border border-dashed border-slate-300 dark:border-slate-800/80 rounded-2xl bg-white dark:bg-[#151f32] p-5 text-center">
+              <p className="text-sm font-bold m-0 mb-1 text-slate-850 dark:text-slate-100">Belum ada tiket</p>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Warga dapat membuat laporan baru.</span>
             </div>
           )}
           {tickets.slice(0, 3).map((ticket) => {
             if (!ticket) return null;
+            const isOpen = ticket.status === "open";
+            const isProses = ticket.status === "proses";
+            
             return (
               <button
                 key={ticket.id_tiket}
                 type="button"
-                className={`w-full text-left cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:shadow-md border border-gray-100 dark:border-slate-800/80 rounded-[14px] bg-white dark:bg-[#1a2640] shadow-[0_1px_3px_rgba(15,23,42,0.05)] dark:shadow-none p-[14px] ${
-                  ticket.status === "open" ? "border-l-4 border-l-amber-400" :
-                  ticket.status === "proses" ? "border-l-4 border-l-blue-400" :
-                  "border-l-4 border-l-green-400 dark:border-l-emerald-500"
-                }`}
+                className="w-full text-left cursor-pointer transition-all duration-300 hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700/80 border border-slate-200/60 dark:border-slate-800/60 rounded-2xl bg-white dark:bg-[#151f32] shadow-sm dark:shadow-none p-4 flex gap-4"
                 onClick={() => openTicketDetail(ticket)}
               >
-                <div className="flex items-center gap-1.5 mb-1">
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                    ticket.status === "open" ? "bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400" :
-                    ticket.status === "proses" ? "bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400" :
-                    "bg-green-100 dark:bg-emerald-500/10 text-green-700 dark:text-emerald-400"
-                  }`}>{ticket.status}</span>
-                  <span className="text-[13px] font-semibold text-gray-700 dark:text-gray-150">{ticket.kategori}</span>
+                {/* Status Indicator Icon Circle */}
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                  isOpen ? "bg-amber-500/10 text-[#78350f] dark:text-amber-400" :
+                  isProses ? "bg-blue-500/10 text-[#1e3a8a] dark:text-blue-400" :
+                  "bg-emerald-500/10 text-[#064e3b] dark:text-emerald-455"
+                }`}>
+                  {isOpen && <Clock3 size={18} className="stroke-[2.2]" />}
+                  {isProses && <RefreshCw size={18} className="stroke-[2.2] animate-pulse" />}
+                  {!isOpen && !isProses && <CheckCircle size={18} className="stroke-[2.2]" />}
                 </div>
-                <p className="m-0 text-[12px] text-gray-500 dark:text-gray-400 line-clamp-2">{ticket.deskripsi}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 m-0 font-medium mt-1.5">
-                  Dilaporkan oleh ID: {ticket.id_user_pelapor} • {safeDate(ticket.timestamp).toLocaleDateString("id-ID")}
-                </p>
+
+                {/* Content details */}
+                <div className="flex-1 flex flex-col gap-1.5 min-w-0">
+                  <div className="flex justify-between items-start gap-2">
+                    <span className="text-sm font-bold text-slate-850 dark:text-slate-100 leading-snug truncate">{ticket.kategori}</span>
+                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                      {safeDate(ticket.timestamp).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
+                    </span>
+                  </div>
+                  
+                  <p className="m-0 text-xs font-normal text-slate-600 dark:text-slate-350 line-clamp-2 leading-relaxed">
+                    {ticket.deskripsi}
+                  </p>
+                  
+                  <div className="flex items-center justify-between mt-1 text-[11px] font-bold text-slate-500 dark:text-slate-400 select-none">
+                    <span>Pelapor: <span className="text-slate-700 dark:text-slate-200 font-extrabold">{ticket.id_user_pelapor}</span></span>
+                    <span className={`px-2 py-0.5 rounded-md text-[9px] uppercase tracking-wider font-extrabold border ${
+                      isOpen ? "bg-amber-50 dark:bg-amber-500/10 text-[#78350f] dark:text-amber-300 border-amber-200/50 dark:border-amber-500/20" :
+                      isProses ? "bg-blue-50 dark:bg-blue-500/10 text-[#1e3a8a] dark:text-blue-300 border-blue-200/50 dark:border-blue-500/20" :
+                      "bg-emerald-50 dark:bg-emerald-500/10 text-[#064e3b] dark:text-emerald-300 border-emerald-200/50 dark:border-emerald-500/20"
+                    }`}>{ticket.status}</span>
+                  </div>
+                </div>
               </button>
             );
           })}
@@ -707,7 +727,7 @@ function ServiceHub() {
 
       {/* ========== BOTTOM SHEET: KELUHAN ========== */}
       <BottomSheet isOpen={openSheet === "keluhan"} onClose={closeSheet} title="Buat Keluhan Warga" heightClass="max-h-[88vh]">
-        <div className="p-5 flex flex-col gap-4">
+        <div className="p-5 flex flex-col gap-4 overflow-y-auto">
           <div className="flex flex-col gap-1.5">
             <label className={labelCls}>Kategori Keluhan</label>
             <select className={inputCls} value={keluhanForm.kategori} onChange={(e) => setKeluhanForm({ ...keluhanForm, kategori: e.target.value })}>
@@ -728,7 +748,7 @@ function ServiceHub() {
             />
           </div>
           <button
-            className="bg-red-500 hover:bg-red-600 text-white min-h-[48px] rounded-xl font-bold shadow-[0_8px_16px_rgba(239,68,68,0.25)] border-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+            className="bg-red-600 hover:bg-red-700 text-white min-h-[48px] rounded-xl font-bold shadow-[0_8px_16px_rgba(239,68,68,0.25)] border-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
             onClick={handleKeluhanSubmit}
             disabled={loading || !keluhanForm.deskripsi.trim()}
           >
@@ -739,7 +759,7 @@ function ServiceHub() {
 
       {/* ========== BOTTOM SHEET: SARAN ========== */}
       <BottomSheet isOpen={openSheet === "saran"} onClose={closeSheet} title="Kotak Saran & Masukan" heightClass="max-h-[88vh]">
-        <div className="p-5 flex flex-col gap-4">
+        <div className="p-5 flex flex-col gap-4 overflow-y-auto">
           <div className="flex flex-col gap-1.5">
             <label className={labelCls}>Saran / Aspirasi</label>
             <textarea
@@ -875,7 +895,7 @@ function ServiceHub() {
 
       {/* ========== BOTTOM SHEET: BERITA ========== */}
       <BottomSheet isOpen={openSheet === "berita"} onClose={closeSheet} title="Berita Terkini" heightClass="h-[88vh]">
-        <div className="p-4 flex flex-col gap-3">
+        <div className="p-4 flex flex-col gap-3 overflow-y-auto flex-1">
           {/* Toolbar: Filter Tanggal + Tambah Berita (Admin) */}
           <div className="flex items-center gap-2">
             <div className="flex-1 relative">
@@ -980,12 +1000,12 @@ function ServiceHub() {
 
       {/* ========== BOTTOM SHEET: TAMBAH BERITA (Admin Only) ========== */}
       <BottomSheet isOpen={openSheet === "tambahBerita"} onClose={() => setOpenSheet("berita")} title="Publikasi Berita Baru" heightClass="h-fit max-h-[80vh]">
-        <form className="p-5 flex flex-col gap-4" onSubmit={handlePublishNews}>
+        <form className="p-5 flex flex-col gap-4 overflow-y-auto" onSubmit={handlePublishNews}>
           <div>
-            <label className="block text-[11px] font-bold text-gray-500 uppercase mb-1.5">Judul Berita</label>
+            <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1.5">Judul Berita</label>
             <input
               type="text"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[13px] bg-gray-50 focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-[13px] bg-slate-50 focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
               placeholder="Masukkan judul berita atau pengumuman"
               value={newsForm.judul}
               onChange={(e) => setNewsForm({ ...newsForm, judul: e.target.value })}
@@ -993,9 +1013,9 @@ function ServiceHub() {
             />
           </div>
           <div>
-            <label className="block text-[11px] font-bold text-gray-500 uppercase mb-1.5">Isi Berita</label>
+            <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1.5">Isi Berita</label>
             <textarea
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[13px] bg-gray-50 resize-y focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-[13px] bg-slate-50 resize-y focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
               rows="5"
               placeholder="Tulis isi berita atau pengumuman selengkapnya..."
               value={newsForm.konten}
@@ -1017,7 +1037,7 @@ function ServiceHub() {
       {/* ========== BOTTOM SHEET: NEWS DETAIL ========== */}
       <BottomSheet isOpen={openSheet === "newsDetail" && !!selectedNews} onClose={closeSheet} title="Detail Informasi" heightClass="h-[88vh]">
         {selectedNews && (
-          <div className="p-4 flex flex-col gap-3 flex-1 min-h-0">
+          <div className="p-4 flex flex-col gap-3 flex-1 min-h-0 overflow-hidden">
             <button
               type="button"
               className="inline-flex items-center gap-1 text-[12px] font-medium text-gray-500 bg-gray-100 border-none rounded-full px-3 py-1.5 w-fit cursor-pointer hover:bg-gray-200 transition-colors"
@@ -1147,9 +1167,9 @@ function ServiceHub() {
  
       {/* ========== BOTTOM SHEET: PANTAUAN ========== */}
       <BottomSheet isOpen={openSheet === "pantauan"} onClose={closeSheet} title="Pantauan Keluhan Warga" heightClass="h-[88vh]">
-        <div className="p-4 flex flex-col gap-3">
+        <div className="p-4 flex flex-col gap-3 overflow-y-auto flex-1">
           <button
-            className="inline-flex items-center justify-center gap-2 text-[12px] font-semibold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-800 rounded-xl py-2 border-none cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors w-full"
+            className="inline-flex items-center justify-center gap-2 text-[12px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 rounded-xl py-2.5 border-none cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors w-full"
             onClick={() => fetchTickets(true)}
             disabled={refreshing}
           >
@@ -1159,32 +1179,56 @@ function ServiceHub() {
  
           {loading && <Skeleton />}
           {!loading && tickets.length === 0 && (
-            <div className="border border-dashed border-gray-300 rounded-[14px] bg-white p-4 text-center">
-              <p className="text-[14px] font-bold m-0 mb-1 text-gray-800">Tidak ada tiket</p>
-              <span className="text-[12px] text-gray-500">Daftar pantauan akan terisi ketika ada laporan masuk.</span>
+            <div className="border border-dashed border-slate-300 rounded-2xl bg-white dark:bg-[#151f32] p-5 text-center">
+              <p className="text-sm font-bold m-0 mb-1 text-slate-850 dark:text-slate-100">Tidak ada tiket</p>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Daftar pantauan akan terisi ketika ada laporan masuk.</span>
             </div>
           )}
           {tickets.map((ticket) => {
             if (!ticket) return null;
+            const isOpen = ticket.status === "open";
+            const isProses = ticket.status === "proses";
+            
             return (
               <button
                 key={ticket.id_tiket}
                 type="button"
-                className="w-full text-left cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:shadow-md bg-white dark:bg-[#1a2640] border border-gray-100 dark:border-slate-800/80 rounded-[14px] p-4 shadow-sm"
+                className="w-full text-left cursor-pointer transition-all duration-300 hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700/80 bg-white dark:bg-[#151f32] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-4 flex gap-4"
                 onClick={() => openTicketDetail(ticket)}
               >
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-[12px] font-semibold text-gray-500">[{ticket.kategori}]</span>
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                    ticket.status === "open" ? "bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200" :
-                    ticket.status === "proses" ? "bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200" :
-                    "bg-green-100 dark:bg-emerald-500/10 text-green-700 dark:text-emerald-400 border border-green-200"
-                  }`}>{ticket.status}</span>
+                {/* Status Indicator Icon Circle */}
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                  isOpen ? "bg-amber-500/10 text-[#78350f] dark:text-amber-400" :
+                  isProses ? "bg-blue-500/10 text-[#1e3a8a] dark:text-blue-400" :
+                  "bg-emerald-500/10 text-[#064e3b] dark:text-emerald-455"
+                }`}>
+                  {isOpen && <Clock3 size={18} className="stroke-[2.2]" />}
+                  {isProses && <RefreshCw size={18} className="stroke-[2.2] animate-pulse" />}
+                  {!isOpen && !isProses && <CheckCircle size={18} className="stroke-[2.2]" />}
                 </div>
-                <p className="text-[14px] mt-1 m-0 text-gray-800 dark:text-gray-150 line-clamp-3">{ticket.deskripsi}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 m-0 font-medium mt-1.5">
-                  Dilaporkan oleh ID: {ticket.id_user_pelapor} • {safeDate(ticket.timestamp).toLocaleDateString("id-ID")}
-                </p>
+
+                {/* Content details */}
+                <div className="flex-1 flex flex-col gap-1.5 min-w-0">
+                  <div className="flex justify-between items-start gap-2">
+                    <span className="text-sm font-bold text-slate-850 dark:text-slate-100 leading-snug truncate">[{ticket.kategori}]</span>
+                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                      {safeDate(ticket.timestamp).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
+                    </span>
+                  </div>
+                  
+                  <p className="m-0 text-xs font-normal text-slate-600 dark:text-slate-350 line-clamp-3 leading-relaxed">
+                    {ticket.deskripsi}
+                  </p>
+                  
+                  <div className="flex items-center justify-between mt-1 text-[11px] font-bold text-slate-500 dark:text-slate-400 select-none">
+                    <span>Pelapor: <span className="text-slate-700 dark:text-slate-200 font-extrabold">{ticket.id_user_pelapor}</span></span>
+                    <span className={`px-2 py-0.5 rounded-md text-[9px] uppercase tracking-wider font-extrabold border ${
+                      isOpen ? "bg-amber-50 dark:bg-amber-500/10 text-[#78350f] dark:text-amber-300 border-amber-200/50 dark:border-amber-500/20" :
+                      isProses ? "bg-blue-50 dark:bg-blue-500/10 text-[#1e3a8a] dark:text-blue-300 border-blue-200/50 dark:border-blue-500/20" :
+                      "bg-emerald-50 dark:bg-emerald-500/10 text-[#064e3b] dark:text-emerald-300 border-emerald-200/50 dark:border-emerald-500/20"
+                    }`}>{ticket.status}</span>
+                  </div>
+                </div>
               </button>
             );
           })}
@@ -1194,7 +1238,7 @@ function ServiceHub() {
       {/* ========== BOTTOM SHEET: TICKET DETAIL ========== */}
       <BottomSheet isOpen={openSheet === "ticketDetail" && !!selectedTicket} onClose={closeSheet} title="Detail Keluhan" heightClass="h-[88vh]">
         {selectedTicket && (
-          <div className="p-4 flex flex-col gap-3 flex-1 min-h-0">
+          <div className="p-4 flex flex-col gap-3 flex-1 min-h-0 overflow-hidden">
             {/* Ringkasan Keluhan */}
             <div className="bg-gray-50 dark:bg-[#1a2640]/40 border border-gray-100 dark:border-slate-800/80 rounded-2xl p-4 flex flex-col gap-2.5">
               <div className="flex justify-between items-center">
