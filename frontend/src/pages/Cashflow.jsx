@@ -839,7 +839,9 @@ export default function Cashflow() {
             </div>
           </div>
         )}
-        {/* Riwayat Transaksi Terakhir */}
+      </div>
+
+      {/* Riwayat Transaksi Terakhir */}
       <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-4 text-[15px]">Riwayat Transaksi Terakhir</h3>
       
       <div className="bg-white dark:bg-[#131c33] border border-gray-200 dark:border-slate-800/80 rounded-2xl overflow-hidden shadow-sm">
@@ -945,7 +947,6 @@ export default function Cashflow() {
           </span>
         </div>
       )}
-    </div>
 
       {/* Notification Modal */}
       <NotificationModal
