@@ -380,13 +380,20 @@ export default function PaymentModal({ isOpen, onClose }) {
         }`}
       >
         {/* Header */}
-        <div className="flex justify-between items-center py-4 px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
-          <h3 className="font-bold text-[16px] text-slate-850 dark:text-slate-100 m-0">
-            {isAdmin ? "Input Kas Baru" : "Lapor Iuran Warga"}
-          </h3>
+        <div className="flex justify-between items-start py-5 px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl font-bold m-0 text-slate-800 dark:text-slate-100">
+              {isAdmin ? "Input Kas Baru" : "Lapor Iuran Warga"}
+            </h2>
+            <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-1.5 m-0 leading-normal pr-4">
+              {isAdmin
+                ? "Catat pemasukan atau pengeluaran kas perumahan secara langsung untuk pembukuan RT."
+                : "Kirim bukti transfer pembayaran iuran rutin bulanan Anda untuk diverifikasi oleh bendahara."}
+            </p>
+          </div>
           <button 
             type="button"
-            className="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full border-none cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-90" 
+            className="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full border-none cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-90 shrink-0 mt-0.5" 
             onClick={onClose}
           >
             <X size={16} className="stroke-[2.5]" />
@@ -394,12 +401,6 @@ export default function PaymentModal({ isOpen, onClose }) {
         </div>
  
         <div className="relative p-6 overflow-y-auto min-h-0 no-scrollbar">
-          <p className="text-[11px] font-medium leading-relaxed text-slate-500 dark:text-slate-400 m-0 mb-4">
-            {isAdmin
-              ? "Catat pemasukan atau pengeluaran kas perumahan secara langsung untuk pembukuan RT."
-              : "Kirim bukti transfer pembayaran iuran rutin bulanan Anda untuk diverifikasi oleh bendahara."}
-          </p>
- 
           <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
             {isAdmin && (
               <div className="flex flex-col gap-1">
