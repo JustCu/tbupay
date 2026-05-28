@@ -992,28 +992,28 @@ export default function Home() {
           className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer"
           onClick={() => navigate("/admin/users")}
         >
-          <Users size={24} className="text-blue-600 dark:text-blue-400 my-1 shrink-0" />
+          <Users size={24} className="text-slate-500 dark:text-slate-400 my-1 shrink-0" />
           <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center leading-tight">Data Warga</span>
         </button>
         <button
           className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer"
           onClick={() => navigate("/service", { state: { openSheet: "grupchat" } })}
         >
-          <MessageCircle size={24} className="text-purple-600 dark:text-purple-400 my-1 shrink-0" />
+          <MessageCircle size={24} className="text-slate-500 dark:text-slate-400 my-1 shrink-0" />
           <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center leading-tight">Grup Chat</span>
         </button>
         <button
           className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer"
           onClick={() => navigate("/service", { state: { openSheet: "keluhan" } })}
         >
-          <MessageSquareWarning size={24} className="text-red-600 dark:text-red-400 my-1 shrink-0" />
+          <MessageSquareWarning size={24} className="text-slate-500 dark:text-slate-400 my-1 shrink-0" />
           <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center leading-tight">Pengaduan</span>
         </button>
         <button
           className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer"
           onClick={() => navigate("/service", { state: { openSheet: "saran" } })}
         >
-          <Lightbulb size={24} className="text-emerald-600 dark:text-emerald-400 my-1 shrink-0" />
+          <Lightbulb size={24} className="text-slate-500 dark:text-slate-400 my-1 shrink-0" />
           <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center leading-tight">Kotak Saran</span>
         </button>
 
@@ -1024,7 +1024,7 @@ export default function Home() {
               className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer relative"
               onClick={() => navigate("/admin/verifikasi")}
             >
-              <ClipboardCheck size={24} className="text-blue-600 dark:text-blue-400 my-1 shrink-0" />
+              <ClipboardCheck size={24} className="text-slate-500 dark:text-slate-400 my-1 shrink-0" />
               <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center leading-tight">Verifikasi</span>
               {pendingCount > 0 && (
                 <span className="absolute top-2 right-2 bg-red-500 text-white text-[9px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center border border-white">
@@ -1037,7 +1037,7 @@ export default function Home() {
               className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer relative"
               onClick={() => navigate("/service", { state: { openSheet: "pantauan" } })}
             >
-              <MessageSquareWarning size={24} className="text-purple-600 dark:text-purple-400 my-1 shrink-0" />
+              <MessageSquareWarning size={24} className="text-slate-500 dark:text-slate-400 my-1 shrink-0" />
               <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center leading-tight">Keluhan</span>
               {openTicketsCount > 0 && (
                 <span className="absolute top-2 right-2 bg-red-500 text-white text-[9px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center border border-white">
@@ -1050,7 +1050,7 @@ export default function Home() {
               className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer"
               onClick={() => navigate("/service", { state: { openSheet: "berita" } })}
             >
-              <Newspaper size={24} className="text-pink-600 dark:text-pink-400 my-1 shrink-0" />
+              <Newspaper size={24} className="text-slate-500 dark:text-slate-400 my-1 shrink-0" />
               <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center leading-tight">Tambah Berita</span>
             </button>
 
@@ -1058,7 +1058,7 @@ export default function Home() {
               className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer"
               onClick={handleSendReminder}
             >
-              <Bell size={24} className="text-amber-600 dark:text-amber-400 my-1 shrink-0" />
+              <Bell size={24} className="text-slate-500 dark:text-slate-400 my-1 shrink-0" />
               <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center leading-tight">Kirim Pengingat</span>
             </button>
           </>
