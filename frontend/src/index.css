@@ -62,8 +62,9 @@
 
   /* Bottom Safe Nav */
   .bottom-nav {
-    height: calc(80px + env(safe-area-inset-bottom, 0px));
-    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    height: calc(60px + env(safe-area-inset-bottom, 0px));
+    padding-top: 8px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   /* Safe Footer Padding for Sticky Forms */
