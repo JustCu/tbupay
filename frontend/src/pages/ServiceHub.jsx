@@ -16,6 +16,7 @@ import {
   CheckCircle,
   Bell,
   Plus,
+  Coins,
 } from "lucide-react";
 import {
   getTickets,
@@ -526,8 +527,8 @@ function ServiceHub() {
   );
 
   // -------- Form Field Styles --------
-  const inputCls = "bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-[14px] font-sans text-gray-900 outline-none w-full focus:bg-white focus:border-blue-400 focus:ring-[3px] focus:ring-blue-500/10 transition-colors";
-  const labelCls = "text-[11px] text-slate-500 uppercase tracking-[0.5px] font-bold";
+  const inputCls = "bg-[#fcfdff] dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] text-gray-900 dark:text-gray-100 rounded-xl py-3 px-4 text-[14px] font-sans outline-none w-full focus:bg-white dark:focus:bg-[#1b2641] focus:border-blue-400 focus:ring-[3px] focus:ring-blue-500/10 dark:focus:ring-blue-500/5 transition-all";
+  const labelCls = "text-[11px] text-slate-500 dark:text-slate-400 uppercase tracking-[0.5px] font-bold";
 
   return (
     <div className="flex flex-col" {...pull.bind}>
@@ -562,30 +563,47 @@ function ServiceHub() {
       </div>
 
       {/* Quick action cards */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-3 gap-3 mb-6">
         <button
-          className="bg-white dark:bg-[#151f32] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-4 flex flex-col items-start gap-3 cursor-pointer text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700/80 active:scale-[0.98] shadow-sm dark:shadow-none"
+          className="bg-white dark:bg-[#151f32] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-3.5 flex flex-col items-start gap-2.5 cursor-pointer text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700/80 active:scale-[0.98] shadow-sm dark:shadow-none"
           onClick={() => setOpenSheet("keluhan")}
         >
-          <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-red-500/10 text-[#dc2626] dark:bg-red-500/15 dark:text-red-400 shrink-0">
-            <MessageSquareWarning size={20} className="stroke-[2.2]" />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-red-500/10 text-[#dc2626] dark:bg-red-500/15 dark:text-red-400 shrink-0">
+            <MessageSquareWarning size={16} className="stroke-[2.2]" />
           </div>
           <div>
-            <span className="block text-sm font-bold text-slate-800 dark:text-slate-100 leading-tight">Buat Keluhan</span>
-            <span className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-1 leading-normal">Lapor fasilitas rusak</span>
+            <span className="block text-xs font-bold text-slate-800 dark:text-slate-100 leading-tight">Buat Keluhan</span>
+            <span className="block text-[9.5px] font-semibold text-slate-500 dark:text-slate-400 mt-1.5 leading-tight">Lapor fasilitas rusak</span>
           </div>
         </button>
 
         <button
-          className="bg-white dark:bg-[#151f32] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-4 flex flex-col items-start gap-3 cursor-pointer text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700/80 active:scale-[0.98] shadow-sm dark:shadow-none"
+          className="bg-white dark:bg-[#151f32] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-3.5 flex flex-col items-start gap-2.5 cursor-pointer text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700/80 active:scale-[0.98] shadow-sm dark:shadow-none"
           onClick={() => setOpenSheet("saran")}
         >
-          <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-amber-500/10 text-[#b45309] dark:bg-amber-500/15 dark:text-amber-300 shrink-0">
-            <Lightbulb size={20} className="stroke-[2.2]" />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-amber-500/10 text-[#b45309] dark:bg-amber-500/15 dark:text-amber-300 shrink-0">
+            <Lightbulb size={16} className="stroke-[2.2]" />
           </div>
           <div>
-            <span className="block text-sm font-bold text-slate-800 dark:text-slate-100 leading-tight">Kotak Saran</span>
-            <span className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-1 leading-normal">Aspirasi untuk RT/RW</span>
+            <span className="block text-xs font-bold text-slate-800 dark:text-slate-100 leading-tight">Kotak Saran</span>
+            <span className="block text-[9.5px] font-semibold text-slate-500 dark:text-slate-400 mt-1.5 leading-tight">Aspirasi untuk RT/RW</span>
+          </div>
+        </button>
+
+        <button
+          className="bg-white dark:bg-[#151f32] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-3.5 flex flex-col items-start gap-2.5 cursor-pointer text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700/80 active:scale-[0.98] shadow-sm dark:shadow-none"
+          onClick={() => window.dispatchEvent(new CustomEvent("open-payment-modal"))}
+        >
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400 shrink-0">
+            <Coins size={16} className="stroke-[2.2]" />
+          </div>
+          <div>
+            <span className="block text-xs font-bold text-slate-800 dark:text-slate-100 leading-tight">
+              {isAdmin ? "Catat Kas" : "Lapor Iuran"}
+            </span>
+            <span className="block text-[9.5px] font-semibold text-slate-500 dark:text-slate-400 mt-1.5 leading-tight">
+              {isAdmin ? "Catat kas baru" : "Lapor bayar iuran"}
+            </span>
           </div>
         </button>
       </div>
