@@ -443,7 +443,7 @@ export default function PaymentModal({ isOpen, onClose }) {
               <div className="flex gap-2">
                 <div className="flex-1">
                   <select
-                    className="w-full min-h-[44px] px-4 py-3 rounded-xl text-[13px] font-semibold bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 outline-none font-sans text-slate-850 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-800 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer"
+                    className="w-full min-h-[44px] px-4 py-3 rounded-xl text-[13px] font-semibold bg-slate-50 dark:bg-[#1b2641] border border-slate-200 dark:border-[#2c3c5e] outline-none font-sans text-slate-850 dark:text-slate-200 focus:bg-white dark:focus:bg-[#1b2641] focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer"
                     value={kategori}
                     onChange={(e) => setKategori(e.target.value)}
                   >
@@ -467,11 +467,11 @@ export default function PaymentModal({ isOpen, onClose }) {
  
             <div className="flex flex-col gap-1">
               <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Bulan Penagihan</label>
-              <div className="relative flex items-center bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl focus-within:bg-white dark:focus-within:bg-slate-800 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all min-h-[44px]">
+              <div className="relative flex items-center bg-slate-50 dark:bg-[#1b2641] border border-slate-200 dark:border-[#2c3c5e] rounded-xl focus-within:bg-white dark:focus-within:bg-[#1b2641] focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all min-h-[44px]">
                 <CalendarDays size={16} className="absolute left-4 text-slate-450 dark:text-slate-400 pointer-events-none stroke-[1.75]" />
                 <input
                   type="month"
-                  className="w-full min-h-[44px] pl-10 pr-4 bg-transparent dark:bg-transparent border-none font-semibold text-slate-850 dark:text-slate-200 text-[13px] outline-none font-sans cursor-pointer [color-scheme:light] dark:[color-scheme:dark]"
+                  className="w-full min-h-[44px] pl-10 pr-4 bg-transparent border-none font-semibold text-slate-850 dark:text-slate-200 text-[13px] outline-none font-sans cursor-pointer"
                   value={bulan}
                   onChange={(e) => setBulan(e.target.value)}
                   required
@@ -482,11 +482,11 @@ export default function PaymentModal({ isOpen, onClose }) {
  
             <div className="flex flex-col gap-1">
               <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Nominal Transaksi</label>
-              <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl px-4 focus-within:bg-white dark:focus-within:bg-slate-800 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all min-h-[44px]">
-                <span className="text-slate-500 dark:text-slate-400 font-extrabold text-[13px] pr-3 border-r border-slate-200 dark:border-slate-700/60 mr-4 pointer-events-none">Rp</span>
+              <div className="flex items-center bg-slate-50 dark:bg-[#1b2641] border border-slate-200 dark:border-[#2c3c5e] rounded-xl px-4 focus-within:bg-white dark:focus-within:bg-[#1b2641] focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all min-h-[44px]">
+                <span className="text-slate-500 dark:text-slate-400 font-extrabold text-[13px] pr-3 border-r border-slate-200 dark:border-[#2c3c5e]/80 mr-4 pointer-events-none">Rp</span>
                 <input
                   type="text"
-                  className="w-full min-h-[44px] bg-transparent dark:bg-transparent border-none outline-none font-sans text-slate-850 dark:text-slate-200 text-[13px] font-bold pr-0 tabular-nums placeholder-slate-400 dark:placeholder-slate-500"
+                  className="w-full min-h-[44px] bg-transparent border-none outline-none font-sans text-slate-850 dark:text-slate-200 text-[13px] font-bold pr-0 tabular-nums placeholder-slate-400 dark:placeholder-slate-400"
                   placeholder="0"
                   value={nominal}
                   onChange={handleNominalChange}
@@ -498,7 +498,7 @@ export default function PaymentModal({ isOpen, onClose }) {
             <div className="flex flex-col gap-1">
               <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Catatan Tambahan (Opsional)</label>
               <textarea
-                className="w-full min-h-[72px] px-4 py-3 rounded-xl text-[13px] bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 outline-none font-sans text-slate-850 dark:text-slate-200 resize-y focus:bg-white dark:focus:bg-slate-800 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder-slate-400 dark:placeholder-slate-500"
+                className="w-full min-h-[72px] px-4 py-3 rounded-xl text-[13px] bg-slate-50 dark:bg-[#1b2641] border border-slate-200 dark:border-[#2c3c5e] outline-none font-sans text-slate-850 dark:text-slate-200 resize-y focus:bg-white dark:focus:bg-[#1b2641] focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder-slate-300 dark:placeholder-slate-600"
                 placeholder="Contoh: Titip iuran sekalian buat Pak RT"
                 value={catatan}
                 onChange={(e) => setCatatan(e.target.value)}
