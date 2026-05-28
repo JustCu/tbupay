@@ -62,7 +62,7 @@ export default function Login() {
         {/* Logo and Header Block */}
         <div className="text-center mb-8 select-none">
           <div 
-            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4.5 shadow-md"
+            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-md"
             style={{
               background: "linear-gradient(135deg, #0a3460 0%, #0f4c81 100%)",
             }}
@@ -85,7 +85,7 @@ export default function Login() {
         )}
 
         {/* Login Form */}
-        <form onSubmit={handleLogin} className="flex flex-col gap-4.5">
+        <form onSubmit={handleLogin} className="flex flex-col gap-4">
           
           {/* Username Input Field */}
           <div className="flex flex-col gap-1.5">
@@ -131,7 +131,7 @@ export default function Login() {
           {/* Primary Submit Button */}
           <button 
             type="submit" 
-            className="w-full min-h-[46px] mt-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-none rounded-2xl text-[14px] font-extrabold tracking-wide cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(37,99,235,0.18)] dark:shadow-none transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed select-none" 
+            className="w-full min-h-[46px] mt-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-none rounded-2xl text-[14px] font-extrabold tracking-wide cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(37,99,235,0.18)] dark:shadow-none transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed select-none" 
             disabled={loading}
           >
             {loading ? "Memverifikasi..." : "Masuk"}
@@ -140,7 +140,7 @@ export default function Login() {
 
         {/* Lupa Password Help Button */}
         <button 
-          className="bg-transparent border-none text-slate-400 dark:text-slate-500 text-[12px] font-bold flex items-center justify-center gap-1.5 w-full mt-7 cursor-pointer transition-colors hover:text-blue-600 dark:hover:text-indigo-400 select-none" 
+          className="bg-transparent border-none text-slate-400 dark:text-slate-500 text-[12px] font-bold flex items-center justify-center gap-1.5 w-full mt-8 cursor-pointer transition-colors hover:text-blue-600 dark:hover:text-indigo-400 select-none" 
           onClick={handleHelp}
         >
           <HelpCircle size={15} />
