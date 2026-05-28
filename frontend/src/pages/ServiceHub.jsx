@@ -288,11 +288,11 @@ function ServiceHub() {
     disabled: loading || refreshing || openSheet !== null,
   });
 
-  const fetchNewsReplies = async (id_berita) => {
+  const fetchNewsReplies = async (id_berita, forceRefresh = false) => {
     if (!id_berita) return;
     setLoadingReplies(true);
     try {
-      const res = await getNewsReplies(id_berita);
+      const res = await getNewsReplies(id_berita, forceRefresh ? { forceRefresh: true } : {});
       const list = res?.status === "success" && Array.isArray(res.data) ? res.data : [];
       const sorted = [...list].sort((a, b) => safeDate(a.timestamp || 0) - safeDate(b.timestamp || 0));
       setNewsReplies(sorted);
@@ -304,11 +304,11 @@ function ServiceHub() {
     }
   };
 
-  const fetchTicketReplies = async (id_tiket) => {
+  const fetchTicketReplies = async (id_tiket, forceRefresh = false) => {
     if (!id_tiket) return;
     setLoadingTicketReplies(true);
     try {
-      const res = await getTicketReplies(id_tiket);
+      const res = await getTicketReplies(id_tiket, forceRefresh ? { forceRefresh: true } : {});
       const list = res?.status === "success" && Array.isArray(res.data) ? res.data : [];
       const sorted = [...list].sort((a, b) => safeDate(a.timestamp || 0) - safeDate(b.timestamp || 0));
       setTicketReplies(sorted);

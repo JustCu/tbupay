@@ -417,8 +417,8 @@ function HeroCarousel({ totalKas, totalPemasukan, totalPengeluaran, latestNews, 
                 {/* Pengeluaran */}
                 <div className="flex flex-col gap-0.5 items-end text-right">
                   <div className="flex items-center gap-1 text-rose-400 justify-end">
-                    <ArrowUpRight size={13} />
                     <span className="text-[10px] font-bold uppercase tracking-wide">Pengeluaran</span>
+                    <ArrowUpRight size={13} />
                   </div>
                   {loading ? (
                     <span className="inline-block w-24 h-4 bg-white/15 rounded animate-pulse" />
