@@ -69,10 +69,10 @@ export default function Login() {
           >
             <ShieldCheck size={32} className="text-white" />
           </div>
-          <h1 className="text-2xl font-black mb-1.5 tracking-tight text-slate-800 dark:text-white">
+          <h1 className="text-3xl font-black mb-1 select-none tracking-wider bg-gradient-to-r from-[#0a3460] to-[#1565a8] dark:from-white dark:to-indigo-300 bg-clip-text text-transparent">
             TBU PAY
           </h1>
-          <p className="text-[12px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider leading-none m-0 mt-0.5">
+          <p className="text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] leading-none m-0 mt-1 select-none">
             Tata Kelola Hunian Terpadu
           </p>
         </div>
@@ -89,7 +89,7 @@ export default function Login() {
           
           {/* Username Input Field */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider ml-1 select-none">
+            <label className="text-[10px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider ml-1 select-none">
               ID User
             </label>
             <input
@@ -104,7 +104,7 @@ export default function Login() {
 
           {/* Password Input Field with Visibility Toggle */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider ml-1 select-none">
+            <label className="text-[10px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider ml-1 select-none">
               Kata Sandi
             </label>
             <div className="relative w-full">
@@ -131,7 +131,7 @@ export default function Login() {
           {/* Primary Submit Button */}
           <button 
             type="submit" 
-            className="w-full min-h-[46px] mt-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-none rounded-2xl text-[14px] font-extrabold cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(37,99,235,0.18)] dark:shadow-none transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed select-none" 
+            className="w-full min-h-[46px] mt-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-none rounded-2xl text-[14px] font-extrabold tracking-wide cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(37,99,235,0.18)] dark:shadow-none transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed select-none" 
             disabled={loading}
           >
             {loading ? "Memverifikasi..." : "Masuk"}
