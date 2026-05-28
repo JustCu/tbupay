@@ -553,50 +553,54 @@ function ServiceHub() {
       {/* Quick action cards */}
       <div className="grid grid-cols-2 gap-3 mb-5">
         <button
-          className="bg-white dark:bg-[#1a2640] border border-gray-200 dark:border-slate-800/80 rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 cursor-pointer transition-all hover:border-red-300 dark:hover:border-red-500/50 hover:bg-red-50 dark:hover:bg-red-950/20 active:scale-95 shadow-sm dark:shadow-none"
+          className="bg-white dark:bg-[#1a2640] border border-gray-100 dark:border-slate-800/80 border-l-4 border-l-red-500 rounded-2xl p-4 flex flex-col items-start gap-2.5 cursor-pointer text-left transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 active:scale-[0.98] shadow-sm dark:shadow-none"
           onClick={() => setOpenSheet("keluhan")}
         >
-          <div className="w-14 h-14 rounded-full flex items-center justify-center bg-red-100 dark:bg-red-500/10 text-red-500 dark:text-red-400">
-            <MessageSquareWarning size={28} />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-red-50 dark:bg-red-500/10 text-red-500 dark:text-red-400 shrink-0">
+            <MessageSquareWarning size={20} className="stroke-[2.2]" />
           </div>
-          <span className="text-[14px] font-semibold text-gray-800 dark:text-gray-150">Buat Keluhan</span>
-          <span className="text-[12px] text-gray-500 dark:text-gray-400">Lapor fasilitas rusak</span>
+          <div>
+            <span className="block text-[14px] font-extrabold text-gray-800 dark:text-gray-100 leading-tight">Buat Keluhan</span>
+            <span className="block text-[10px] font-semibold text-gray-400 dark:text-gray-400 mt-0.5 leading-none">Lapor fasilitas rusak</span>
+          </div>
         </button>
 
         <button
-          className="bg-white dark:bg-[#1a2640] border border-gray-200 dark:border-slate-800/80 rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 cursor-pointer transition-all hover:border-amber-300 dark:hover:border-amber-500/50 hover:bg-amber-50 dark:hover:bg-amber-950/20 active:scale-95 shadow-sm dark:shadow-none"
+          className="bg-white dark:bg-[#1a2640] border border-gray-100 dark:border-slate-800/80 border-l-4 border-l-amber-500 rounded-2xl p-4 flex flex-col items-start gap-2.5 cursor-pointer text-left transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 active:scale-[0.98] shadow-sm dark:shadow-none"
           onClick={() => setOpenSheet("saran")}
         >
-          <div className="w-14 h-14 rounded-full flex items-center justify-center bg-amber-100 dark:bg-amber-500/10 text-amber-500 dark:text-amber-400">
-            <Lightbulb size={28} />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-50 dark:bg-amber-500/10 text-amber-500 dark:text-amber-400 shrink-0">
+            <Lightbulb size={20} className="stroke-[2.2]" />
           </div>
-          <span className="text-[14px] font-semibold text-gray-800 dark:text-gray-150">Kotak Saran</span>
-          <span className="text-[12px] text-gray-500 dark:text-gray-400">Aspirasi untuk RT/RW</span>
+          <div>
+            <span className="block text-[14px] font-extrabold text-gray-800 dark:text-gray-100 leading-tight">Kotak Saran</span>
+            <span className="block text-[10px] font-semibold text-gray-400 dark:text-gray-400 mt-0.5 leading-none">Aspirasi untuk RT/RW</span>
+          </div>
         </button>
       </div>
 
       {/* General Group Chat Banner Card */}
       <button
-        className="w-full relative overflow-hidden rounded-2xl p-4.5 mb-6 text-left cursor-pointer border border-transparent shadow-[0_4px_12px_rgba(16,185,129,0.15)] dark:shadow-none transition-all duration-300 hover:shadow-[0_6px_20px_rgba(16,185,129,0.25)] active:scale-[0.99] flex items-center justify-between gap-4 select-none"
+        className="w-full relative overflow-hidden rounded-2xl p-4.5 mb-6 text-left cursor-pointer border border-transparent shadow-[0_4px_12px_rgba(15,76,129,0.15)] dark:shadow-none transition-all duration-300 hover:shadow-[0_6px_20px_rgba(15,76,129,0.25)] active:scale-[0.99] flex items-center justify-between gap-4 select-none"
         style={{
-          background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+          background: "linear-gradient(135deg, #0a3460 0%, #0f4c81 100%)",
         }}
         onClick={() => setOpenSheet("grupchat")}
       >
         {/* Glowing aura ornament */}
-        <div className="absolute right-[-20px] bottom-[-20px] w-40 h-40 bg-white/[0.08] rounded-full pointer-events-none filter blur-lg"></div>
-        <div className="absolute left-[-20px] top-[-20px] w-32 h-32 bg-white/[0.05] rounded-full pointer-events-none filter blur-lg"></div>
+        <div className="absolute right-[-20px] bottom-[-20px] w-40 h-40 bg-white/[0.06] rounded-full pointer-events-none filter blur-lg"></div>
+        <div className="absolute left-[-20px] top-[-20px] w-32 h-32 bg-white/[0.04] rounded-full pointer-events-none filter blur-lg"></div>
         
         {/* Background watermark icon */}
-        <MessageCircle className="absolute right-4 bottom-[-10px] w-28 h-28 text-white opacity-[0.09] pointer-events-none rotate-[-15deg]" />
+        <MessageCircle className="absolute right-4 bottom-[-10px] w-28 h-28 text-white opacity-[0.06] pointer-events-none rotate-[-15deg]" />
 
         <div className="relative z-10 flex-1 flex gap-3.5 items-center">
           <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-white/20 text-white shrink-0 shadow-inner">
-            <MessageCircle size={24} className="stroke-[2.5]" />
+            <MessageCircle size={24} className="stroke-[2.2]" />
           </div>
           <div>
             <h4 className="text-[15px] font-extrabold text-white m-0 tracking-wide uppercase">Grup Obrolan Warga</h4>
-            <p className="text-[12px] text-emerald-100 mt-1 m-0 leading-tight">Ruang interaksi & koordinasi santai antar tetangga</p>
+            <p className="text-[12px] text-indigo-100 mt-1 m-0 leading-tight">Ruang interaksi & koordinasi santai antar tetangga</p>
           </div>
         </div>
         
@@ -608,10 +612,10 @@ function ServiceHub() {
       {/* Berita section */}
       <section className="mb-6">
         <div className="flex justify-between items-center mb-3">
-          <h3 className="m-0 text-[17px] font-bold text-gray-700 tracking-[-0.01em]">Berita Terkini</h3>
+          <h3 className="m-0 text-[17px] font-bold text-gray-700 dark:text-gray-200 tracking-[-0.01em]">Berita Terkini</h3>
           <button
             type="button"
-            className="inline-flex items-center gap-1 border border-blue-200 bg-blue-50 text-blue-700 rounded-full px-2.5 py-1 text-[11px] font-semibold cursor-pointer"
+            className="inline-flex items-center gap-1 border-none bg-blue-50 hover:bg-blue-100 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-blue-600 dark:text-indigo-400 rounded-full px-3 py-1 text-[11px] font-bold cursor-pointer active:scale-95 transition-all select-none"
             onClick={() => setOpenSheet("berita")}
           >
             <Newspaper size={12} />
@@ -621,9 +625,9 @@ function ServiceHub() {
         <div className="flex flex-col gap-2.5">
           {loading && newsList.length === 0 && <Skeleton />}
           {!loading && newsList.length === 0 && (
-            <div className="border border-dashed border-gray-300 rounded-[14px] bg-white p-4 text-center">
-              <p className="text-[14px] font-bold m-0 mb-1 text-gray-800">Belum ada berita</p>
-              <span className="text-[12px] text-gray-500">Informasi dari pengurus akan muncul di sini.</span>
+            <div className="border border-dashed border-gray-300 dark:border-slate-800/80 rounded-[14px] bg-white dark:bg-[#1a2640] p-4 text-center">
+              <p className="text-[14px] font-bold m-0 mb-1 text-gray-800 dark:text-gray-150">Belum ada berita</p>
+              <span className="text-[12px] text-gray-500 dark:text-gray-400">Informasi dari pengurus akan muncul di sini.</span>
             </div>
           )}
           {newsList.slice(0, 2).map((news) => {
@@ -632,17 +636,17 @@ function ServiceHub() {
               <button
                 key={news.id_berita}
                 type="button"
-                className="w-full border border-gray-100 dark:border-slate-800/80 rounded-[14px] bg-white dark:bg-[#1a2640] shadow-[0_1px_3px_rgba(15,23,42,0.05)] dark:shadow-none p-[14px] flex gap-3 text-left cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:shadow-md"
+                className="w-full border border-gray-100 dark:border-slate-800/80 border-l-4 border-l-blue-500 rounded-2xl bg-white dark:bg-[#1a2640] shadow-sm dark:shadow-none p-3.5 flex gap-3 text-left cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:shadow-md active:scale-[0.99]"
                 onClick={() => openNewsDetail(news)}
               >
-                <div className="w-[46px] h-[46px] rounded-[10px] flex items-center justify-center shrink-0 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                  <Newspaper size={18} />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 shrink-0">
+                  <Newspaper size={18} className="stroke-[2.2]" />
                 </div>
                 <div className="flex flex-col min-w-0 flex-1">
-                  <p className="m-0 text-[13px] font-bold text-gray-800 dark:text-gray-150">{news.judul}</p>
-                  <p className="m-0 mt-[3px] text-[12px] text-gray-500 dark:text-gray-400 leading-[1.4] line-clamp-2">{news.konten}</p>
+                  <p className="m-0 text-[13px] font-extrabold text-gray-800 dark:text-gray-100 leading-tight">{news.judul}</p>
+                  <p className="m-0 mt-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2">{news.konten}</p>
                 </div>
-                <ChevronRight size={14} className="self-center text-gray-400 dark:text-gray-500" />
+                <ChevronRight size={16} className="self-center text-gray-400 dark:text-gray-500 shrink-0" />
               </button>
             );
           })}
