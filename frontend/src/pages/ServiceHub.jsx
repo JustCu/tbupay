@@ -1002,10 +1002,19 @@ function ServiceHub() {
             >
               <ArrowLeft size={20} />
             </button>
-            <div className="flex flex-col">
-              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Berita & Informasi</h3>
+            <div className="flex flex-col flex-1">
+              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Berita &amp; Informasi</h3>
               <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Kumpulan berita terkini dan pengumuman lingkungan warga</p>
             </div>
+            <button
+              type="button"
+              title="Muat ulang berita"
+              className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-700/60 active:scale-95 disabled:opacity-50"
+              onClick={() => fetchNews(true)}
+              disabled={refreshing}
+            >
+              <RefreshCw size={16} className={refreshing ? "animate-spin" : ""} />
+            </button>
           </div>
 
           {/* Body content */}
@@ -1042,15 +1051,6 @@ function ServiceHub() {
               )}
             </div>
    
-            {/* Refresh */}
-            <button
-              className="inline-flex items-center justify-center gap-2 text-[12px] font-bold text-gray-650 dark:text-gray-300 bg-gray-150 dark:bg-slate-800 rounded-xl py-2.5 border-none cursor-pointer hover:bg-gray-205 dark:hover:bg-slate-750 transition-colors w-full shrink-0 active:scale-[0.99]"
-              onClick={() => fetchNews(true)}
-              disabled={refreshing}
-            >
-              <RefreshCw size={13} className={refreshing ? "animate-spin" : ""} />
-              {refreshing ? "Memuat ulang..." : "Muat Ulang Berita"}
-            </button>
 
             {loading && (
               <div className="animate-pulse flex flex-col gap-3">
@@ -1372,23 +1372,23 @@ function ServiceHub() {
             >
               <ArrowLeft size={20} />
             </button>
-            <div className="flex flex-col">
+            <div className="flex flex-col flex-1">
               <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Pantau Keluhan Warga</h3>
               <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Daftar laporan pengaduan hunian yang diajukan warga</p>
             </div>
+            <button
+              type="button"
+              title="Muat ulang laporan"
+              className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-700/60 active:scale-95 disabled:opacity-50"
+              onClick={() => fetchTickets(true)}
+              disabled={refreshing}
+            >
+              <RefreshCw size={16} className={refreshing ? "animate-spin" : ""} />
+            </button>
           </div>
 
           {/* Body content */}
           <div className="p-5 flex flex-col gap-4 overflow-y-auto flex-1">
-            {/* Refresh */}
-            <button
-              className="inline-flex items-center justify-center gap-2 text-[12px] font-bold text-slate-605 dark:text-slate-300 bg-slate-150 dark:bg-slate-800 rounded-xl py-2.5 border-none cursor-pointer hover:bg-slate-205 dark:hover:bg-slate-750 transition-colors w-full shrink-0 active:scale-[0.99]"
-              onClick={() => fetchTickets(true)}
-              disabled={refreshing}
-            >
-              <RefreshCw size={13} className={refreshing ? "animate-spin" : ""} />
-              {refreshing ? "Memuat..." : "Muat Ulang Laporan"}
-            </button>
 
             {loading && <Skeleton />}
             {!loading && tickets.length === 0 && (
