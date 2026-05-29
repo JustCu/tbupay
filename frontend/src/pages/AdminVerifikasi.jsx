@@ -244,7 +244,7 @@ export default function AdminVerifikasi() {
   // Guard: only admin can see this page
   if (user?.role !== "admin") {
     return (
-      <div className="px-4 pb-6">
+      <div className="pb-6">
         <div className="text-center py-12 px-4 text-gray-400 flex flex-col items-center gap-2">
           <ShieldCheck size={48} color="#9ca3af" />
           <p className="text-[14px] font-semibold text-gray-700 m-0">Akses Terbatas</p>
@@ -255,7 +255,7 @@ export default function AdminVerifikasi() {
   }
 
   return (
-    <div className="px-4 pb-6 animate-[fadeIn_0.3s_ease-in-out]" {...pull.bind}>
+    <div className="pb-6 animate-[fadeIn_0.3s_ease-in-out]" {...pull.bind}>
       {pull.showPullHint && (
         <div className={`sticky top-2 z-[31] mx-auto mb-2.5 w-fit px-3 py-[7px] rounded-full border text-xs font-semibold ${pull.isReady ? "border-green-300 bg-green-50 text-green-800" : "border-indigo-200 bg-indigo-50 text-indigo-800"}`}>
           {pull.isReady ? "Lepas untuk muat ulang" : "Tarik untuk muat ulang"}

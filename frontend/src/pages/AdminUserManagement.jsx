@@ -223,7 +223,7 @@ export default function AdminUserManagement() {
   };
 
   return (
-    <div className="px-4 pb-[100px] animate-[fadeIn_0.3s_ease-in-out]" {...pull.bind}>
+    <div className="pb-[100px] animate-[fadeIn_0.3s_ease-in-out]" {...pull.bind}>
       {pull.showPullHint && (
         <div className={`sticky top-2 z-[31] mx-auto mb-2.5 w-fit px-3 py-[7px] rounded-full border text-xs font-semibold ${pull.isReady ? "border-green-300 bg-green-50 text-green-800" : "border-indigo-200 bg-indigo-50 text-indigo-800"}`}>
           {pull.isReady ? "Lepas untuk muat ulang" : "Tarik untuk muat ulang"}
