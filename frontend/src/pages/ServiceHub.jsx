@@ -593,7 +593,7 @@ function ServiceHub() {
         <div className="flex justify-between items-center mb-3">
           <h3 className="m-0 text-base font-bold text-slate-850 dark:text-slate-205 tracking-[-0.01em]">Berita Terkini</h3>
           <span
-            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer hover:underline transition-all select-none"
+            className="text-xs font-semibold text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-all select-none"
             onClick={() => setOpenSheet("berita")}
           >
             Lihat Semua
@@ -662,7 +662,7 @@ function ServiceHub() {
         <div className="flex justify-between items-center mb-3">
           <h3 className="m-0 text-base font-bold text-slate-850 dark:text-slate-205 tracking-[-0.01em]">Pantau Keluhan</h3>
           <span
-            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer hover:underline transition-all select-none"
+            className="text-xs font-semibold text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-all select-none"
             onClick={() => setOpenSheet("pantauan")}
           >
             Lihat Semua

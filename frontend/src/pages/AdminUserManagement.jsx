@@ -28,6 +28,14 @@ const EMPTY_FORM = {
   password: "",
 };
 
+/** Helper to get initials from name */
+const getInitials = (name) => {
+  if (!name) return "?";
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+};
+
 export default function AdminUserManagement() {
   const currentUser = useStore((s) => s.user);
   const showAlert = useStore((s) => s.showAlert);
@@ -305,58 +313,69 @@ export default function AdminUserManagement() {
       ) : (
         <div className="flex flex-col gap-2.5">
           {filtered.map((user) => (
-            <div key={user.id_user} className="bg-white dark:bg-[#1a2640] rounded-2xl border border-gray-100 dark:border-slate-800/80 p-[14px_16px] flex items-center gap-3 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-              <div className={`w-11 h-11 rounded-full flex items-center justify-center text-[16px] font-extrabold shrink-0 ${
-                user.role === 'warga' ? 'bg-blue-100 text-blue-700' :
-                user.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                'bg-cyan-100 text-cyan-700'
-              }`}>
-                {user.nama?.charAt(0)?.toUpperCase() || "?"}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-[14px] font-bold text-gray-800 dark:text-gray-100 whitespace-nowrap overflow-hidden text-ellipsis">{user.nama}</div>
-                <div className="text-[11px] text-gray-400 mt-[2px] flex items-center gap-1.5">
-                  <span>{user.blok_rumah}</span>
-                  {user.no_hp && <span>· {user.no_hp}</span>}
+            <div key={user.id_user} className="bg-white dark:bg-[#1a2640] rounded-2xl border border-gray-50 dark:border-slate-800/60 p-4 flex items-center gap-3.5 shadow-sm hover:shadow-md transition-all duration-200">
+              {/* Profile Avatar / Initials */}
+              {user.url_foto_profil ? (
+                <img
+                  src={user.url_foto_profil}
+                  alt={user.nama}
+                  className="w-11 h-11 rounded-full object-cover border border-gray-100 dark:border-slate-700 shadow-sm shrink-0"
+                />
+              ) : (
+                <div className="w-11 h-11 rounded-full border border-gray-100 dark:border-slate-700/80 shadow-sm bg-gradient-to-br from-blue-400 to-indigo-500 text-white flex items-center justify-center text-[15px] font-black tracking-widest overflow-hidden shrink-0">
+                  {getInitials(user.nama)}
                 </div>
-                <div className="flex gap-1.5 mt-1 items-center flex-wrap">
-                  <span className={`text-[10px] font-bold p-[2px_8px] rounded-full capitalize inline-block ${
-                    user.role === 'warga' ? 'bg-blue-100 text-blue-700' :
-                    user.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                    'bg-cyan-100 text-cyan-700'
+              )}
+
+              {/* Citizen Details */}
+              <div className="flex-1 min-w-0">
+                <div className="text-[13.5px] font-bold text-gray-800 dark:text-gray-100 truncate leading-tight">{user.nama}</div>
+                <div className="text-[11px] text-gray-400 dark:text-slate-400 mt-1.5 flex items-center gap-1.5 flex-wrap leading-none">
+                  <span className="font-bold text-gray-500 dark:text-slate-300 bg-gray-100 dark:bg-slate-850/80 p-[2.5px_6px] rounded-md text-[10px]">{user.blok_rumah}</span>
+                  {user.no_hp && <span className="text-[10px] text-gray-400">{user.no_hp}</span>}
+                </div>
+                <div className="flex gap-1.5 mt-2.5 items-center flex-wrap">
+                  {/* Role Badge */}
+                  <span className={`text-[9.5px] font-extrabold p-[2px_8px] rounded-full uppercase border ${
+                    user.role === 'warga' ? 'bg-blue-50/50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400 border-blue-100/50 dark:border-blue-900/20' :
+                    user.role === 'admin' ? 'bg-purple-50/50 dark:bg-purple-900/10 text-purple-600 dark:text-purple-400 border-purple-100/50 dark:border-purple-900/20' :
+                    'bg-cyan-50/50 dark:bg-cyan-900/10 text-cyan-600 dark:text-cyan-400 border-cyan-100/50 dark:border-cyan-900/20'
                   }`}>
                     {user.role}
                   </span>
+                  {/* Status Badge */}
                   {user.status_warga && (
-                    <span className={`text-[10px] font-bold p-[2px_8px] rounded-full capitalize inline-block border ${
-                      user.status_warga === 'tetap' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                      user.status_warga === 'kontrak' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                      user.status_warga === 'kos' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                      'bg-purple-50 text-purple-700 border-purple-200'
+                    <span className={`text-[9.5px] font-extrabold p-[2px_8px] rounded-full uppercase border ${
+                      user.status_warga === 'tetap' ? 'bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 border-emerald-100/50 dark:border-emerald-900/20' :
+                      user.status_warga === 'kontrak' ? 'bg-indigo-50 dark:bg-indigo-900/10 text-indigo-600 dark:text-indigo-400 border-indigo-100/50 dark:border-indigo-900/20' :
+                      user.status_warga === 'kos' ? 'bg-amber-50 dark:bg-amber-900/10 text-amber-600 dark:text-amber-400 border-amber-100/50 dark:border-amber-900/20' :
+                      'bg-rose-50 dark:bg-rose-900/10 text-rose-600 dark:text-rose-400 border-rose-100/50 dark:border-rose-900/20'
                     }`}>
                       {user.status_warga}
                     </span>
                   )}
                 </div>
               </div>
-              <div className="flex gap-2">
+
+              {/* Minimalist Action Buttons */}
+              <div className="flex gap-2 shrink-0">
                 {(currentUser?.role === "admin" || user.id_user === currentUser?.id_user) && (
                   <button
-                    className="w-[34px] h-[34px] rounded-lg border-none cursor-pointer flex items-center justify-center transition-colors bg-blue-50 text-blue-600 hover:bg-blue-100"
+                    className="w-8 h-8 rounded-full bg-gray-50 dark:bg-slate-800/40 text-gray-500 dark:text-slate-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/20 dark:hover:text-blue-400 border border-gray-150/40 dark:border-slate-800/50 flex items-center justify-center transition-colors"
                     onClick={() => openEdit(user)}
                     title="Edit"
                   >
-                    <Pencil size={15} />
+                    <Pencil size={14} />
                   </button>
                 )}
                 {currentUser?.role === "admin" && (
                   <button
-                    className="w-[34px] h-[34px] rounded-lg border-none cursor-pointer flex items-center justify-center transition-colors bg-red-50 text-red-600 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-8 h-8 rounded-full bg-gray-50 dark:bg-slate-800/40 text-gray-500 dark:text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/20 dark:hover:text-red-400 border border-gray-150/40 dark:border-slate-800/50 flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                     onClick={() => handleDelete(user)}
                     title="Hapus"
                     disabled={user.id_user === currentUser?.id_user}
                   >
-                    <Trash2 size={15} />
+                    <Trash2 size={14} />
                   </button>
                 )}
               </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useStore from "../store/useStore";
-import { Key, Info, LogOut, Home, Phone, ShieldCheck, Pencil, X, AlertCircle, Moon, Sun, Volume2, Globe, Bell } from "lucide-react";
+import { Key, Info, LogOut, Home, Phone, ShieldCheck, Pencil, X, AlertCircle, Moon, Sun, Volume2, Globe, Bell, Terminal, Database, Cpu, Layers } from "lucide-react";
 import { updateUser } from "../application/use-cases/users/userUseCases";
 import NotificationModal from "../components/NotificationModal";
 
@@ -20,6 +20,7 @@ export default function Profile() {
   const setLanguage = useStore((state) => state.setLanguage);
 
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [form, setForm] = useState({ nama: "", blok_rumah: "", no_hp: "", password: "" });
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
@@ -286,12 +287,7 @@ export default function Profile() {
         {/* Row 3: Tentang Aplikasi TBU Pay */}
         <button
           className="w-full flex items-center gap-3.5 p-3.5 bg-transparent border-none cursor-pointer text-left transition-colors hover:bg-slate-50 active:bg-slate-100 dark:hover:bg-slate-800/40 dark:active:bg-slate-800/60"
-          onClick={() =>
-            showAlert(
-              "TBU Pay v1.2.0\nDikembangkan untuk lingkungan perumahan.",
-              { title: "Tentang Aplikasi", variant: "info" },
-            )
-          }
+          onClick={() => setIsAboutOpen(true)}
         >
           <div className="w-[30px] h-[30px] min-w-[30px] min-h-[30px] rounded-full flex items-center justify-center shrink-0 transition-colors bg-blue-50 text-[#0f4c81] dark:bg-slate-800/60 dark:text-indigo-400">
             <Info size={14} />
@@ -436,6 +432,217 @@ export default function Profile() {
         isOpen={isNotifOpen}
         onClose={() => setIsNotifOpen(false)}
       />
+
+      {/* About Application Popup */}
+      <AboutAppPopup
+        isOpen={isAboutOpen}
+        onClose={() => setIsAboutOpen(false)}
+      />
+    </div>
+  );
+}
+
+function AboutAppPopup({ isOpen, onClose }) {
+  return (
+    <div
+      className={`fixed inset-0 z-[80] flex justify-center items-center p-4 bg-black/60 backdrop-blur-xs transition-opacity duration-300 ${
+        isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      }`}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className={`relative w-full max-w-[440px] bg-white dark:bg-[#131c33] rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800/80 overflow-hidden flex flex-col max-h-[85vh] transform transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+          isOpen ? "scale-100 opacity-100 translate-y-0" : "scale-95 opacity-0 translate-y-4"
+        }`}
+      >
+        {/* Glowing Top Ribbon */}
+        <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600"></div>
+
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800/60 dark:hover:bg-slate-700/60 border-none rounded-full p-2 cursor-pointer text-gray-500 dark:text-gray-400 transition-colors"
+        >
+          <X size={16} />
+        </button>
+
+        {/* Content Area - Scrollable */}
+        <div className="p-6 overflow-y-auto flex-1 flex flex-col gap-5 select-none custom-scrollbar">
+          
+          {/* Brand Header */}
+          <div className="flex flex-col items-center text-center mt-2">
+            {/* Logo Icon from Login Screen */}
+            <img 
+              src={`${import.meta.env.BASE_URL}logo.png`} 
+              alt="TBU Pay Logo" 
+              className="w-16 h-16 rounded-2xl mb-3 shadow-md border border-white/10 object-cover" 
+            />
+            
+            <h3 className="text-[19px] font-black text-gray-800 dark:text-white m-0 tracking-wide">
+              TBU PAY
+            </h3>
+            
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-slate-800/60 dark:text-indigo-400 border border-blue-100/50 dark:border-slate-700/30">
+                v1.2.0
+              </span>
+              <span className="text-[9px] font-medium text-gray-400 dark:text-slate-500">•</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-100/50 dark:border-emerald-500/20">
+                Production Ready
+              </span>
+            </div>
+
+            <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-2 max-w-[280px] leading-relaxed">
+              Sistem manajemen iuran mandiri dan transparansi informasi warga perumahan.
+            </p>
+          </div>
+
+          <div className="w-full h-[1px] bg-gray-100 dark:bg-slate-800/60"></div>
+
+          {/* Visi Utama */}
+          <div className="flex flex-col gap-2">
+            <h4 className="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest leading-none">
+              Visi & Misi Platform
+            </h4>
+            <div className="bg-slate-50 dark:bg-slate-800/30 rounded-xl p-3.5 border border-slate-100/80 dark:border-slate-800/40">
+              <p className="text-[12px] text-gray-700 dark:text-slate-300 m-0 leading-relaxed font-medium">
+                Membangun transparansi finansial lingkungan perumahan secara inklusif, memudahkan pelaporan kas warga secara akurat, serta memfasilitasi komunikasi pengurus RT/RW dengan responsif dan modern.
+              </p>
+            </div>
+          </div>
+
+          {/* Fitur Utama */}
+          <div className="flex flex-col gap-2.5">
+            <h4 className="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest leading-none">
+              Fitur Unggulan
+            </h4>
+            <div className="grid grid-cols-1 gap-2">
+              
+              <div className="flex gap-3 items-start p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/20 rounded-lg transition-colors duration-200">
+                <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 dark:bg-slate-800/60 dark:text-indigo-400 shrink-0">
+                  <ShieldCheck size={16} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-[12px] font-bold text-gray-800 dark:text-gray-200 block leading-tight">
+                    Iuran Kas & Verifikasi
+                  </span>
+                  <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 leading-normal">
+                    Pencatatan iuran wajib bulanan yang terverifikasi aman oleh administrator dengan bukti pembayaran terunggah.
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex gap-3 items-start p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/20 rounded-lg transition-colors duration-200">
+                <div className="p-1.5 rounded-lg bg-amber-50 text-amber-600 dark:bg-slate-800/60 dark:text-amber-400 shrink-0">
+                  <Layers size={16} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-[12px] font-bold text-gray-800 dark:text-gray-200 block leading-tight">
+                    Transparansi Laporan Kas
+                  </span>
+                  <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 leading-normal">
+                    Pantau arus kas masuk dan keluar beserta bukti nota fisik secara real-time demi akuntabilitas keuangan bersama.
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex gap-3 items-start p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/20 rounded-lg transition-colors duration-200">
+                <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-slate-800/60 dark:text-emerald-400 shrink-0">
+                  <Cpu size={16} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-[12px] font-bold text-gray-800 dark:text-gray-200 block leading-tight">
+                    Pusat Informasi & Diskusi
+                  </span>
+                  <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 leading-normal">
+                    Saluran pengumuman berita penting RT/RW terintegrasi dengan forum tanya jawab langsung antar tetangga.
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div className="w-full h-[1px] bg-gray-100 dark:bg-slate-800/60"></div>
+
+          {/* Spesifikasi Teknologi */}
+          <div className="flex flex-col gap-2.5">
+            <h4 className="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest leading-none">
+              Spesifikasi Teknologi
+            </h4>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/30 border border-slate-100/50 dark:border-slate-800/20">
+                <div className="p-1.5 rounded-lg bg-sky-50 text-sky-600 dark:bg-slate-800 dark:text-sky-400 shrink-0">
+                  <Terminal size={14} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase leading-none">Frontend</span>
+                  <span className="text-[11px] font-bold text-gray-700 dark:text-slate-300 mt-0.5 leading-none">React 18 & Vite</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/30 border border-slate-100/50 dark:border-slate-800/20">
+                <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 dark:bg-slate-800 dark:text-indigo-400 shrink-0">
+                  <Layers size={14} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase leading-none">CSS Engine</span>
+                  <span className="text-[11px] font-bold text-gray-700 dark:text-slate-300 mt-0.5 leading-none">TailwindCSS</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/30 border border-slate-100/50 dark:border-slate-800/20">
+                <div className="p-1.5 rounded-lg bg-pink-50 text-pink-600 dark:bg-slate-800 dark:text-pink-400 shrink-0">
+                  <Database size={14} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase leading-none">Database & API</span>
+                  <span className="text-[11px] font-bold text-gray-700 dark:text-slate-300 mt-0.5 leading-none">Google Sheets API</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/30 border border-slate-100/50 dark:border-slate-800/20">
+                <div className="p-1.5 rounded-lg bg-purple-50 text-purple-600 dark:bg-slate-800 dark:text-purple-400 shrink-0">
+                  <Cpu size={14} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase leading-none">State Engine</span>
+                  <span className="text-[11px] font-bold text-gray-700 dark:text-slate-300 mt-0.5 leading-none">Zustand & SWR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full h-[1px] bg-gray-100 dark:bg-slate-800/60"></div>
+
+          {/* Tim Pengembang & Hak Cipta */}
+          <div className="flex flex-col gap-2 items-center text-center mt-1">
+            <span className="text-[10px] text-gray-400 dark:text-slate-500 leading-normal">
+              Dikembangkan dengan kolaborasi erat oleh
+            </span>
+            <span className="text-[11px] font-black text-slate-700 dark:text-slate-300 leading-none mt-0.5 uppercase tracking-wide">
+              TBU PAY DEVELOPMENT TEAM
+            </span>
+            <span className="text-[10px] text-gray-400 dark:text-slate-500 leading-normal mt-2.5 font-medium">
+              © {new Date().getFullYear()} TBU Pay. All rights reserved.
+            </span>
+          </div>
+
+        </div>
+
+        {/* Footer Button Action */}
+        <div className="p-4 bg-slate-50 dark:bg-slate-900/40 border-t border-gray-100 dark:border-slate-800/80 flex justify-end">
+          <button
+            onClick={onClose}
+            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white border-none rounded-xl text-[12px] font-bold cursor-pointer transition-colors active:scale-[0.98] shadow-md shadow-blue-500/10"
+          >
+            Selesai
+          </button>
+        </div>
+
+      </div>
     </div>
   );
 }

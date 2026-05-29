@@ -24,7 +24,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { getTransactions } from "../application/use-cases/transactions/transactionUseCases";
-import { getNews } from "../application/use-cases/news/newsUseCases";
+import { getNews, createNews } from "../application/use-cases/news/newsUseCases";
 import { getUsers } from "../application/use-cases/users/userUseCases";
 import { getTickets } from "../application/use-cases/tickets/ticketUseCases";
 import NotificationModal from "../components/NotificationModal";
@@ -226,6 +226,146 @@ function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
             </div>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Add News Popup (Admin Only) ─────────────────────────────────────────────
+function AddNewsPopup({ isOpen, onClose, user, showAlert, onPublishSuccess }) {
+  const [judul, setJudul] = useState("");
+  const [konten, setKonten] = useState("");
+  const [publishing, setPublishing] = useState(false);
+
+  // Lock body scroll when open
+  useEffect(() => {
+    if (isOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => { document.body.style.overflow = ""; };
+  }, [isOpen]);
+
+  // Close on Escape
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [isOpen, onClose]);
+
+  const handlePublishNews = async (e) => {
+    e.preventDefault();
+    if (!judul.trim() || !konten.trim()) {
+      showAlert("Judul dan isi berita wajib diisi.", { variant: "warning", title: "Form Tidak Lengkap" });
+      return;
+    }
+    setPublishing(true);
+    try {
+      const res = await createNews({ judul: judul.trim(), konten: konten.trim(), created_by_role: user?.role || "" });
+      if (res.status === "success") {
+        showAlert("Berita berhasil dipublikasikan.", { variant: "success", title: "Berhasil" });
+        setJudul("");
+        setKonten("");
+        onPublishSuccess();
+        onClose();
+      } else {
+        showAlert(res.message || "Gagal mempublikasikan berita.", { variant: "danger", title: "Gagal" });
+      }
+    } catch {
+      showAlert("Terjadi kesalahan koneksi.", { variant: "danger", title: "Kesalahan Koneksi" });
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  const labelCls = "block text-[11px] font-bold text-gray-400 dark:text-slate-455 uppercase tracking-wider mb-2 text-left";
+
+  return (
+    <div
+      className={`fixed inset-0 z-[200] flex justify-center items-center p-4 transition-all duration-300 ${
+        isOpen
+          ? "bg-black/60 backdrop-blur-[1.5px] opacity-100 pointer-events-auto"
+          : "bg-transparent opacity-0 pointer-events-none"
+      }`}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div
+        className={`w-full max-w-[420px] bg-white dark:bg-[#131c33] rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.25)] flex flex-col overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+          isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
+        }`}
+        style={{ maxHeight: "90dvh" }}
+        role="dialog"
+        aria-modal="true"
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-gray-150/80 dark:border-slate-800/80 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/10 flex items-center justify-center shrink-0 text-[#0f4c81] dark:text-blue-400">
+              <Newspaper size={16} />
+            </div>
+            <div className="min-w-0 text-left">
+              <h3 className="m-0 text-[14.5px] font-bold text-gray-800 dark:text-gray-100 leading-tight">
+                Publikasi Berita Baru
+              </h3>
+              <p className="text-[10px] text-gray-500 dark:text-slate-400 m-0 mt-0.5 leading-none">
+                Tulis berita atau pengumuman resmi pengurus RT/RW
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800/50 flex items-center justify-center border-none cursor-pointer text-gray-500 hover:bg-gray-200 dark:hover:bg-slate-700/50 transition-colors shrink-0"
+            aria-label="Tutup"
+          >
+            <X size={16} />
+          </button>
+        </div>
+
+        {/* Scrollable body */}
+        <form onSubmit={handlePublishNews} className="overflow-y-auto p-5 flex flex-col gap-4 min-h-0">
+          {/* Input Judul */}
+          <div className="w-full">
+            <label className={labelCls}>Judul Berita</label>
+            <input
+              type="text"
+              className="w-full py-2.5 px-4 border border-gray-200 dark:border-[#2c3c5e] rounded-xl font-sans text-[13px] text-gray-800 dark:text-gray-100 bg-gray-50 dark:bg-[#1b2641] outline-none focus:border-blue-500 dark:focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
+              placeholder="Masukkan judul berita atau pengumuman"
+              value={judul}
+              onChange={(e) => setJudul(e.target.value)}
+              disabled={publishing}
+            />
+          </div>
+
+          {/* Input Konten */}
+          <div className="w-full">
+            <label className={labelCls}>Isi Berita</label>
+            <textarea
+              className="w-full py-2.5 px-4 border border-gray-200 dark:border-[#2c3c5e] rounded-xl font-sans text-[13px] text-gray-800 dark:text-gray-100 bg-gray-50 dark:bg-[#1b2641] outline-none focus:border-blue-500 dark:focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500 transition-colors min-h-[140px]"
+              placeholder="Tulis isi berita atau pengumuman selengkapnya..."
+              value={konten}
+              onChange={(e) => setKonten(e.target.value)}
+              disabled={publishing}
+            />
+          </div>
+
+          {/* Action buttons */}
+          <div className="grid grid-cols-2 gap-3 mt-3 shrink-0">
+            <button
+              type="button"
+              className="py-2.5 px-4 rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-800/20 text-gray-500 dark:text-slate-400 text-xs font-extrabold cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-800/40 transition-colors active:scale-[0.98]"
+              onClick={onClose}
+              disabled={publishing}
+            >
+              Batalkan
+            </button>
+            <button
+              type="submit"
+              className="py-2.5 px-4 rounded-xl border-none bg-blue-600 dark:bg-blue-500 text-white text-xs font-extrabold cursor-pointer hover:bg-blue-700 dark:hover:bg-blue-600 transition-all shadow-sm active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
+              disabled={publishing}
+            >
+              {publishing ? "Mempublikasikan..." : "Publikasikan"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
@@ -698,6 +838,7 @@ export default function Home() {
   const [selectedNews, setSelectedNews] = useState(null);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isAllTrxOpen, setIsAllTrxOpen] = useState(false);
+  const [isAddNewsOpen, setIsAddNewsOpen] = useState(false);
 
   const myAllTransactions = useMemo(() => {
     return [...transactions]
@@ -1048,7 +1189,7 @@ export default function Home() {
 
             <button
               className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer"
-              onClick={() => navigate("/service", { state: { openSheet: "berita" } })}
+              onClick={() => setIsAddNewsOpen(true)}
             >
               <Newspaper size={24} className="text-primary dark:text-blue-400 my-1 shrink-0" />
               <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center leading-tight">Tambah Berita</span>
@@ -1075,10 +1216,10 @@ export default function Home() {
           <h3 className="text-[15px] font-bold m-0">Riwayat Transaksi Terakhir</h3>
           <button
             onClick={() => setIsAllTrxOpen(true)}
-            className="flex items-center gap-1 text-[11px] font-bold text-blue-600 bg-blue-50/50 hover:bg-blue-50 px-2.5 py-1 rounded-full border-none cursor-pointer active:scale-95 transition-all"
+            className="flex items-center gap-0.5 text-[11px] font-semibold text-gray-400 hover:text-blue-600 dark:text-slate-500 dark:hover:text-blue-400 bg-transparent border-none cursor-pointer active:scale-95 transition-all"
           >
             Lihat Semua
-            <ChevronRight size={14} />
+            <ChevronRight size={13} />
           </button>
         </div>
         <div className="bg-white dark:bg-[#131c33] border border-gray-200 dark:border-slate-800/80 rounded-xl overflow-hidden">
@@ -1159,6 +1300,15 @@ export default function Home() {
       isOpen={isAllTrxOpen}
       onClose={() => setIsAllTrxOpen(false)}
       formatRupiah={formatRupiah}
+    />
+
+    {/* Add News Popup */}
+    <AddNewsPopup
+      isOpen={isAddNewsOpen}
+      onClose={() => setIsAddNewsOpen(false)}
+      user={user}
+      showAlert={showAlert}
+      onPublishSuccess={() => fetchData(true)}
     />
     </>
   );

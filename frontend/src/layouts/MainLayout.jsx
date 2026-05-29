@@ -104,7 +104,7 @@ export default function MainLayout() {
               onTouchStart={() => handleNavIntent(item.id)}
               onClick={() => navigate(item.path)}
             >
-              <Icon className="w-6 h-6" strokeWidth={2} fill={isActive ? "currentColor" : "none"} />
+              <Icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 2} fill="none" />
               <span 
                 className={`text-[10px] mt-1 ${isActive ? "font-semibold" : "font-medium"}`}
               >
@@ -137,7 +137,7 @@ export default function MainLayout() {
               onTouchStart={() => handleNavIntent(item.id)}
               onClick={() => navigate(item.path)}
             >
-              <Icon className="w-6 h-6" strokeWidth={2} fill={isActive ? "currentColor" : "none"} />
+              <Icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 2} fill="none" />
               <span 
                 className={`text-[10px] mt-1 ${isActive ? "font-semibold" : "font-medium"}`}
               >

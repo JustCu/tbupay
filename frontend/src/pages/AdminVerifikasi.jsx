@@ -11,6 +11,9 @@ import {
   CalendarDays,
   CheckCircle,
   Users,
+  ChevronDown,
+  ChevronUp,
+  MessageCircle,
 } from "lucide-react";
 import {
   getTransactions,
@@ -81,6 +84,17 @@ function timeAgo(dateStr) {
   });
 }
 
+/** Generate formatted WhatsApp link with polite reminder */
+function formatWhatsAppUrl(phone, name, monthName) {
+  if (!phone) return "";
+  let cleanPhone = phone.replace(/[^0-9]/g, "");
+  if (cleanPhone.startsWith("0")) {
+    cleanPhone = "62" + cleanPhone.slice(1);
+  }
+  const message = `Halo Bapak/Ibu ${name}, sekadar mengingatkan untuk melakukan pembayaran iuran warga bulan ${monthName}. Silakan lakukan pembayaran melalui aplikasi TBU Pay. Terima kasih banyak 🙏`;
+  return `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
+}
+
 export default function AdminVerifikasi() {
   const user = useStore((s) => s.user);
   const showAlert = useStore((s) => s.showAlert);
@@ -128,6 +142,7 @@ export default function AdminVerifikasi() {
   const [unpaidMonth, setUnpaidMonth] = useState(() =>
     new Date().toISOString().slice(0, 7)
   );
+  const [showPaidList, setShowPaidList] = useState(false);
 
   const [loading, setLoading] = useState(() => {
     try {
@@ -353,47 +368,152 @@ export default function AdminVerifikasi() {
         </button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-2.5 mb-5">
-        <div className="bg-white dark:bg-[#1a2640] rounded-[14px] p-[14px_10px] text-center border border-gray-100 dark:border-slate-800/80 cursor-pointer" onClick={() => setFilter("pending")}>
-          <div className="text-[22px] font-extrabold text-amber-500">{pendingCount}</div>
-          <div className="text-[10px] text-gray-400 mt-[2px] uppercase font-semibold">Menunggu</div>
-        </div>
+      {/* Stats Dashboard Grid (2x2) */}
+      <div className="grid grid-cols-2 gap-3 mb-5">
+        {/* Card: Menunggu */}
         <div
-          className="bg-white dark:bg-[#1a2640] rounded-[14px] p-[14px_10px] text-center border border-gray-100 dark:border-slate-800/80 cursor-pointer"
+          className={`bg-white dark:bg-[#1a2640] rounded-[16px] p-3.5 border cursor-pointer transition-all duration-250 flex flex-col justify-between h-[82px] shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:-translate-y-0.5 active:scale-[0.98] select-none ${
+            filter === "pending"
+              ? "border-amber-400 dark:border-amber-500 bg-amber-50/20 dark:bg-amber-950/10 shadow-[0_4px_12px_rgba(245,158,11,0.08)] ring-1 ring-amber-400/40"
+              : "border-gray-100 dark:border-slate-800/80 hover:shadow-sm"
+          }`}
+          onClick={() => setFilter("pending")}
+        >
+          <div className="flex justify-between items-center w-full">
+            <div className={`p-1.5 rounded-lg transition-colors ${
+              filter === "pending"
+                ? "bg-amber-500/20 text-amber-600 dark:text-amber-400"
+                : "bg-gray-50 dark:bg-slate-800/50 text-gray-400 dark:text-slate-500"
+            }`}>
+              <Clock size={16} />
+            </div>
+            <span className={`text-[20px] font-black leading-none ${
+              filter === "pending"
+                ? "text-amber-500"
+                : "text-gray-800 dark:text-gray-200"
+            }`}>{pendingCount}</span>
+          </div>
+          <div className="text-[10px] text-gray-500 dark:text-slate-400 font-bold uppercase tracking-wider mt-1">
+            Menunggu
+          </div>
+        </div>
+
+        {/* Card: Belum Bayar */}
+        <div
+          className={`bg-white dark:bg-[#1a2640] rounded-[16px] p-3.5 border cursor-pointer transition-all duration-250 flex flex-col justify-between h-[82px] shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:-translate-y-0.5 active:scale-[0.98] select-none ${
+            filter === "belum_bayar"
+              ? "border-red-400 dark:border-red-500 bg-red-50/20 dark:bg-red-950/10 shadow-[0_4px_12px_rgba(239,68,68,0.08)] ring-1 ring-red-400/40"
+              : "border-gray-100 dark:border-slate-800/80 hover:shadow-sm"
+          }`}
+          onClick={() => setFilter("belum_bayar")}
+        >
+          <div className="flex justify-between items-center w-full">
+            <div className={`p-1.5 rounded-lg transition-colors ${
+              filter === "belum_bayar"
+                ? "bg-red-500/20 text-red-600 dark:text-red-400"
+                : "bg-gray-50 dark:bg-slate-800/50 text-gray-400 dark:text-slate-500"
+            }`}>
+              <AlertCircle size={16} />
+            </div>
+            <span className={`text-[20px] font-black leading-none ${
+              filter === "belum_bayar"
+                ? "text-red-500"
+                : "text-gray-800 dark:text-gray-200"
+            }`}>{unpaidList.length}</span>
+          </div>
+          <div className="text-[10px] text-gray-500 dark:text-slate-400 font-bold uppercase tracking-wider mt-1">
+            Belum Bayar
+          </div>
+        </div>
+
+        {/* Card: Terverifikasi */}
+        <div
+          className={`bg-white dark:bg-[#1a2640] rounded-[16px] p-3.5 border cursor-pointer transition-all duration-250 flex flex-col justify-between h-[82px] shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:-translate-y-0.5 active:scale-[0.98] select-none ${
+            filter === "verified"
+              ? "border-emerald-400 dark:border-emerald-500 bg-emerald-50/20 dark:bg-emerald-950/10 shadow-[0_4px_12px_rgba(16,185,129,0.08)] ring-1 ring-emerald-400/40"
+              : "border-gray-100 dark:border-slate-800/80 hover:shadow-sm"
+          }`}
           onClick={() => setFilter("verified")}
         >
-          <div className="text-[22px] font-extrabold text-green-500">{verifiedCount}</div>
-          <div className="text-[10px] text-gray-400 mt-[2px] uppercase font-semibold">Terverifikasi</div>
+          <div className="flex justify-between items-center w-full">
+            <div className={`p-1.5 rounded-lg transition-colors ${
+              filter === "verified"
+                ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                : "bg-gray-50 dark:bg-slate-800/50 text-gray-400 dark:text-slate-500"
+            }`}>
+              <CheckCircle2 size={16} />
+            </div>
+            <span className={`text-[20px] font-black leading-none ${
+              filter === "verified"
+                ? "text-emerald-600 dark:text-emerald-400"
+                : "text-gray-800 dark:text-gray-200"
+            }`}>{verifiedCount}</span>
+          </div>
+          <div className="text-[10px] text-gray-500 dark:text-slate-400 font-bold uppercase tracking-wider mt-1">
+            Terverifikasi
+          </div>
         </div>
+
+        {/* Card: Ditolak */}
         <div
-          className="bg-white dark:bg-[#1a2640] rounded-[14px] p-[14px_10px] text-center border border-gray-100 dark:border-slate-800/80 cursor-pointer"
+          className={`bg-white dark:bg-[#1a2640] rounded-[16px] p-3.5 border cursor-pointer transition-all duration-250 flex flex-col justify-between h-[82px] shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:-translate-y-0.5 active:scale-[0.98] select-none ${
+            filter === "rejected"
+              ? "border-slate-400 dark:border-slate-550 bg-slate-50/20 dark:bg-slate-900/25 shadow-[0_4px_12px_rgba(100,116,139,0.08)] ring-1 ring-slate-400/40"
+              : "border-gray-100 dark:border-slate-800/80 hover:shadow-sm"
+          }`}
           onClick={() => setFilter("rejected")}
         >
-          <div className="text-[22px] font-extrabold text-red-500">{rejectedCount}</div>
-          <div className="text-[10px] text-gray-400 mt-[2px] uppercase font-semibold">Ditolak</div>
+          <div className="flex justify-between items-center w-full">
+            <div className={`p-1.5 rounded-lg transition-colors ${
+              filter === "rejected"
+                ? "bg-slate-500/20 text-slate-600 dark:text-slate-400"
+                : "bg-gray-50 dark:bg-slate-800/50 text-gray-400 dark:text-slate-500"
+            }`}>
+              <XCircle size={16} />
+            </div>
+            <span className={`text-[20px] font-black leading-none ${
+              filter === "rejected"
+                ? "text-red-500 dark:text-red-400"
+                : "text-gray-800 dark:text-gray-200"
+            }`}>{rejectedCount}</span>
+          </div>
+          <div className="text-[10px] text-gray-500 dark:text-slate-400 font-bold uppercase tracking-wider mt-1">
+            Ditolak
+          </div>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-2 mb-4 overflow-x-auto pb-1 no-scrollbar">
+      <div className="flex gap-2 mb-5 overflow-x-auto pb-1.5 no-scrollbar">
         {FILTERS.map((f) => (
           <button
             key={f.key}
-            className={`p-[6px_16px] rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1a2640] text-[12px] font-semibold text-gray-500 dark:text-gray-400 cursor-pointer whitespace-nowrap transition-all ${filter === f.key ? "!bg-blue-600 !border-blue-600 !text-white" : ""}`}
+            className={`shrink-0 p-[7px_16px] rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1a2640] text-[12px] font-bold text-gray-500 dark:text-gray-400 cursor-pointer whitespace-nowrap transition-all duration-200 shadow-sm hover:border-gray-300 dark:hover:border-slate-650 ${
+              filter === f.key
+                ? "!bg-blue-600 !border-blue-600 !text-white shadow-blue-500/10"
+                : ""
+            }`}
             onClick={() => setFilter(f.key)}
           >
             {f.label}
             {f.key === "pending" && pendingCount > 0 && (
               <span
-                className={`ml-1.5 rounded-full p-[1px_6px] text-[10px] font-bold ${filter === "pending" ? "bg-white/30 text-white" : "bg-amber-100 text-amber-600"}`}
+                className={`ml-1.5 rounded-full p-[1.5px_6.5px] text-[9.5px] font-black ${
+                  filter === "pending"
+                    ? "bg-white/25 text-white"
+                    : "bg-amber-100 dark:bg-amber-950/45 text-amber-600 dark:text-amber-400"
+                }`}
               >
                 {pendingCount}
               </span>
             )}
             {f.key === "belum_bayar" && unpaidList.length > 0 && (
               <span
-                className={`ml-1.5 rounded-full p-[1px_6px] text-[10px] font-bold ${filter === "belum_bayar" ? "bg-white/30 text-white" : "bg-red-100 text-red-600"}`}
+                className={`ml-1.5 rounded-full p-[1.5px_6.5px] text-[9.5px] font-black ${
+                  filter === "belum_bayar"
+                    ? "bg-white/25 text-white"
+                    : "bg-red-100 dark:bg-red-950/45 text-red-600 dark:text-red-400"
+                }`}
               >
                 {unpaidList.length}
               </span>
@@ -406,42 +526,44 @@ export default function AdminVerifikasi() {
       {filter === "belum_bayar" ? (
         <div className="flex flex-col gap-4">
           {/* Bulan Penagihan Picker */}
-          <div className="flex items-center gap-2">
-            <div className="flex-1 relative">
-              <CalendarDays size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none" />
+          <div className="bg-white dark:bg-[#1a2640] rounded-2xl border border-gray-100 dark:border-slate-800/80 p-4 shadow-sm">
+            <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Pilih Bulan Penagihan</label>
+            <div className="relative">
+              <CalendarDays size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none" />
               <input
                 type="month"
-                className="w-full border border-gray-200 dark:border-[#2c3c5e] rounded-xl pl-9 pr-3 py-2.5 text-[12px] bg-white dark:bg-[#1b2641] text-gray-700 dark:text-gray-250 focus:outline-none focus:border-blue-400 appearance-none"
+                className="w-full border border-gray-200 dark:border-[#2c3c5e] rounded-xl pl-10 pr-4 py-3 text-[13px] font-semibold bg-gray-50 dark:bg-[#1b2641] text-gray-700 dark:text-gray-200 focus:outline-none focus:border-blue-400 dark:focus:border-blue-500 appearance-none cursor-pointer"
                 value={unpaidMonth}
-                onChange={(e) => setUnpaidMonth(e.target.value)}
+                onChange={(e) => {
+                  setUnpaidMonth(e.target.value);
+                  setShowPaidList(false);
+                }}
               />
             </div>
           </div>
 
-          {/* Summary bar */}
+          {/* Summary Alert Banner */}
           {!loading && !loadingUsers && (
-            <div className={`flex items-center gap-3 rounded-xl p-3.5 ${
+            <div className={`flex items-center gap-3.5 rounded-2xl p-4 border transition-all duration-200 shadow-sm ${
               unpaidList.length === 0
-                ? "bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/60 dark:border-emerald-800/40"
-                : "bg-red-50 dark:bg-red-900/20 border border-red-200/60 dark:border-red-800/40"
+                ? "bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/10 dark:to-teal-950/10 border-emerald-100 dark:border-emerald-900/30 text-emerald-800 dark:text-emerald-400"
+                : "bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-950/10 dark:to-rose-950/10 border-red-100 dark:border-red-900/30 text-red-800 dark:text-red-400"
             }`}>
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${
-                unpaidList.length === 0 ? "bg-emerald-100 dark:bg-emerald-800/40" : "bg-red-100 dark:bg-red-800/40"
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                unpaidList.length === 0 ? "bg-emerald-100/80 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400" : "bg-red-100/80 dark:bg-red-900/30 text-red-600 dark:text-red-400"
               }`}>
                 {unpaidList.length === 0
-                  ? <CheckCircle size={18} className="text-emerald-600 dark:text-emerald-400" />
-                  : <AlertCircle size={18} className="text-red-600 dark:text-red-400" />}
+                  ? <CheckCircle size={20} />
+                  : <AlertCircle size={20} />}
               </div>
-              <div>
-                <p className={`text-[13px] font-bold m-0 ${
-                  unpaidList.length === 0 ? "text-emerald-700 dark:text-emerald-400" : "text-red-700 dark:text-red-400"
-                }`}>
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-extrabold m-0 leading-tight">
                   {unpaidList.length === 0
                     ? `Semua warga sudah bayar ${formatBulan(unpaidMonth)}`
                     : `${unpaidList.length} dari ${unpaidList.length + paidList.length} warga belum bayar`}
                 </p>
-                <p className="text-[11px] text-gray-500 dark:text-slate-400 m-0 mt-0.5">
-                  Bulan penagihan: {formatBulan(unpaidMonth)}
+                <p className="text-[11px] text-gray-500 dark:text-slate-400 m-0 mt-1 leading-none">
+                  Bulan penagihan: <span className="font-bold">{formatBulan(unpaidMonth)}</span>
                 </p>
               </div>
             </div>
@@ -457,53 +579,105 @@ export default function AdminVerifikasi() {
 
           {/* Daftar Belum Bayar */}
           {!loading && !loadingUsers && unpaidList.length > 0 && (
-            <div className="flex flex-col gap-2">
-              <p className="text-[11px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider m-0">Belum Bayar ({unpaidList.length})</p>
-              {unpaidList.map(({ user: u }) => (
-                <div key={u.id_user} className="bg-white dark:bg-[#1a2640] rounded-2xl border border-red-100 dark:border-red-900/30 p-[13px_16px] flex items-center gap-3 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-                  <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/30 flex items-center justify-center text-[14px] font-extrabold text-red-600 dark:text-red-400 shrink-0">
-                    {u.nama?.charAt(0)?.toUpperCase() || "?"}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[13px] font-bold text-gray-800 dark:text-gray-100 truncate">{u.nama}</div>
-                    <div className="text-[11px] text-gray-400 mt-0.5 flex items-center gap-1.5 flex-wrap">
-                      <span className="font-semibold">{u.blok_rumah}</span>
-                      {u.no_hp && <span>· {u.no_hp}</span>}
+            <div className="flex flex-col gap-2.5">
+              <p className="text-[11px] font-extrabold text-gray-400 dark:text-slate-450 uppercase tracking-wider m-0 px-1">Belum Bayar ({unpaidList.length})</p>
+              {unpaidList.map(({ user: u }) => {
+                const waUrl = formatWhatsAppUrl(u.no_hp, u.nama, formatBulan(unpaidMonth));
+                return (
+                  <div
+                    key={u.id_user}
+                    className="bg-white dark:bg-[#1a2640] rounded-2xl border border-red-50 dark:border-red-950/20 p-4 flex items-center gap-3.5 shadow-sm hover:shadow-md transition-all duration-200"
+                  >
+                    {/* Initials Avatar */}
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500/10 to-rose-500/10 dark:from-red-500/10 dark:to-rose-500/5 flex items-center justify-center text-[14px] font-black text-red-600 dark:text-red-400 border border-red-100/60 dark:border-red-900/20 shrink-0">
+                      {u.nama?.charAt(0)?.toUpperCase() || "?"}
+                    </div>
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[13.5px] font-bold text-gray-800 dark:text-gray-150 truncate leading-tight">{u.nama}</div>
+                      <div className="text-[11px] text-gray-400 dark:text-slate-400 mt-1.5 flex items-center gap-1.5 flex-wrap leading-none">
+                        <span className="font-bold text-gray-500 dark:text-slate-300 bg-gray-100 dark:bg-slate-800/80 p-[2.5px_6px] rounded-md text-[10px]">{u.blok_rumah}</span>
+                        {u.no_hp && <span className="text-[10px] text-gray-400">{u.no_hp}</span>}
+                      </div>
+                    </div>
+                    {/* Actions */}
+                    <div className="flex items-center gap-2 shrink-0">
+                      {waUrl && (
+                        <a
+                          href={waUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="w-8 h-8 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 active:scale-95 transition-all text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-sm"
+                          title="Ingatkan via WhatsApp"
+                        >
+                          <MessageCircle size={15} />
+                        </a>
+                      )}
+                      <span className="text-[10px] font-extrabold bg-red-55/70 dark:bg-red-950/30 text-red-600 dark:text-red-400 px-2.5 py-1.5 rounded-full border border-red-100/50 dark:border-red-950/20">
+                        Belum Bayar
+                      </span>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 px-2.5 py-1 rounded-full shrink-0">
-                    Belum Bayar
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
-          {/* Daftar Sudah Bayar */}
+          {/* Daftar Sudah Bayar (Collapsible) */}
           {!loading && !loadingUsers && paidList.length > 0 && (
-            <div className="flex flex-col gap-2">
-              <p className="text-[11px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider m-0">Sudah Bayar ({paidList.length})</p>
-              {paidList.map(({ user: u, trx }) => (
-                <div key={u.id_user} className="bg-white dark:bg-[#1a2640] rounded-2xl border border-emerald-100 dark:border-emerald-900/30 p-[13px_16px] flex items-center gap-3 shadow-[0_1px_3px_rgba(0,0,0,0.04)] opacity-75">
-                  <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-[14px] font-extrabold text-emerald-600 dark:text-emerald-400 shrink-0">
-                    {u.nama?.charAt(0)?.toUpperCase() || "?"}
+            <div className="flex flex-col gap-2.5 mt-2">
+              {/* Trigger Toggle */}
+              <div
+                className="bg-white dark:bg-[#1a2640] rounded-2xl border border-gray-100 dark:border-slate-800/80 p-4 flex justify-between items-center cursor-pointer shadow-sm hover:shadow transition-all duration-200 select-none"
+                onClick={() => setShowPaidList(!showPaidList)}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-emerald-50 dark:bg-emerald-950/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                    <CheckCircle size={13} />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[13px] font-bold text-gray-800 dark:text-gray-100 truncate">{u.nama}</div>
-                    <div className="text-[11px] text-gray-400 mt-0.5 flex items-center gap-1.5 flex-wrap">
-                      <span className="font-semibold">{u.blok_rumah}</span>
-                      {trx && (
-                        <span className="text-[10px] font-semibold text-gray-400">
-                          · {trx.status === "verified" ? "✅ Terverifikasi" : "⏳ Menunggu verif"}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <span className="text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 px-2.5 py-1 rounded-full shrink-0">
-                    Sudah Bayar
+                  <span className="text-[12.5px] font-bold text-gray-700 dark:text-gray-200">
+                    Warga Sudah Bayar ({paidList.length})
                   </span>
                 </div>
-              ))}
+                <div className={`text-gray-400 transition-transform duration-350 ${showPaidList ? "rotate-180" : ""}`}>
+                  <ChevronDown size={18} />
+                </div>
+              </div>
+
+              {/* Collapsed Content */}
+              {showPaidList && (
+                <div className="flex flex-col gap-2.5 mt-1 animate-[fadeIn_0.2s_ease-out]">
+                  {paidList.map(({ user: u, trx }) => (
+                    <div
+                      key={u.id_user}
+                      className="bg-white dark:bg-[#1a2640] rounded-2xl border border-emerald-50 dark:border-emerald-950/20 p-4 flex items-center gap-3.5 shadow-sm hover:shadow-md transition-all duration-200"
+                    >
+                      {/* Initials Avatar */}
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/10 dark:to-teal-500/5 flex items-center justify-center text-[14px] font-black text-emerald-600 dark:text-emerald-400 border border-emerald-100/60 dark:border-emerald-900/20 shrink-0">
+                        {u.nama?.charAt(0)?.toUpperCase() || "?"}
+                      </div>
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[13.5px] font-bold text-gray-800 dark:text-gray-150 truncate leading-tight">{u.nama}</div>
+                        <div className="text-[11px] text-gray-400 dark:text-slate-400 mt-1.5 flex items-center gap-1.5 flex-wrap leading-none">
+                          <span className="font-bold text-gray-500 dark:text-slate-300 bg-gray-100 dark:bg-slate-800/80 p-[2.5px_6px] rounded-md text-[10px]">{u.blok_rumah}</span>
+                          {trx && (
+                            <span className={`text-[10px] font-bold ${
+                              trx.status === "verified" ? "text-emerald-600 dark:text-emerald-400" : "text-amber-500 dark:text-amber-400"
+                            }`}>
+                              · {trx.status === "verified" ? "✅ Terverifikasi" : "⏳ Menunggu verif"}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      {/* Badge */}
+                      <span className="text-[10px] font-extrabold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 px-2.5 py-1.5 rounded-full border border-emerald-100/50 dark:border-emerald-950/20 shrink-0">
+                        Sudah Bayar
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
