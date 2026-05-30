@@ -13,6 +13,7 @@ import {
   Newspaper,
   CalendarDays,
   X,
+  ArrowLeft,
   ArrowRight,
   ArrowUpRight,
   ArrowDownLeft,
@@ -281,77 +282,64 @@ function AddNewsPopup({ isOpen, onClose, user, showAlert, onPublishSuccess }) {
 
   return (
     <div
-      className={`fixed inset-0 z-[200] flex justify-center items-center p-4 transition-all duration-300 ${
-        isOpen
-          ? "bg-black/60 backdrop-blur-[1.5px] opacity-100 pointer-events-auto"
-          : "bg-transparent opacity-0 pointer-events-none"
+      className={`fixed inset-0 z-[200] w-full bg-white dark:bg-[#131c33] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden transition-all duration-300 ${
+        isOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none translate-y-4"
       }`}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div
-        className={`w-full max-w-[420px] bg-white dark:bg-[#131c33] rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.25)] flex flex-col overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-          isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
-        }`}
-        style={{ maxHeight: "90dvh" }}
-        role="dialog"
-        aria-modal="true"
-      >
-        {/* Header */}
-        <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-gray-150/80 dark:border-slate-800/80 shrink-0">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/10 flex items-center justify-center shrink-0 text-[#0f4c81] dark:text-blue-400">
-              <Newspaper size={16} />
-            </div>
-            <div className="min-w-0 text-left">
-              <h3 className="m-0 text-[14.5px] font-bold text-gray-800 dark:text-gray-100 leading-tight">
-                Publikasi Berita Baru
-              </h3>
-              <p className="text-[10px] text-gray-500 dark:text-slate-400 m-0 mt-0.5 leading-none">
-                Tulis berita atau pengumuman resmi pengurus RT/RW
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800/50 flex items-center justify-center border-none cursor-pointer text-gray-500 hover:bg-gray-200 dark:hover:bg-slate-700/50 transition-colors shrink-0"
-            aria-label="Tutup"
-          >
-            <X size={16} />
-          </button>
+      {/* Header */}
+      <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm pt-[calc(1.5rem+env(safe-area-inset-top,0px))]">
+        <button
+          type="button"
+          className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-700/60 active:scale-95 shrink-0"
+          onClick={onClose}
+        >
+          <ArrowLeft size={18} />
+        </button>
+        <div className="flex flex-col flex-1">
+          <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 m-0 leading-tight">
+            Publikasi Berita Baru
+          </h3>
+          <p className="text-[11px] text-gray-500 dark:text-gray-400 m-0 mt-0.5 leading-normal">
+            Tulis berita atau pengumuman resmi hunian warga
+          </p>
         </div>
+      </div>
 
-        {/* Scrollable body */}
-        <form onSubmit={handlePublishNews} className="overflow-y-auto p-5 flex flex-col gap-4 min-h-0">
+      {/* Form Content Area - Scrollable */}
+      <div className="p-6 overflow-y-auto flex-1 flex flex-col gap-4 bg-gray-50 dark:bg-[#0b1020]">
+        <form onSubmit={handlePublishNews} className="flex flex-col gap-4 flex-1">
           {/* Input Judul */}
-          <div className="w-full">
+          <div className="flex flex-col gap-1.5 bg-white dark:bg-[#131c33] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/50 shadow-xs">
             <label className={labelCls}>Judul Berita</label>
             <input
               type="text"
-              className="w-full py-2.5 px-4 border border-gray-200 dark:border-[#2c3c5e] rounded-xl font-sans text-[13px] text-gray-800 dark:text-gray-100 bg-gray-50 dark:bg-[#1b2641] outline-none focus:border-blue-500 dark:focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
+              className="w-full min-h-[44px] py-2.5 px-4 bg-gray-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-[#2c3c5e]/80 rounded-2xl font-sans text-sm text-slate-800 dark:text-slate-100 outline-none transition-all focus:bg-white dark:focus:bg-[#131c33] focus:border-blue-500 dark:focus:border-indigo-500"
               placeholder="Masukkan judul berita atau pengumuman"
               value={judul}
               onChange={(e) => setJudul(e.target.value)}
               disabled={publishing}
+              required
             />
           </div>
 
           {/* Input Konten */}
-          <div className="w-full">
+          <div className="flex flex-col gap-1.5 bg-white dark:bg-[#131c33] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/50 shadow-xs">
             <label className={labelCls}>Isi Berita</label>
             <textarea
-              className="w-full py-2.5 px-4 border border-gray-200 dark:border-[#2c3c5e] rounded-xl font-sans text-[13px] text-gray-800 dark:text-gray-100 bg-gray-50 dark:bg-[#1b2641] outline-none focus:border-blue-500 dark:focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500 transition-colors min-h-[140px]"
+              className="w-full py-2.5 px-4 border border-gray-200 dark:border-[#2c3c5e] rounded-xl font-sans text-[13px] text-gray-800 dark:text-gray-100 bg-gray-50 dark:bg-[#1b2641] outline-none focus:border-blue-500 dark:focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500 transition-colors min-h-[160px]"
               placeholder="Tulis isi berita atau pengumuman selengkapnya..."
               value={konten}
               onChange={(e) => setKonten(e.target.value)}
               disabled={publishing}
+              required
             />
           </div>
 
           {/* Action buttons */}
-          <div className="grid grid-cols-2 gap-3 mt-3 shrink-0">
+          <div className="grid grid-cols-2 gap-3 mt-2">
             <button
               type="button"
-              className="py-2.5 px-4 rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-800/20 text-gray-500 dark:text-slate-400 text-xs font-extrabold cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-800/40 transition-colors active:scale-[0.98]"
+              className="p-3.5 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#131c33] text-[14px] font-bold text-gray-500 dark:text-gray-400 cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-slate-800 active:scale-[0.98]"
               onClick={onClose}
               disabled={publishing}
             >
@@ -359,7 +347,7 @@ function AddNewsPopup({ isOpen, onClose, user, showAlert, onPublishSuccess }) {
             </button>
             <button
               type="submit"
-              className="py-2.5 px-4 rounded-xl border-none bg-blue-600 dark:bg-blue-500 text-white text-xs font-extrabold cursor-pointer hover:bg-blue-700 dark:hover:bg-blue-600 transition-all shadow-sm active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
+              className="p-3.5 rounded-2xl border-none bg-blue-600 dark:bg-blue-500 text-white text-[14px] font-bold cursor-pointer hover:bg-blue-700 dark:hover:bg-blue-600 transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
               disabled={publishing}
             >
               {publishing ? "Mempublikasikan..." : "Publikasikan"}
