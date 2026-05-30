@@ -893,9 +893,8 @@ export default function Home() {
 
   const myAllTransactions = useMemo(() => {
     return [...transactions]
-      .filter((t) => t.id_user === user?.id_user)
       .sort((a, b) => safeDate(b.timestamp) - safeDate(a.timestamp));
-  }, [transactions, user?.id_user]);
+  }, [transactions]);
 
   const myLatestTransactions = useMemo(() => {
     return myAllTransactions.slice(0, 5);
