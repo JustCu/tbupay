@@ -1435,12 +1435,12 @@ function ServiceHub() {
                 {selectedNews.konten}
               </p>
             </div>
-            {/* Area Tanya Jawab Container */}
+            {/* Area Diskusi Container */}
             <div className="flex-1 flex flex-col min-h-0 px-5 pb-5 pt-2 overflow-hidden">
               <div className="flex items-center justify-between mb-2 px-1 shrink-0">
                 <p className="text-xs font-extrabold text-slate-800 dark:text-slate-205 m-0 flex items-center gap-1.5 uppercase tracking-wider">
                   <MessageCircle size={15} className="text-blue-500" />
-                  Tanya Jawab Berita
+                  Diskusi Berita
                 </p>
                 {!loadingReplies && newsReplies.length > 0 && (
                   <span className="text-[10px] font-extrabold bg-blue-50 dark:bg-blue-955/40 text-blue-600 dark:text-blue-400 px-2.5 py-0.5 rounded-full border border-blue-100 dark:border-blue-900/50">
@@ -1456,12 +1456,12 @@ function ServiceHub() {
                   {loadingReplies ? (
                     <div className="flex flex-col items-center justify-center py-10 gap-2">
                       <RefreshCw size={24} className="text-gray-400 animate-spin" />
-                      <span className="text-[12px] text-gray-555">Memuat tanya jawab...</span>
+                      <span className="text-[12px] text-gray-555">Memuat diskusi...</span>
                     </div>
                   ) : newsReplies.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center text-center p-4">
                       <div className="bg-white/95 dark:bg-[#1f2c34]/95 rounded-xl px-4.5 py-2.5 text-[11px] text-gray-555 dark:text-gray-400 max-w-[85%] shadow-sm border border-gray-100 dark:border-transparent">
-                        Belum ada obrolan. Gunakan form di bawah untuk bertanya jawab terkait berita ini.
+                        Belum ada obrolan. Gunakan form di bawah untuk berdiskusi terkait berita ini.
                       </div>
                     </div>
                   ) : (
@@ -1869,11 +1869,11 @@ function ServiceHub() {
               </div>
             </div>
 
-            {/* Area Tanya Jawab Container */}
+            {/* Area Diskusi Container */}
             <div className="flex-1 flex flex-col min-h-0 px-5 pb-5 pt-2 overflow-hidden">
               <p className="text-xs font-extrabold text-slate-800 dark:text-slate-205 mb-2 flex items-center gap-1.5 px-1 uppercase tracking-wider shrink-0">
                 <MessageCircle size={15} className="text-blue-500" />
-                Tanya Jawab Keluhan
+                Diskusi Keluhan
               </p>
 
               <div className="flex-1 flex flex-col min-h-0 bg-[#efeae2] dark:bg-[#0b141a] rounded-2xl p-4 border border-slate-200/50 dark:border-slate-850/50 shadow-inner">
@@ -1882,12 +1882,12 @@ function ServiceHub() {
                   {loadingTicketReplies ? (
                     <div className="flex flex-col items-center justify-center py-10 gap-2">
                       <RefreshCw size={24} className="text-gray-400 animate-spin" />
-                      <span className="text-[12px] text-gray-555">Memuat tanya jawab...</span>
+                      <span className="text-[12px] text-gray-555">Memuat diskusi...</span>
                     </div>
                   ) : ticketReplies.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center text-center p-4">
                       <div className="bg-white/95 dark:bg-[#1f2c34]/95 rounded-xl px-4.5 py-2.5 text-[11px] text-gray-555 dark:text-gray-400 max-w-[85%] shadow-sm border border-gray-100 dark:border-transparent">
-                        Belum ada obrolan. Gunakan form di bawah untuk bertanya jawab terkait keluhan ini.
+                        Belum ada obrolan. Gunakan form di bawah untuk berdiskusi terkait keluhan ini.
                       </div>
                     </div>
                   ) : (
@@ -1967,7 +1967,7 @@ function ServiceHub() {
                 <div className="mt-3 pt-2 border-t border-slate-200/40 dark:border-slate-800/80 shrink-0">
                   {selectedTicket.status === "done" ? (
                     <div className="bg-white/80 dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 text-slate-500 dark:text-slate-400 rounded-xl py-2 px-3 text-center text-[11px] font-bold w-full shadow-xxs">
-                      Laporan selesai & ditutup. Tanya jawab dinonaktifkan.
+                      Laporan selesai & ditutup. Diskusi dinonaktifkan.
                     </div>
                   ) : (
                     <form onSubmit={handleSendTicketReply} className="flex items-center gap-2">

@@ -569,7 +569,7 @@ function AboutAppPopup({ isOpen, onClose }) {
                     Pusat Informasi & Diskusi
                   </span>
                   <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 leading-normal">
-                    Saluran pengumuman berita penting RT/RW terintegrasi dengan forum tanya jawab langsung antar tetangga.
+                    Saluran pengumuman berita penting RT/RW terintegrasi dengan forum diskusi langsung antar tetangga.
                   </span>
                 </div>
               </div>
