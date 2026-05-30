@@ -151,15 +151,6 @@ export default function Login() {
           Bantuan Lupa Kata Sandi
         </button>
 
-        {/* Minimalist Premium Footer */}
-        <div className="mt-12 pt-6 border-t border-slate-200/50 dark:border-slate-800/50 flex flex-col items-center gap-1 select-none text-center">
-          <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none">
-            TBU Pay • v1.2.0
-          </span>
-          <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500 leading-normal max-w-[240px]">
-            Perumahan Taman Bukit Unika (TBU)
-          </span>
-        </div>
       </div>
 
       {/* WhatsApp Help Modal */}
@@ -227,6 +218,18 @@ export default function Login() {
           </div>
         </div>
       )}
+
+      {/* Minimalist Premium Footer */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[360px] px-4 flex flex-col items-center gap-1 select-none text-center z-10">
+        <div className="w-full pt-4 border-t border-slate-200/50 dark:border-slate-800/50 flex flex-col items-center gap-1">
+          <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none">
+            TBU Pay • v1.2.0
+          </span>
+          <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500 leading-normal max-w-[280px]">
+            Perumahan Teras Bali Ungaran (TBU)
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
