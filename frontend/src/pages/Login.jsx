@@ -150,6 +150,16 @@ export default function Login() {
           <HelpCircle size={15} />
           Bantuan Lupa Kata Sandi
         </button>
+
+        {/* Minimalist Premium Footer */}
+        <div className="mt-12 pt-6 border-t border-slate-200/50 dark:border-slate-800/50 flex flex-col items-center gap-1 select-none text-center">
+          <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none">
+            TBU Pay • v1.2.0
+          </span>
+          <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500 leading-normal max-w-[240px]">
+            Perumahan Taman Bukit Unika (TBU)
+          </span>
+        </div>
       </div>
 
       {/* WhatsApp Help Modal */}
