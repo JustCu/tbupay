@@ -741,7 +741,7 @@ export default function PaymentModal({ isOpen, onClose }) {
       {/* Zoom Lightbox Preview */}
       {isZoomOpen && previewUrl && (
         <div
-          className="fixed inset-0 z-[210] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-5 cursor-zoom-out animate-[fadeIn_0.2s_ease-out]"
+          className="fixed inset-0 z-[210] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-5 pt-[calc(1.25rem+env(safe-area-inset-top,0px))] pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] cursor-zoom-out animate-[fadeIn_0.2s_ease-out]"
           onClick={() => setIsZoomOpen(false)}
         >
           {/* Top Bar */}
@@ -760,11 +760,11 @@ export default function PaymentModal({ isOpen, onClose }) {
           </div>
 
           {/* Full Image */}
-          <div className="relative max-w-full max-h-[72vh] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-950 flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-full max-h-[70vh] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-950 flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <img 
               src={previewUrl} 
               alt="Bukti Transfer Zoom" 
-              className="max-w-full max-h-[72vh] object-contain block" 
+              className="max-w-full max-h-[70vh] object-contain block" 
             />
           </div>
 

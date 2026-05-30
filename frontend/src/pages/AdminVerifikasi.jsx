@@ -775,24 +775,26 @@ export default function AdminVerifikasi() {
       {/* Fullscreen Image Preview Modal */}
       {previewImgUrl && (
         <div
-          className="fixed inset-0 z-[250] flex items-center justify-center bg-black/85 backdrop-blur-[2px] p-4 cursor-zoom-out animate-[fadeIn_0.2s_ease-out]"
+          className="fixed inset-0 z-[250] flex items-center justify-center bg-black/85 backdrop-blur-[2px] p-4 pt-[calc(1rem+env(safe-area-inset-top,0px))] pb-[calc(1rem+env(safe-area-inset-bottom,0px))] cursor-zoom-out animate-[fadeIn_0.2s_ease-out]"
           onClick={() => setPreviewImgUrl(null)}
         >
+          {/* Top-right Floating Close Button with Safe Area Support for iOS/Notch */}
+          <button
+            type="button"
+            className="fixed top-[calc(12px+env(safe-area-inset-top,0px))] right-4 z-[251] w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center border border-white/10 cursor-pointer active:scale-95 transition-all"
+            onClick={() => setPreviewImgUrl(null)}
+            aria-label="Tutup pratinjau"
+          >
+            <X size={20} className="stroke-[2.5]" />
+          </button>
+ 
           <div className="relative max-w-full max-h-full flex items-center justify-center">
             <img
               src={previewImgUrl}
               alt="Pratinjau Bukti Pembayaran"
-              className="max-w-full max-h-[90dvh] object-contain rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.5)] select-none pointer-events-auto"
+              className="max-w-full max-h-[80dvh] object-contain rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.5)] select-none pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
             />
-            <button
-              type="button"
-              className="absolute top-[-44px] right-0 md:right-[-44px] w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center border-none cursor-pointer active:scale-95 transition-all"
-              onClick={() => setPreviewImgUrl(null)}
-              aria-label="Tutup"
-            >
-              <X size={20} className="stroke-[2.5]" />
-            </button>
           </div>
         </div>
       )}
