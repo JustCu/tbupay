@@ -37,6 +37,25 @@ export default function App() {
   useEffect(() => {
     // Apply persisted theme class to document element on startup & changes
     document.documentElement.classList.toggle("dark", isDarkMode);
+
+    // Dynamically update meta theme-color tags to match the selected theme
+    const themeColor = isDarkMode ? "#0b1329" : "#fafafa";
+    
+    // 1. Base theme-color meta tag
+    let meta = document.querySelector('meta[name="theme-color"]:not([media])');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'theme-color');
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', themeColor);
+    
+    // 2. Adaptive prefers-color-scheme meta tags (if present)
+    const lightMeta = document.querySelector('meta[name="theme-color"][media*="light"]');
+    if (lightMeta) lightMeta.setAttribute('content', themeColor);
+    
+    const darkMeta = document.querySelector('meta[name="theme-color"][media*="dark"]');
+    if (darkMeta) darkMeta.setAttribute('content', themeColor);
   }, [isDarkMode]);
 
   return (
