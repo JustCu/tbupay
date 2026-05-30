@@ -130,7 +130,7 @@ function NewsDetailSheet({ news, onClose }) {
 
 // ── All Transactions Bottom Sheet ───────────────────────────────────────────
 function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
-  const [selectedMonth, setSelectedMonth] = useState(-1);
+  const [selectedPeriod, setSelectedPeriod] = useState("");
 
   // Lock body scroll when open
   useEffect(() => {
@@ -147,20 +147,24 @@ function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
     return () => window.removeEventListener("keydown", handler);
   }, [isOpen, onClose]);
 
-  // Reset selectedMonth when sheet closes or opens
+  // Reset selectedPeriod when sheet closes or opens
   useEffect(() => {
     if (!isOpen) {
-      setSelectedMonth(-1);
+      setSelectedPeriod("");
     }
   }, [isOpen]);
 
   const filteredTransactions = useMemo(() => {
-    if (selectedMonth === -1) return transactions;
+    if (!selectedPeriod) return transactions;
+    const [yearStr, monthStr] = selectedPeriod.split("-");
+    const targetYear = parseInt(yearStr, 10);
+    const targetMonth = parseInt(monthStr, 10) - 1;
+
     return transactions.filter((t) => {
       const date = safeDate(t.timestamp);
-      return date.getMonth() === selectedMonth;
+      return date.getFullYear() === targetYear && date.getMonth() === targetMonth;
     });
-  }, [transactions, selectedMonth]);
+  }, [transactions, selectedPeriod]);
 
   return (
     <div
@@ -196,26 +200,24 @@ function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
 
         {/* Filter Bar */}
         <div className="px-5 pb-3 pt-1 border-b border-gray-100 dark:border-slate-800/80 flex gap-2 items-center shrink-0">
-          <span className="text-xs text-gray-500 dark:text-gray-400 font-semibold shrink-0">Filter Bulan:</span>
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(Number(e.target.value))}
-            className="text-xs font-semibold py-1.5 px-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-gray-200 outline-none cursor-pointer focus:border-blue-500 transition-colors"
-          >
-            <option value={-1}>Semua Bulan</option>
-            <option value={0}>Januari</option>
-            <option value={1}>Februari</option>
-            <option value={2}>Maret</option>
-            <option value={3}>April</option>
-            <option value={4}>Mei</option>
-            <option value={5}>Juni</option>
-            <option value={6}>Juli</option>
-            <option value={7}>Agustus</option>
-            <option value={8}>September</option>
-            <option value={9}>Oktober</option>
-            <option value={10}>November</option>
-            <option value={11}>Desember</option>
-          </select>
+          <span className="text-xs text-gray-500 dark:text-gray-400 font-semibold shrink-0">Filter Periode:</span>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <input
+              type="month"
+              value={selectedPeriod}
+              onChange={(e) => setSelectedPeriod(e.target.value)}
+              className="text-xs font-semibold py-1.5 px-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-gray-200 outline-none cursor-pointer focus:border-blue-500 transition-colors"
+            />
+            {selectedPeriod && (
+              <button
+                onClick={() => setSelectedPeriod("")}
+                className="text-xs font-bold text-rose-500 hover:text-rose-600 bg-transparent border-none cursor-pointer p-1"
+                title="Hapus filter"
+              >
+                Hapus
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Scrollable body */}
