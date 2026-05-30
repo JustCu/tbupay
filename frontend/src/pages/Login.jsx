@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useStore from "../store/useStore";
-import { ShieldCheck, HelpCircle, Eye, EyeOff } from "lucide-react";
+import { ShieldCheck, HelpCircle, Eye, EyeOff, X, MessageCircle } from "lucide-react";
 import { loginUser } from "../application/use-cases/auth/authUseCases";
 
 export default function Login() {
@@ -10,6 +10,8 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [helpMessage, setHelpMessage] = useState("");
   const navigate = useNavigate();
   
   const login = useStore((state) => state.login);
@@ -47,10 +49,15 @@ export default function Login() {
   };
 
   const handleHelp = () => {
-    window.open(
-      "https://wa.me/6281234567890?text=Halo%20Pengurus,%20saya%20lupa%20password%20TBU%20Pay",
-      "_blank",
-    );
+    const defaultMsg = `Halo Pengurus, saya lupa password TBU Pay.\nMohon bantuannya untuk reset kata sandi.\n\nID User / Blok Rumah: ${username || ""}`;
+    setHelpMessage(defaultMsg);
+    setShowHelpModal(true);
+  };
+
+  const handleSendHelp = () => {
+    const encodedText = encodeURIComponent(helpMessage);
+    window.open(`https://wa.me/6281999386550?text=${encodedText}`, "_blank");
+    setShowHelpModal(false);
   };
 
   return (
@@ -144,6 +151,72 @@ export default function Login() {
           Bantuan Lupa Kata Sandi
         </button>
       </div>
+
+      {/* WhatsApp Help Modal */}
+      {showHelpModal && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center p-4 bg-black/60 backdrop-blur-xs animate-[fadeIn_0.2s_ease-in-out]">
+          <div className="w-full max-w-[360px] bg-white dark:bg-[#131c33] rounded-3xl p-6 border border-slate-100 dark:border-slate-800/80 shadow-[0_12px_40px_rgba(0,0,0,0.15)] flex flex-col gap-4 animate-[scaleUp_0.25s_cubic-bezier(0.34,1.56,0.64,1)]">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-xl bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 flex items-center justify-center shrink-0">
+                  <MessageCircle size={18} />
+                </div>
+                <h3 className="text-base font-bold text-gray-800 dark:text-gray-100 m-0">
+                  Bantuan WhatsApp
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowHelpModal(false)}
+                className="w-8 h-8 rounded-full bg-gray-50 dark:bg-slate-800/60 border-none cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700/60 flex items-center justify-center transition-colors shrink-0"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex flex-col gap-1 text-left">
+              <p className="text-[12px] text-gray-500 dark:text-gray-400 m-0 leading-relaxed">
+                Pesan bantuan akan dikirim ke pengurus di nomor <strong>0819-9938-6550</strong>. Silakan sesuaikan isi pesan di bawah ini jika diperlukan:
+              </p>
+            </div>
+
+            {/* Textarea Field */}
+            <div className="flex flex-col gap-1.5 bg-gray-50 dark:bg-slate-900/40 p-3.5 rounded-2xl border border-gray-100 dark:border-slate-800/50">
+              <label className="text-[10px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider ml-1 select-none text-left">
+                Isi Pesan Bantuan
+              </label>
+              <textarea
+                className="w-full py-1.5 px-1 border-none bg-transparent font-sans text-sm text-slate-800 dark:text-slate-100 outline-none resize-none transition-all placeholder-slate-400 min-h-[100px] focus:ring-0 leading-relaxed text-left"
+                placeholder="Tulis pesan bantuan Anda..."
+                value={helpMessage}
+                onChange={(e) => setHelpMessage(e.target.value)}
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-3 mt-1">
+              <button
+                type="button"
+                className="py-3 px-4 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#131c33] text-[13px] font-extrabold text-gray-500 dark:text-gray-400 cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-slate-800 select-none active:scale-[0.98]"
+                onClick={() => setShowHelpModal(false)}
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                className="py-3 px-4 rounded-2xl border-none bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white text-[13px] font-extrabold cursor-pointer transition-all shadow-[0_4px_12px_rgba(16,185,129,0.18)] select-none active:scale-[0.98] flex items-center justify-center gap-1.5"
+                onClick={handleSendHelp}
+              >
+                Kirim WA
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }
