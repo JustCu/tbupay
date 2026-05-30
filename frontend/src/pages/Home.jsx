@@ -1226,7 +1226,7 @@ export default function Home() {
             <ChevronRight size={13} />
           </button>
         </div>
-        <div className="bg-white dark:bg-[#131c33] border border-gray-200 dark:border-slate-800/80 rounded-2xl overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-[#131c33] border border-gray-100 dark:border-slate-800/80 rounded-2xl overflow-hidden shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none">
           {myLatestTransactions.length > 0 ? (
             myLatestTransactions.map((trx, index) => {
               const isPemasukan = trx.jenis === "pemasukan";
