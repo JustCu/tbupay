@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useStore from "../store/useStore";
-import { Key, Info, LogOut, Home, Phone, ShieldCheck, Pencil, X, AlertCircle, Moon, Sun, Volume2, Globe, Bell, Terminal, Database, Cpu, Layers } from "lucide-react";
+import { Key, Info, LogOut, Home, Phone, ShieldCheck, Pencil, X, AlertCircle, Moon, Sun, Volume2, Globe, Bell, Terminal, Database, Cpu, Layers, ArrowLeft } from "lucide-react";
 import { updateUser } from "../application/use-cases/users/userUseCases";
 import NotificationModal from "../components/NotificationModal";
 
@@ -307,37 +307,44 @@ export default function Profile() {
         Keluar
       </button>
 
-      {/* Edit Profile Form BottomSheet Modal */}
+      {/* Edit Profile Form Full-Screen Modal */}
       <div
-        className={`fixed inset-0 z-[70] flex justify-center items-end bg-transparent pointer-events-none transition-colors duration-300 ${isEditOpen ? "bg-black/50 pointer-events-auto" : ""}`}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) setIsEditOpen(false);
-        }}
+        className={`fixed inset-0 z-[70] w-full bg-white dark:bg-[#131c33] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden transition-all duration-300 ${
+          isEditOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none translate-y-4"
+        }`}
       >
-        <div className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-3xl p-[24px_20px] shadow-[0_-4px_20px_rgba(0,0,0,0.15)] transform transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] flex flex-col gap-[16px] max-h-[85vh] overflow-y-auto ${isEditOpen ? "translate-y-0" : "translate-y-full"}`}>
-          <div className="flex justify-between items-center">
-            <h3 className="text-[18px] font-bold text-gray-800 dark:text-gray-100 m-0">
+        {/* Header */}
+        <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm pt-[calc(1.5rem+env(safe-area-inset-top,0px))]">
+          <button
+            type="button"
+            className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-600 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-700/60 active:scale-95 shrink-0"
+            onClick={() => setIsEditOpen(false)}
+          >
+            <ArrowLeft size={18} />
+          </button>
+          <div className="flex flex-col flex-1">
+            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 m-0 leading-tight">
               Edit Profil
             </h3>
-            <button
-              onClick={() => setIsEditOpen(false)}
-              className="bg-gray-100 dark:bg-slate-800/60 border-none rounded-full p-2 cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700/60 transition-colors"
-            >
-              <X size={18} />
-            </button>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 m-0 mt-0.5 leading-normal">
+              Perbarui foto profil, nama, no. hp, & sandi Anda
+            </p>
           </div>
+        </div>
 
+        {/* Form Content Area - Scrollable */}
+        <div className="p-6 overflow-y-auto flex-1 flex flex-col gap-4 bg-gray-50 dark:bg-[#0b1020]">
           {formError && (
-            <div className="bg-red-50 text-red-600 text-xs font-semibold p-3 rounded-xl flex items-center gap-2 border border-red-100">
-              <AlertCircle size={14} className="shrink-0" />
+            <div className="bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 p-3.5 rounded-2xl text-[13px] font-semibold border border-red-100 dark:border-red-500/20 leading-relaxed shadow-sm">
+              <AlertCircle size={14} className="shrink-0 inline-block mr-1" />
               <span>{formError}</span>
             </div>
           )}
 
           <form onSubmit={handleSaveProfile} className="flex flex-col gap-4">
             {/* Avatar Upload Area */}
-            <div className="flex flex-col gap-2 items-center mb-1">
-              <div className="relative w-20 h-20 rounded-full border-2 border-gray-200 overflow-hidden bg-gray-100 flex items-center justify-center shadow-sm">
+            <div className="flex flex-col gap-2 items-center mb-1 bg-white dark:bg-[#131c33] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/50 shadow-xs">
+              <div className="relative w-20 h-20 rounded-full border-2 border-gray-100 dark:border-slate-750 overflow-hidden bg-gray-100 dark:bg-slate-800 flex items-center justify-center shadow-inner">
                 {form.imageBase64 || form.url_foto_profil ? (
                   <img
                     src={form.imageBase64 || form.url_foto_profil}
@@ -350,7 +357,7 @@ export default function Profile() {
                   </div>
                 )}
               </div>
-              <label className="text-[12px] font-bold text-blue-600 cursor-pointer hover:underline">
+              <label className="text-[12px] font-bold text-blue-600 dark:text-indigo-400 cursor-pointer hover:underline mt-1">
                 Ubah Foto Profil
                 <input
                   type="file"
@@ -370,10 +377,10 @@ export default function Profile() {
               </label>
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase">Nama Lengkap</label>
+            <div className="flex flex-col gap-1.5 bg-white dark:bg-[#131c33] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/50 shadow-xs">
+              <label className="text-[10px] font-extrabold text-gray-400 dark:text-slate-550 uppercase tracking-wider">Nama Lengkap</label>
               <input
-                className="w-full p-[11px_13px] border border-gray-200 rounded-xl bg-gray-50 text-[14px] outline-none font-sans box-border focus:border-blue-600 focus:bg-white"
+                className="w-full min-h-[44px] py-2.5 px-4 bg-gray-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-[#2c3c5e]/80 rounded-2xl font-sans text-sm text-slate-800 dark:text-slate-100 outline-none transition-all focus:bg-white dark:focus:bg-[#131c33] focus:border-blue-500 dark:focus:border-indigo-500"
                 type="text"
                 placeholder="Contoh: Pak Budi Santoso"
                 value={form.nama}
@@ -382,20 +389,20 @@ export default function Profile() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5">
-              <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-bold text-gray-400 uppercase">Blok Rumah (Read-Only)</label>
+            <div className="grid grid-cols-2 gap-3 bg-white dark:bg-[#131c33] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/50 shadow-xs">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-extrabold text-gray-400 dark:text-slate-550 uppercase tracking-wider">Blok (Read-Only)</label>
                 <input
-                  className="w-full p-[11px_13px] border border-gray-200 rounded-xl bg-gray-100 text-[14px] outline-none font-sans box-border text-gray-400 cursor-not-allowed"
+                  className="w-full min-h-[44px] py-2.5 px-4 bg-slate-100 dark:bg-slate-850/60 border border-slate-200/80 dark:border-[#2c3c5e]/80 rounded-2xl font-sans text-sm text-gray-400 dark:text-gray-500 outline-none cursor-not-allowed"
                   type="text"
                   value={form.blok_rumah}
                   disabled
                 />
               </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase">No. WhatsApp</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-extrabold text-gray-400 dark:text-slate-550 uppercase tracking-wider">No. WhatsApp</label>
                 <input
-                  className="w-full p-[11px_13px] border border-gray-200 rounded-xl bg-gray-50 text-[14px] outline-none font-sans box-border focus:border-blue-600 focus:bg-white"
+                  className="w-full min-h-[44px] py-2.5 px-4 bg-gray-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-[#2c3c5e]/80 rounded-2xl font-sans text-sm text-slate-800 dark:text-slate-100 outline-none transition-all focus:bg-white dark:focus:bg-[#131c33] focus:border-blue-500 dark:focus:border-indigo-500"
                   type="tel"
                   placeholder="08xxxxxxxxxx"
                   value={form.no_hp}
@@ -405,12 +412,12 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase">Password Baru (Opsional)</label>
+            <div className="flex flex-col gap-1.5 bg-white dark:bg-[#131c33] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/50 shadow-xs">
+              <label className="text-[10px] font-extrabold text-gray-400 dark:text-slate-550 uppercase tracking-wider">Password Baru (Opsional)</label>
               <input
-                className="w-full p-[11px_13px] border border-gray-200 rounded-xl bg-gray-50 text-[14px] outline-none font-sans box-border focus:border-blue-600 focus:bg-white"
+                className="w-full min-h-[44px] py-2.5 px-4 bg-gray-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-[#2c3c5e]/80 rounded-2xl font-sans text-sm text-slate-800 dark:text-slate-100 outline-none transition-all focus:bg-white dark:focus:bg-[#131c33] focus:border-blue-500 dark:focus:border-indigo-500"
                 type="password"
-                placeholder="Kosongkan jika tidak ingin mengubah password"
+                placeholder="Kosongkan jika tidak ingin diubah"
                 value={form.password}
                 onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))}
               />
@@ -419,7 +426,7 @@ export default function Profile() {
             <button
               type="submit"
               disabled={saving}
-              className="bg-[#0f4c81] text-white border-none rounded-xl py-3 px-4 text-[14px] font-bold cursor-pointer w-full flex items-center justify-center gap-2 mt-2 transition-all hover:bg-[#0a3460] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+              className="bg-[#0f4c81] text-white border-none rounded-xl py-3.5 px-4 text-[14px] font-bold cursor-pointer w-full flex items-center justify-center gap-2 mt-2 transition-all hover:bg-[#0a3460] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
             >
               {saving ? "Menyimpan..." : "Simpan Perubahan"}
             </button>

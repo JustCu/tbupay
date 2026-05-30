@@ -8,6 +8,7 @@ import {
   RefreshCw,
   ShieldCheck,
   X,
+  ArrowLeft,
 } from "lucide-react";
 import {
   getUsers,
@@ -384,30 +385,43 @@ export default function AdminUserManagement() {
         </div>
       )}
 
-      {/* Add / Edit Form Modal */}
+      {/* Add / Edit Form Full-Screen Modal */}
       <div
-        className={`fixed inset-0 z-[70] flex justify-center items-end bg-transparent pointer-events-none transition-colors duration-300 ${isFormOpen ? "bg-black/50 pointer-events-auto" : ""}`}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) closeForm();
-        }}
+        className={`fixed inset-0 z-[70] w-full bg-white dark:bg-[#131c33] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden transition-all duration-300 ${
+          isFormOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none translate-y-4"
+        }`}
       >
-        <div className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-3xl p-[24px_20px] shadow-[0_-4px_20px_rgba(0,0,0,0.15)] transform transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] flex flex-col gap-[14px] max-h-[85vh] overflow-y-auto ${isFormOpen ? "translate-y-0" : "translate-y-full"}`}>
-          <div className="flex justify-between items-center">
-            <h3 className="text-[18px] font-bold text-gray-800 dark:text-gray-100 m-0">
+        {/* Header */}
+        <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm pt-[calc(1.5rem+env(safe-area-inset-top,0px))]">
+          <button
+            type="button"
+            className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-600 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-700/60 active:scale-95 shrink-0"
+            onClick={closeForm}
+          >
+            <ArrowLeft size={18} />
+          </button>
+          <div className="flex flex-col flex-1">
+            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 m-0 leading-tight">
               {editTarget ? "Edit Warga" : "Tambah Warga Baru"}
             </h3>
-            <button
-              onClick={closeForm}
-              className="bg-gray-100 dark:bg-slate-800/60 border-none rounded-full p-2 cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
-            >
-              <X size={18} />
-            </button>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 m-0 mt-0.5 leading-normal">
+              {editTarget ? "Perbarui informasi hunian & akun warga" : "Daftarkan warga baru ke sistem hunian"}
+            </p>
           </div>
+        </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-[11px] font-bold text-gray-500 uppercase">Nama Lengkap</label>
+        {/* Content Area - Scrollable */}
+        <div className="p-6 overflow-y-auto flex-1 flex flex-col gap-4 bg-gray-50 dark:bg-[#0b1020]">
+          {formError && (
+            <div className="bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 p-3.5 rounded-2xl text-[13px] font-semibold border border-red-100 dark:border-red-500/20 leading-relaxed shadow-sm">
+              <span>⚠️ {formError}</span>
+            </div>
+          )}
+
+          <div className="flex flex-col gap-1.5 bg-white dark:bg-[#131c33] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/50 shadow-xs">
+            <label className="text-[10px] font-extrabold text-gray-400 dark:text-slate-550 uppercase tracking-wider">Nama Lengkap</label>
             <input
-              className="w-full p-[11px_13px] border border-gray-200 rounded-xl bg-gray-50 text-[14px] outline-none font-sans box-border focus:border-blue-600 focus:bg-white"
+              className="w-full min-h-[44px] py-2.5 px-4 bg-gray-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-[#2c3c5e]/80 rounded-2xl font-sans text-sm text-slate-800 dark:text-slate-100 outline-none transition-all focus:bg-white dark:focus:bg-[#131c33] focus:border-blue-500 dark:focus:border-indigo-500"
               type="text"
               placeholder="Contoh: Pak Budi Santoso"
               value={form.nama}
@@ -415,11 +429,11 @@ export default function AdminUserManagement() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-bold text-gray-500 uppercase">Blok / Username</label>
+          <div className="grid grid-cols-2 gap-3 bg-white dark:bg-[#131c33] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/50 shadow-xs">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-extrabold text-gray-400 dark:text-slate-550 uppercase tracking-wider">Blok / Username</label>
               <input
-                className="w-full p-[11px_13px] border border-gray-200 rounded-xl bg-gray-50 text-[14px] outline-none font-sans box-border focus:border-blue-600 focus:bg-white"
+                className="w-full min-h-[44px] py-2.5 px-4 bg-gray-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-[#2c3c5e]/80 rounded-2xl font-sans text-sm text-slate-800 dark:text-slate-100 outline-none transition-all focus:bg-white dark:focus:bg-[#131c33] focus:border-blue-500 dark:focus:border-indigo-500"
                 type="text"
                 placeholder="A-12"
                 value={form.blok_rumah}
@@ -427,14 +441,14 @@ export default function AdminUserManagement() {
                   setForm((p) => ({ ...p, blok_rumah: e.target.value }))
                 }
               />
-              <span className="text-[10px] text-gray-400 mt-[2px]">
+              <span className="text-[9px] text-gray-400 dark:text-slate-500 mt-[2px] leading-tight">
                 Digunakan sebagai username login
               </span>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-bold text-gray-500 uppercase">No. HP</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-extrabold text-gray-400 dark:text-slate-550 uppercase tracking-wider">No. HP</label>
               <input
-                className="w-full p-[11px_13px] border border-gray-200 rounded-xl bg-gray-50 text-[14px] outline-none font-sans box-border focus:border-blue-600 focus:bg-white"
+                className="w-full min-h-[44px] py-2.5 px-4 bg-gray-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-[#2c3c5e]/80 rounded-2xl font-sans text-sm text-slate-800 dark:text-slate-100 outline-none transition-all focus:bg-white dark:focus:bg-[#131c33] focus:border-blue-500 dark:focus:border-indigo-500"
                 type="tel"
                 placeholder="08xxxxxxxxxx"
                 value={form.no_hp}
@@ -445,11 +459,11 @@ export default function AdminUserManagement() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
-             <div className="flex flex-col gap-1">
-               <label className="text-[11px] font-bold text-gray-500 uppercase">Role</label>
+          <div className="grid grid-cols-2 gap-3 bg-white dark:bg-[#131c33] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/50 shadow-xs">
+             <div className="flex flex-col gap-1.5">
+               <label className="text-[10px] font-extrabold text-gray-400 dark:text-slate-550 uppercase tracking-wider">Role</label>
                <select
-                 className="w-full p-[11px_13px] border border-gray-200 rounded-xl bg-gray-50 text-[14px] outline-none font-sans box-border focus:border-blue-600 focus:bg-white disabled:opacity-60"
+                 className="w-full min-h-[44px] py-2.5 px-4 bg-gray-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-[#2c3c5e]/80 rounded-2xl font-sans text-sm text-slate-800 dark:text-slate-100 outline-none transition-all focus:bg-white dark:focus:bg-[#131c33] focus:border-blue-500 dark:focus:border-indigo-500 disabled:opacity-60"
                  value={form.role}
                  onChange={(e) =>
                    setForm((p) => ({ ...p, role: e.target.value }))
@@ -461,10 +475,10 @@ export default function AdminUserManagement() {
                  <option value="admin">Admin</option>
                </select>
              </div>
-             <div className="flex flex-col gap-1">
-               <label className="text-[11px] font-bold text-gray-500 uppercase">Status Warga</label>
+             <div className="flex flex-col gap-1.5">
+               <label className="text-[10px] font-extrabold text-gray-400 dark:text-slate-550 uppercase tracking-wider">Status Warga</label>
                <select
-                 className="w-full p-[11px_13px] border border-gray-200 rounded-xl bg-gray-50 text-[14px] outline-none font-sans box-border focus:border-blue-600 focus:bg-white"
+                 className="w-full min-h-[44px] py-2.5 px-4 bg-gray-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-[#2c3c5e]/80 rounded-2xl font-sans text-sm text-slate-800 dark:text-slate-100 outline-none transition-all focus:bg-white dark:focus:bg-[#131c33] focus:border-blue-500 dark:focus:border-indigo-500"
                  value={form.status_warga}
                  onChange={(e) =>
                    setForm((p) => ({ ...p, status_warga: e.target.value }))
@@ -478,39 +492,39 @@ export default function AdminUserManagement() {
              </div>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-[11px] font-bold text-gray-500 uppercase">Password</label>
+          <div className="flex flex-col gap-1.5 bg-white dark:bg-[#131c33] p-4 rounded-2xl border border-gray-100 dark:border-slate-800/50 shadow-xs">
+            <label className="text-[10px] font-extrabold text-gray-400 dark:text-slate-550 uppercase tracking-wider">Password</label>
             <input
-              className="w-full p-[11px_13px] border border-gray-200 rounded-xl bg-gray-50 text-[14px] outline-none font-sans box-border focus:border-blue-600 focus:bg-white"
+              className="w-full min-h-[44px] py-2.5 px-4 bg-gray-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-[#2c3c5e]/80 rounded-2xl font-sans text-sm text-slate-800 dark:text-slate-100 outline-none transition-all focus:bg-white dark:focus:bg-[#131c33] focus:border-blue-500 dark:focus:border-indigo-500"
               type="password"
               placeholder={
-                editTarget ? "(biarkan kosong)" : "Default: 123456"
+                editTarget ? "(biarkan kosong jika tidak diubah)" : "Default: 123456"
               }
               value={form.password}
               onChange={(e) =>
                 setForm((p) => ({ ...p, password: e.target.value }))
               }
             />
-            {editTarget && (
-              <span className="text-[10px] text-gray-400 mt-[2px]">Kosongkan jika tidak diubah</span>
-            )}
           </div>
 
-          {formError && (
-            <div className="bg-red-100 text-red-600 rounded-lg p-[10px_14px] text-[13px] font-semibold border border-red-200">
-              ⚠️ {formError}
-            </div>
-          )}
-
-          <div className="grid grid-cols-2 gap-2.5 mt-1">
-            <button className="p-3 rounded-xl border border-gray-200 bg-white text-[14px] font-bold text-gray-500 cursor-pointer transition-colors hover:bg-gray-50" onClick={closeForm}>
+          <div className="grid grid-cols-2 gap-3 mt-2">
+            <button 
+              type="button"
+              className="p-3.5 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#131c33] text-[14px] font-bold text-gray-500 dark:text-gray-400 cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-slate-800 active:scale-[0.98]" 
+              onClick={closeForm}
+            >
               Batal
             </button>
-            <button className="p-3 rounded-xl border-none bg-[#0f4c81] text-white text-[14px] font-bold cursor-pointer transition-opacity hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed shadow-[0_4px_12px_rgba(15,76,129,0.2)]" onClick={handleSave} disabled={saving}>
+            <button 
+              type="button"
+              className="p-3.5 rounded-2xl border-none bg-[#0f4c81] text-white text-[14px] font-bold cursor-pointer transition-all hover:bg-[#0a3460] disabled:opacity-60 disabled:cursor-not-allowed shadow-md active:scale-[0.98]" 
+              onClick={handleSave} 
+              disabled={saving}
+            >
               {saving
                 ? "Menyimpan..."
                 : editTarget
-                  ? "Simpan Perubahan"
+                  ? "Simpan"
                   : "Tambah Warga"}
             </button>
           </div>
