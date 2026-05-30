@@ -131,8 +131,6 @@ function NewsDetailSheet({ news, onClose }) {
 
 // ── All Transactions Bottom Sheet ───────────────────────────────────────────
 function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
-  const [selectedPeriod, setSelectedPeriod] = useState("");
-
   // Lock body scroll when open
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
@@ -147,25 +145,6 @@ function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [isOpen, onClose]);
-
-  // Reset selectedPeriod when sheet closes or opens
-  useEffect(() => {
-    if (!isOpen) {
-      setSelectedPeriod("");
-    }
-  }, [isOpen]);
-
-  const filteredTransactions = useMemo(() => {
-    if (!selectedPeriod) return transactions;
-    const [yearStr, monthStr] = selectedPeriod.split("-");
-    const targetYear = parseInt(yearStr, 10);
-    const targetMonth = parseInt(monthStr, 10) - 1;
-
-    return transactions.filter((t) => {
-      const date = safeDate(t.timestamp);
-      return date.getFullYear() === targetYear && date.getMonth() === targetMonth;
-    });
-  }, [transactions, selectedPeriod]);
 
   return (
     <div
@@ -187,47 +166,22 @@ function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
         {/* Drag handle */}
         <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto mt-3 mb-0 shrink-0" />
 
-        {/* Header with Integrated Filter and Close Button */}
-        <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-3 border-b border-gray-100 dark:border-slate-800/80 shrink-0">
-          <h3 className="text-[15px] font-bold text-gray-800 dark:text-gray-100 m-0 truncate min-w-0 flex-1">
-            Semua Riwayat Transaksi
-          </h3>
-          <div className="flex items-center gap-2 shrink-0">
-            {/* Period Filter Input styled as a clean button with filter icon */}
-            <div className="relative flex items-center">
-              <Filter size={11} className="absolute left-2.5 text-gray-400 dark:text-slate-500 pointer-events-none" />
-              <input
-                type="month"
-                value={selectedPeriod}
-                onChange={(e) => setSelectedPeriod(e.target.value)}
-                className="text-[10px] font-bold pl-6 pr-2 py-1 rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-600 dark:text-gray-300 outline-none cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-750 transition-colors w-[115px]"
-              />
-            </div>
-            {selectedPeriod && (
-              <button
-                onClick={() => setSelectedPeriod("")}
-                className="text-[10px] font-bold text-rose-500 hover:text-rose-600 bg-transparent border-none cursor-pointer p-0.5 shrink-0"
-                title="Hapus filter"
-              >
-                Hapus
-              </button>
-            )}
-            
-            {/* Close Button */}
-            <button
-              onClick={onClose}
-              className="w-7 h-7 rounded-full bg-gray-100 dark:bg-slate-800/60 flex items-center justify-center border-none cursor-pointer text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors shrink-0"
-              aria-label="Tutup"
-            >
-              <X size={14} />
-            </button>
-          </div>
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-gray-100 dark:border-slate-800/80 shrink-0">
+          <h3 className="text-[16px] font-bold text-gray-800 dark:text-gray-100 m-0">Semua Riwayat Transaksi</h3>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center border-none cursor-pointer text-gray-500 hover:bg-gray-200 transition-colors shrink-0"
+            aria-label="Tutup"
+          >
+            <X size={16} />
+          </button>
         </div>
 
         {/* Scrollable body */}
         <div className="overflow-y-auto px-0 py-0 flex flex-col pb-8 flex-1">
-          {filteredTransactions.length > 0 ? (
-            filteredTransactions.map((trx, index) => {
+          {transactions.length > 0 ? (
+            transactions.map((trx, index) => {
               const isPemasukan = trx.jenis === "pemasukan";
               const statusLabel =
                 trx.status === "verified"
@@ -241,7 +195,7 @@ function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
 
               return (
                 <div key={trx.id_transaksi} className={`flex items-center justify-between gap-3 px-4 py-3.5 ${
-                  index !== filteredTransactions.length - 1 ? 'border-b border-gray-100 dark:border-slate-800/60' : ''
+                  index !== transactions.length - 1 ? 'border-b border-gray-100 dark:border-slate-800/60' : ''
                 } hover:bg-gray-50/70 dark:hover:bg-white/[0.03] transition-colors`}>
                   {/* Left: icon + info */}
                   <div className="flex items-center gap-3 min-w-0">
@@ -893,8 +847,9 @@ export default function Home() {
 
   const myAllTransactions = useMemo(() => {
     return [...transactions]
+      .filter((t) => t.id_user === user?.id_user)
       .sort((a, b) => safeDate(b.timestamp) - safeDate(a.timestamp));
-  }, [transactions]);
+  }, [transactions, user?.id_user]);
 
   const myLatestTransactions = useMemo(() => {
     return myAllTransactions.slice(0, 5);
