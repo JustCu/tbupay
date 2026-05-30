@@ -1240,6 +1240,9 @@ function ReportPreviewModal({
   formatRupiah,
   userMap,
 }) {
+  const containerRef = useRef(null);
+  const [zoom, setZoom] = useState(100);
+
   // Lock body scroll
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
@@ -1258,6 +1261,36 @@ function ReportPreviewModal({
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [isOpen, onClose]);
+
+  // Auto-fit to screen width on mount / resize
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleResize = () => {
+      if (!containerRef.current) return;
+      const containerWidth = containerRef.current.clientWidth;
+      // standard A4 width in pixels is ~794px at 96 DPI, let's use a safe value like 820px including margin/padding
+      const paperWidthPx = 794; 
+      const padding = 32; // safe spacing
+      const availableWidth = containerWidth - padding;
+      
+      if (availableWidth < paperWidthPx) {
+        const fitPercentage = Math.floor((availableWidth / paperWidthPx) * 100);
+        // clamp zoom between 40% and 150%
+        setZoom(Math.max(40, Math.min(150, fitPercentage)));
+      } else {
+        setZoom(100); // default to 100% on larger screens
+      }
+    };
+
+    // run initially with a small timeout to ensure DOM layout is complete
+    const timer = setTimeout(handleResize, 100);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -1284,9 +1317,50 @@ function ReportPreviewModal({
             <p className="text-[11px] text-gray-400 dark:text-slate-400 m-0 mt-0.5">Format akuntansi standar PDF (A4)</p>
           </div>
           <div className="flex items-center gap-2">
+            {/* Zoom Controls */}
+            <div className="flex items-center bg-gray-100 dark:bg-slate-800/60 rounded-xl p-1 gap-1 border border-gray-200/40 dark:border-slate-700/40 shrink-0 select-none">
+              <button
+                onClick={() => setZoom(z => Math.max(40, z - 10))}
+                className="w-7 h-7 flex items-center justify-center border-none bg-transparent hover:bg-white dark:hover:bg-slate-700 rounded-lg text-gray-600 dark:text-gray-300 font-extrabold cursor-pointer transition-colors"
+                title="Perkecil"
+              >
+                -
+              </button>
+              <span className="text-[10px] font-mono font-bold text-gray-600 dark:text-gray-300 px-1 min-w-[36px] text-center">
+                {zoom}%
+              </span>
+              <button
+                onClick={() => setZoom(z => Math.min(150, z + 10))}
+                className="w-7 h-7 flex items-center justify-center border-none bg-transparent hover:bg-white dark:hover:bg-slate-700 rounded-lg text-gray-600 dark:text-gray-300 font-extrabold cursor-pointer transition-colors"
+                title="Perbesar"
+              >
+                +
+              </button>
+              <button
+                onClick={() => {
+                  if (containerRef.current) {
+                    const containerWidth = containerRef.current.clientWidth;
+                    const paperWidthPx = 794;
+                    const availableWidth = containerWidth - 32;
+                    if (availableWidth < paperWidthPx) {
+                      setZoom(Math.max(40, Math.floor((availableWidth / paperWidthPx) * 100)));
+                    } else {
+                      setZoom(100);
+                    }
+                  } else {
+                    setZoom(100);
+                  }
+                }}
+                className="text-[9px] uppercase tracking-wider font-extrabold border-none px-2 h-7 bg-transparent hover:bg-white dark:hover:bg-slate-700 rounded-lg text-blue-600 dark:text-blue-400 cursor-pointer transition-colors"
+                title="Sesuaikan Layar"
+              >
+                Fit
+              </button>
+            </div>
+
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-xl p-[8px_14px] text-[12px] font-bold cursor-pointer transition-all active:scale-[0.97]"
+              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-xl p-[8px_14px] text-[12px] font-bold cursor-pointer transition-all active:scale-[0.97] shrink-0"
             >
               <Download size={14} />
               Download PDF (A4)
@@ -1302,187 +1376,208 @@ function ReportPreviewModal({
         </div>
 
         {/* virtual printable area */}
-        <div className="flex-1 overflow-y-auto overflow-x-auto p-4 md:p-8 bg-slate-100 dark:bg-[#0b1020] print:p-0 print:bg-white print:overflow-visible flex justify-start md:justify-center">
+        <div 
+          ref={containerRef}
+          className="flex-1 overflow-auto p-4 md:p-8 bg-slate-100 dark:bg-[#0b1020] print:p-0 print:bg-white print:overflow-visible flex justify-center items-start"
+        >
           
-          {/* Virtual Paper Sheet (Fix A4: 210mm x 297mm) */}
-          <div className="bg-white text-slate-900 p-[20mm] shadow-sm border border-gray-200/60 mx-auto w-[210mm] min-h-[297mm] box-border relative flex flex-col justify-between print:p-0 print:border-none print:shadow-none print:bg-white print:text-black shrink-0 font-sans">
-            
-            <div className="flex flex-col gap-6 w-full">
-              {/* Kop Laporan / Letterhead */}
-              <div className="text-center pb-4 border-b-2 border-slate-900 flex flex-col items-center">
-                <span className="text-[17px] font-black tracking-widest text-slate-900 leading-none">LAPORAN ARUS KAS KEUANGAN WARGA</span>
-                <span className="text-[12px] font-extrabold tracking-wider text-slate-600 mt-1.5 uppercase">PERUMAHAN TERAS BALI UNGARAN (TBU)</span>
-                <span className="text-[10px] font-bold text-slate-500 mt-2 uppercase tracking-wide bg-slate-100 px-3 py-1 rounded-md print:bg-transparent print:p-0">
-                  PERIODE: {periodTitle}
-                </span>
-                <div className="text-[8px] font-mono text-slate-400 mt-2.5 print:text-slate-500">
-                  Dicetak secara otomatis pada: {new Date().toLocaleString("id-ID", { dateStyle: "long", timeStyle: "short" })}
-                </div>
-              </div>
-
-              {/* Ringkasan Saldo (Executive Summary) */}
-              <div className="mt-2">
-                <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-800 mb-2 border-l-4 border-blue-600 pl-2 print:border-slate-800">
-                  I. Ringkasan Eksekutif
-                </h4>
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl print:bg-transparent print:rounded-none">
-                    <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Saldo Awal</span>
-                    <span className="text-[13px] font-extrabold text-slate-800 mt-1 block">{formatRupiah(beginningBalance)}</span>
-                  </div>
-                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl print:bg-transparent print:rounded-none">
-                    <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Total Pemasukan</span>
-                    <span className="text-[13px] font-extrabold text-emerald-600 mt-1 block">+{formatRupiah(totalMasuk)}</span>
-                  </div>
-                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl print:bg-transparent print:rounded-none">
-                    <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Total Pengeluaran</span>
-                    <span className="text-[13px] font-extrabold text-rose-500 mt-1 block">-{formatRupiah(totalKeluar)}</span>
+          {/* Scaling wrapper to preserve exact layout boundaries in scroll container */}
+          <div 
+            style={{
+              width: `${210 * (zoom / 100)}mm`,
+              height: `${297 * (zoom / 100)}mm`,
+              transition: 'all 0.15s ease-out',
+            }}
+            className="shrink-0 flex justify-center items-start print:w-full print:h-auto print:block"
+          >
+            {/* Virtual Paper Sheet (Fix A4: 210mm x 297mm) */}
+            <div 
+              style={{ 
+                transform: `scale(${zoom / 100})`, 
+                transformOrigin: 'top left',
+                width: '210mm',
+                height: '297mm',
+              }}
+              className="bg-white text-slate-900 p-[20mm] shadow-sm border border-gray-200/60 relative flex flex-col justify-between print:p-0 print:border-none print:shadow-none print:bg-white print:text-black print:transform-none print:w-full print:h-auto shrink-0 font-sans box-border"
+            >
+              
+              <div className="flex flex-col gap-6 w-full">
+                {/* Kop Laporan / Letterhead */}
+                <div className="text-center pb-4 border-b-2 border-slate-900 flex flex-col items-center">
+                  <span className="text-[17px] font-black tracking-widest text-slate-900 leading-none">LAPORAN ARUS KAS KEUANGAN WARGA</span>
+                  <span className="text-[12px] font-extrabold tracking-wider text-slate-600 mt-1.5 uppercase">PERUMAHAN TERAS BALI UNGARAN (TBU)</span>
+                  <span className="text-[10px] font-bold text-slate-500 mt-2 uppercase tracking-wide bg-slate-100 px-3 py-1 rounded-md print:bg-transparent print:p-0">
+                    PERIODE: {periodTitle}
+                  </span>
+                  <div className="text-[8px] font-mono text-slate-400 mt-2.5 print:text-slate-500">
+                    Dicetak secara otomatis pada: {new Date().toLocaleString("id-ID", { dateStyle: "long", timeStyle: "short" })}
                   </div>
                 </div>
-                
-                <div className="mt-3 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between print:bg-transparent print:rounded-none">
-                  <div>
-                    <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Saldo Akhir Tersedia</span>
-                    <span className="text-[15px] font-black text-slate-900 block mt-0.5">{formatRupiah(beginningBalance + totalMasuk - totalKeluar)}</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Surplus / Defisit</span>
-                    <span className={`text-[12px] font-black block mt-0.5 ${netChange >= 0 ? "text-emerald-600" : "text-rose-500"}`}>
-                      {netChange >= 0 ? "Surplus " : "Defisit "} {formatRupiah(Math.abs(netChange))}
-                    </span>
-                  </div>
-                </div>
-              </div>
 
-              {/* Buku Kas Rinci (Ledger Table) */}
-              <div className="mt-2">
-                <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-800 mb-2 border-l-4 border-blue-600 pl-2 print:border-slate-800">
-                  II. Buku Kas Rinci (General Ledger)
-                </h4>
-                <div className="w-full overflow-x-auto print:overflow-visible">
-                  <table className="w-full border-collapse text-[10px] text-slate-700">
-                    <thead>
-                      <tr className="bg-slate-100 border-t border-b border-slate-300 print:bg-transparent print:border-t-2 print:border-b-2 print:border-slate-900">
-                        <th className="p-2 text-left font-bold w-[4%]">No</th>
-                        <th className="p-2 text-left font-bold w-[12%]">Tanggal</th>
-                        <th className="p-2 text-left font-bold w-[26%]">Keterangan</th>
-                        <th className="p-2 text-left font-bold w-[15%]">Kategori</th>
-                        <th className="p-2 text-left font-bold w-[11%]">Oleh</th>
-                        <th className="p-2 text-right font-bold w-[10%]">Debit</th>
-                        <th className="p-2 text-right font-bold w-[10%]">Kredit</th>
-                        <th className="p-2 text-right font-bold w-[12%]">Saldo</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {/* Saldo Awal Row */}
-                      <tr className="border-b border-slate-150">
-                        <td className="p-2 text-left font-semibold" colSpan={5}>
-                          SALDO AWAL PERIODE
-                        </td>
-                        <td className="p-2 text-right">-</td>
-                        <td className="p-2 text-right">-</td>
-                        <td className="p-2 text-right font-black tabular-nums">
-                          {formatRupiah(beginningBalance)}
-                        </td>
-                      </tr>
-
-                      {/* Transaction Rows */}
-                      {chronologicalLedger.length > 0 ? (
-                        chronologicalLedger.map((trx, index) => {
-                          const isMasuk = trx.jenis === "pemasukan";
-                          const trxUser = userMap[trx.id_user] || {};
-                          const userName = trxUser.nama || "Warga";
-                          return (
-                            <tr key={trx.id_transaksi || index} className="border-b border-slate-100 hover:bg-slate-50/50 print:hover:bg-transparent">
-                              <td className="p-2 text-left text-slate-500 tabular-nums">{index + 1}</td>
-                              <td className="p-2 text-left tabular-nums">
-                                {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
-                                  day: "2-digit",
-                                  month: "2-digit",
-                                  year: "numeric"
-                                })}
-                              </td>
-                              <td className="p-2 text-left font-bold text-slate-800 truncate max-w-[140px] print:max-w-none print:whitespace-normal">
-                                {trx.keterangan || "Tanpa Keterangan"}
-                              </td>
-                              <td className="p-2 text-left text-slate-500">{trx.kategori || "Lainnya"}</td>
-                              <td className="p-2 text-left text-slate-500 truncate max-w-[70px]">{userName}</td>
-                              <td className="p-2 text-right text-emerald-600 font-bold tabular-nums">
-                                {isMasuk ? `+${formatRupiah(trx.nominal)}` : "-"}
-                              </td>
-                              <td className="p-2 text-right text-rose-500 font-bold tabular-nums">
-                                {!isMasuk ? `-${formatRupiah(trx.nominal)}` : "-"}
-                              </td>
-                              <td className="p-2 text-right font-bold text-slate-800 tabular-nums">
-                                {formatRupiah(trx.runningBalance)}
-                              </td>
-                            </tr>
-                          );
-                        })
-                      ) : (
-                        <tr>
-                          <td colSpan={8} className="p-6 text-center text-slate-400 italic">
-                            Tidak ada transaksi mutasi kas dalam periode ini
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Rekapitulasi Pengeluaran Per Pos */}
-              {pengeluaranPerPos.length > 0 && (
-                <div className="mt-2 page-break-avoid">
+                {/* Ringkasan Saldo (Executive Summary) */}
+                <div className="mt-2">
                   <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-800 mb-2 border-l-4 border-blue-600 pl-2 print:border-slate-800">
-                    III. Rekapitulasi Pengeluaran Per Kategori (Pos Pengeluaran)
+                    I. Ringkasan Eksekutif
                   </h4>
-                  <div className="w-[60%] print:w-[80%]">
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl print:bg-transparent print:rounded-none">
+                      <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Saldo Awal</span>
+                      <span className="text-[13px] font-extrabold text-slate-800 mt-1 block">{formatRupiah(beginningBalance)}</span>
+                    </div>
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl print:bg-transparent print:rounded-none">
+                      <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Total Pemasukan</span>
+                      <span className="text-[13px] font-extrabold text-emerald-600 mt-1 block">+{formatRupiah(totalMasuk)}</span>
+                    </div>
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl print:bg-transparent print:rounded-none">
+                      <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Total Pengeluaran</span>
+                      <span className="text-[13px] font-extrabold text-rose-500 mt-1 block">-{formatRupiah(totalKeluar)}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-3 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between print:bg-transparent print:rounded-none">
+                    <div>
+                      <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Saldo Akhir Tersedia</span>
+                      <span className="text-[15px] font-black text-slate-900 block mt-0.5">{formatRupiah(beginningBalance + totalMasuk - totalKeluar)}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Surplus / Defisit</span>
+                      <span className={`text-[12px] font-black block mt-0.5 ${netChange >= 0 ? "text-emerald-600" : "text-rose-500"}`}>
+                        {netChange >= 0 ? "Surplus " : "Defisit "} {formatRupiah(Math.abs(netChange))}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Buku Kas Rinci (Ledger Table) */}
+                <div className="mt-2">
+                  <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-800 mb-2 border-l-4 border-blue-600 pl-2 print:border-slate-800">
+                    II. Buku Kas Rinci (General Ledger)
+                  </h4>
+                  <div className="w-full overflow-x-auto print:overflow-visible">
                     <table className="w-full border-collapse text-[10px] text-slate-700">
                       <thead>
                         <tr className="bg-slate-100 border-t border-b border-slate-300 print:bg-transparent print:border-t-2 print:border-b-2 print:border-slate-900">
-                          <th className="p-2 text-left font-bold w-[10%]">No</th>
-                          <th className="p-2 text-left font-bold w-[60%]">Kategori Pengeluaran</th>
-                          <th className="p-2 text-right font-bold w-[30%]">Total Nominal</th>
+                          <th className="p-2 text-left font-bold w-[4%]">No</th>
+                          <th className="p-2 text-left font-bold w-[12%]">Tanggal</th>
+                          <th className="p-2 text-left font-bold w-[26%]">Keterangan</th>
+                          <th className="p-2 text-left font-bold w-[15%]">Kategori</th>
+                          <th className="p-2 text-left font-bold w-[11%]">Oleh</th>
+                          <th className="p-2 text-right font-bold w-[10%]">Debit</th>
+                          <th className="p-2 text-right font-bold w-[10%]">Kredit</th>
+                          <th className="p-2 text-right font-bold w-[12%]">Saldo</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {pengeluaranPerPos.map(([kategori, nominal], index) => (
-                          <tr key={kategori} className="border-b border-slate-100">
-                            <td className="p-2 text-left text-slate-500 tabular-nums">{index + 1}</td>
-                            <td className="p-2 text-left font-bold text-slate-800">{kategori}</td>
-                            <td className="p-2 text-right text-rose-600 font-extrabold tabular-nums">
-                              {formatRupiah(nominal)}
+                        {/* Saldo Awal Row */}
+                        <tr className="border-b border-slate-150">
+                          <td className="p-2 text-left font-semibold" colSpan={5}>
+                            SALDO AWAL PERIODE
+                          </td>
+                          <td className="p-2 text-right">-</td>
+                          <td className="p-2 text-right">-</td>
+                          <td className="p-2 text-right font-black tabular-nums">
+                            {formatRupiah(beginningBalance)}
+                          </td>
+                        </tr>
+
+                        {/* Transaction Rows */}
+                        {chronologicalLedger.length > 0 ? (
+                          chronologicalLedger.map((trx, index) => {
+                            const isMasuk = trx.jenis === "pemasukan";
+                            const trxUser = userMap[trx.id_user] || {};
+                            const userName = trxUser.nama || "Warga";
+                            return (
+                              <tr key={trx.id_transaksi || index} className="border-b border-slate-100 hover:bg-slate-50/50 print:hover:bg-transparent">
+                                <td className="p-2 text-left text-slate-500 tabular-nums">{index + 1}</td>
+                                <td className="p-2 text-left tabular-nums">
+                                  {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric"
+                                  })}
+                                </td>
+                                <td className="p-2 text-left font-bold text-slate-800 truncate max-w-[140px] print:max-w-none print:whitespace-normal">
+                                  {trx.keterangan || "Tanpa Keterangan"}
+                                </td>
+                                <td className="p-2 text-left text-slate-500">{trx.kategori || "Lainnya"}</td>
+                                <td className="p-2 text-left text-slate-500 truncate max-w-[70px]">{userName}</td>
+                                <td className="p-2 text-right text-emerald-600 font-bold tabular-nums">
+                                  {isMasuk ? `+${formatRupiah(trx.nominal)}` : "-"}
+                                </td>
+                                <td className="p-2 text-right text-rose-500 font-bold tabular-nums">
+                                  {!isMasuk ? `-${formatRupiah(trx.nominal)}` : "-"}
+                                </td>
+                                <td className="p-2 text-right font-bold text-slate-800 tabular-nums">
+                                  {formatRupiah(trx.runningBalance)}
+                                </td>
+                              </tr>
+                            );
+                          })
+                        ) : (
+                          <tr>
+                            <td colSpan={8} className="p-6 text-center text-slate-400 italic">
+                              Tidak ada transaksi mutasi kas dalam periode ini
                             </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
                 </div>
-              )}
-            </div>
 
-            {/* Validation / Sign-off Block */}
-            <div className="mt-12 pt-6 border-t border-dashed border-slate-200 grid grid-cols-2 gap-8 text-[10px] text-slate-800 page-break-avoid print:mt-16 print:border-slate-400">
-              <div className="flex flex-col items-center text-center">
-                <span className="text-slate-400 uppercase tracking-wider text-[8px] font-extrabold">Disusun Oleh,</span>
-                <span className="font-extrabold text-slate-800 mt-1 uppercase">Bendahara TBU</span>
-                <div className="h-16 w-32 flex items-end justify-center border-b border-slate-300 text-[8px] text-slate-400 italic pb-1">
-                  ( Tanda Tangan & Tanggal )
-                </div>
-                <span className="mt-2 text-slate-500">Petugas Keuangan Lingkungan</span>
+                {/* Rekapitulasi Pengeluaran Per Pos */}
+                {pengeluaranPerPos.length > 0 && (
+                  <div className="mt-2 page-break-avoid">
+                    <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-800 mb-2 border-l-4 border-blue-600 pl-2 print:border-slate-800">
+                      III. Rekapitulasi Pengeluaran Per Kategori (Pos Pengeluaran)
+                    </h4>
+                    <div className="w-[60%] print:w-[80%]">
+                      <table className="w-full border-collapse text-[10px] text-slate-700">
+                        <thead>
+                          <tr className="bg-slate-100 border-t border-b border-slate-300 print:bg-transparent print:border-t-2 print:border-b-2 print:border-slate-900">
+                            <th className="p-2 text-left font-bold w-[10%]">No</th>
+                            <th className="p-2 text-left font-bold w-[60%]">Kategori Pengeluaran</th>
+                            <th className="p-2 text-right font-bold w-[30%]">Total Nominal</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {pengeluaranPerPos.map(([kategori, nominal], index) => (
+                            <tr key={kategori} className="border-b border-slate-100">
+                              <td className="p-2 text-left text-slate-500 tabular-nums">{index + 1}</td>
+                              <td className="p-2 text-left font-bold text-slate-800">{kategori}</td>
+                              <td className="p-2 text-right text-rose-600 font-extrabold tabular-nums">
+                                {formatRupiah(nominal)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="flex flex-col items-center text-center">
-                <span className="text-slate-400 uppercase tracking-wider text-[8px] font-extrabold">Mengetahui & Menyetujui,</span>
-                <span className="font-extrabold text-slate-800 mt-1 uppercase">Ketua RT / RW TBU</span>
-                <div className="h-16 w-32 flex items-end justify-center border-b border-slate-300 text-[8px] text-slate-400 italic pb-1">
-                  ( Tanda Tangan & Tanggal )
-                </div>
-                <span className="mt-2 text-slate-500">Perwakilan Warga Hunian</span>
-              </div>
-            </div>
 
+              {/* Validation / Sign-off Block */}
+              <div className="mt-12 pt-6 border-t border-dashed border-slate-200 grid grid-cols-2 gap-8 text-[10px] text-slate-800 page-break-avoid print:mt-16 print:border-slate-400">
+                <div className="flex flex-col items-center text-center">
+                  <span className="text-slate-400 uppercase tracking-wider text-[8px] font-extrabold">Disusun Oleh,</span>
+                  <span className="font-extrabold text-slate-800 mt-1 uppercase">Bendahara TBU</span>
+                  <div className="h-16 w-32 flex items-end justify-center border-b border-slate-300 text-[8px] text-slate-400 italic pb-1">
+                    ( Tanda Tangan & Tanggal )
+                  </div>
+                  <span className="mt-2 text-slate-500">Petugas Keuangan Lingkungan</span>
+                </div>
+                <div className="flex flex-col items-center text-center">
+                  <span className="text-slate-400 uppercase tracking-wider text-[8px] font-extrabold">Mengetahui & Menyetujui,</span>
+                  <span className="font-extrabold text-slate-800 mt-1 uppercase">Ketua RT / RW TBU</span>
+                  <div className="h-16 w-32 flex items-end justify-center border-b border-slate-300 text-[8px] text-slate-400 italic pb-1">
+                    ( Tanda Tangan & Tanggal )
+                  </div>
+                  <span className="mt-2 text-slate-500">Perwakilan Warga Hunian</span>
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
