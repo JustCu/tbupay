@@ -25,6 +25,7 @@ import {
   getTicketReplies,
   createTicketReply,
 } from "../application/use-cases/tickets/ticketUseCases";
+import { getTransactionCategories } from "../application/use-cases/transactions/transactionUseCases";
 import {
   getNews,
   createNews,
@@ -200,6 +201,12 @@ function ServiceHub() {
     return "network";
   });
 
+  const [complaintCategories, setComplaintCategories] = useState([
+    "Lampu Penerangan",
+    "Kebersihan / Sampah",
+    "Keamanan",
+    "Fasilitas Umum"
+  ]);
   const [keluhanForm, setKeluhanForm] = useState({ kategori: "Lampu Penerangan", deskripsi: "" });
   const [saranForm, setSaranForm] = useState({ deskripsi: "" });
   const [newsForm, setNewsForm] = useState({ judul: "", konten: "" });
@@ -278,13 +285,29 @@ function ServiceHub() {
     finally { setLoading(false); setRefreshing(false); }
   };
 
+  const fetchComplaintCategories = async () => {
+    try {
+      const res = await getTransactionCategories();
+      if (res.status === "success" && res.data?.pengeluaran && res.data.pengeluaran.length > 0) {
+        setComplaintCategories(res.data.pengeluaran);
+        setKeluhanForm((prev) => ({
+          ...prev,
+          kategori: prev.kategori && res.data.pengeluaran.includes(prev.kategori) ? prev.kategori : res.data.pengeluaran[0],
+        }));
+      }
+    } catch (err) {
+      console.error("Failed to load complaint categories:", err);
+    }
+  };
+
   useEffect(() => {
     fetchTickets();
     fetchNews();
+    fetchComplaintCategories();
   }, []);
 
   const pull = usePullToRefresh({
-    onRefresh: async () => { await Promise.all([fetchTickets(true), fetchNews(true)]); },
+    onRefresh: async () => { await Promise.all([fetchTickets(true), fetchNews(true), fetchComplaintCategories()]); },
     disabled: loading || refreshing || openSheet !== null,
   });
 
@@ -458,7 +481,7 @@ function ServiceHub() {
     try {
       await createTicket({ id_user_pelapor: user.id_user, kategori: "keluhan", deskripsi: `[${keluhanForm.kategori}] ${keluhanForm.deskripsi}`, imageBase64: "" });
       showAlert("Keluhan terkirim", { variant: "success", title: "Berhasil" });
-      setKeluhanForm({ kategori: "Lampu Penerangan", deskripsi: "" });
+      setKeluhanForm({ kategori: complaintCategories[0] || "Lampu Penerangan", deskripsi: "" });
       closeSheet();
       fetchTickets(true);
     } catch { showAlert("Gagal mengirim keluhan", { variant: "danger", title: "Gagal" }); }
@@ -764,10 +787,9 @@ function ServiceHub() {
             <div className="flex flex-col gap-1.5">
               <label className={labelCls}>Kategori Keluhan</label>
               <select className={inputCls} value={keluhanForm.kategori} onChange={(e) => setKeluhanForm({ ...keluhanForm, kategori: e.target.value })}>
-                <option>Lampu Penerangan</option>
-                <option>Kebersihan / Sampah</option>
-                <option>Keamanan</option>
-                <option>Fasilitas Umum</option>
+                {complaintCategories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
               </select>
             </div>
             <div className="flex flex-col gap-1.5">
