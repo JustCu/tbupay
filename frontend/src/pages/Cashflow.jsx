@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import useStore from "../store/useStore";
-import { TrendingUp, ArrowDownLeft, ArrowUpRight, Bell, ChevronLeft, ChevronRight, X, Filter, FileText, Download, Printer } from "lucide-react";
+import { TrendingUp, ArrowDownLeft, ArrowUpRight, Bell, ChevronLeft, ChevronRight, X, Filter, FileText, Download, Printer, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import { getTransactions } from "../application/use-cases/transactions/transactionUseCases";
 import { getUsers } from "../application/use-cases/users/userUseCases";
 import {
@@ -1227,6 +1227,9 @@ function AllCashflowTransactionsSheet({
 }
 
 // ── Report Preview & Export Modal ──────────────────────────────────────────
+const ZOOM_LEVELS = [0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0];
+const DEFAULT_ZOOM_INDEX = 6; // 1.0 = 100%
+
 function ReportPreviewModal({
   isOpen,
   onClose,
@@ -1240,8 +1243,10 @@ function ReportPreviewModal({
   formatRupiah,
   userMap,
 }) {
-  const containerRef = useRef(null);
-  const [zoom, setZoom] = useState(100);
+  const [zoomIndex, setZoomIndex] = useState(DEFAULT_ZOOM_INDEX);
+  const scrollContainerRef = useRef(null);
+  const zoom = ZOOM_LEVELS[zoomIndex];
+  const zoomPct = Math.round(zoom * 100);
 
   // Lock body scroll
   useEffect(() => {
@@ -1252,105 +1257,149 @@ function ReportPreviewModal({
     };
   }, [isOpen]);
 
-  // Close on Escape
+  // Reset zoom when modal opens
+  useEffect(() => {
+    if (isOpen) setZoomIndex(DEFAULT_ZOOM_INDEX);
+  }, [isOpen]);
+
+  // Close on Escape + Keyboard zoom (Ctrl +/-/0)
   useEffect(() => {
     if (!isOpen) return;
     const handler = (e) => {
       if (e.key === "Escape") onClose();
+      // Ctrl + = or Ctrl + + : zoom in
+      if ((e.ctrlKey || e.metaKey) && (e.key === "=" || e.key === "+")) {
+        e.preventDefault();
+        setZoomIndex((i) => Math.min(ZOOM_LEVELS.length - 1, i + 1));
+      }
+      // Ctrl + - : zoom out
+      if ((e.ctrlKey || e.metaKey) && e.key === "-") {
+        e.preventDefault();
+        setZoomIndex((i) => Math.max(0, i - 1));
+      }
+      // Ctrl + 0 : reset zoom
+      if ((e.ctrlKey || e.metaKey) && e.key === "0") {
+        e.preventDefault();
+        setZoomIndex(DEFAULT_ZOOM_INDEX);
+      }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [isOpen, onClose]);
 
-  // Auto-fit to screen width on mount / resize
+  // Pinch-to-zoom & Ctrl+Scroll wheel zoom
   useEffect(() => {
     if (!isOpen) return;
-    
-    const handleResize = () => {
-      if (!containerRef.current) return;
-      const containerWidth = containerRef.current.clientWidth;
-      // standard A4 width in pixels is ~794px at 96 DPI, let's use a safe value like 820px including margin/padding
-      const paperWidthPx = 794; 
-      const padding = 32; // safe spacing
-      const availableWidth = containerWidth - padding;
-      
-      if (availableWidth < paperWidthPx) {
-        const fitPercentage = Math.floor((availableWidth / paperWidthPx) * 100);
-        // clamp zoom between 40% and 150%
-        setZoom(Math.max(40, Math.min(150, fitPercentage)));
-      } else {
-        setZoom(100); // default to 100% on larger screens
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const wheelHandler = (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        if (e.deltaY < 0) {
+          setZoomIndex((i) => Math.min(ZOOM_LEVELS.length - 1, i + 1));
+        } else if (e.deltaY > 0) {
+          setZoomIndex((i) => Math.max(0, i - 1));
+        }
       }
     };
-
-    // run initially with a small timeout to ensure DOM layout is complete
-    const timer = setTimeout(handleResize, 100);
-    window.addEventListener("resize", handleResize);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", handleResize);
-    };
+    container.addEventListener("wheel", wheelHandler, { passive: false });
+    return () => container.removeEventListener("wheel", wheelHandler);
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const handlePrint = () => {
+  const handleDownloadPDF = () => {
     window.print();
   };
 
+  const handleZoomIn = () => setZoomIndex((i) => Math.min(ZOOM_LEVELS.length - 1, i + 1));
+  const handleZoomOut = () => setZoomIndex((i) => Math.max(0, i - 1));
+  const handleZoomReset = () => setZoomIndex(DEFAULT_ZOOM_INDEX);
+
   return (
     <div
-      className="fixed inset-0 z-[220] overflow-y-auto bg-slate-900/70 dark:bg-black/80 backdrop-blur-[2px] p-0 md:p-6 flex justify-center items-start print:static print:bg-white print:p-0 print:overflow-visible"
+      className="fixed inset-0 z-[220] bg-slate-900/70 dark:bg-black/80 backdrop-blur-[2px] p-0 flex flex-col print:static print:bg-white print:p-0 print:overflow-visible"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
-        className="w-full max-w-[880px] h-[100vh] md:h-[90vh] bg-slate-100 dark:bg-[#131c33] rounded-t-[24px] md:rounded-[24px] shadow-2xl flex flex-col overflow-hidden border border-gray-200 dark:border-slate-800/80 animate-[scaleUp_0.25s_ease-out] print:rounded-none print:shadow-none print:border-none print:bg-white print:text-black print:w-full print:static relative"
+        className="w-full h-full flex flex-col bg-slate-100 dark:bg-[#131c33] md:max-w-[920px] md:max-h-[95vh] md:mx-auto md:my-auto md:rounded-[24px] md:shadow-2xl overflow-hidden border-0 md:border border-gray-200 dark:border-slate-800/80 animate-[scaleUp_0.25s_ease-out] print:rounded-none print:shadow-none print:border-none print:bg-white print:text-black print:w-full print:static print:max-h-none"
         role="dialog"
         aria-modal="true"
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Header / Control Bar */}
-        <div className="flex items-center justify-between px-6 py-4 bg-white dark:bg-[#1a2640] border-b border-gray-200 dark:border-slate-800/80 shrink-0 print:hidden">
-          <div>
-            <h3 className="text-base font-bold text-gray-800 dark:text-gray-100 m-0">Pratinjau Laporan Keuangan</h3>
-            <p className="text-[11px] text-gray-400 dark:text-slate-400 m-0 mt-0.5">Format akuntansi standar PDF (A4)</p>
+        {/* ─── Header: Title + Zoom Controls + Close ─── */}
+        <div className="flex items-center justify-between px-5 py-3 bg-white dark:bg-[#1a2640] border-b border-gray-200 dark:border-slate-800/80 shrink-0 print:hidden gap-3">
+          {/* Left: Title */}
+          <div className="min-w-0 shrink">
+            <h3 className="text-[14px] font-bold text-gray-800 dark:text-gray-100 m-0 truncate">Pratinjau Laporan Keuangan</h3>
+            <p className="text-[10px] text-gray-400 dark:text-slate-400 m-0 mt-0.5">Format akuntansi standar PDF (A4)</p>
           </div>
-          <div className="flex items-center gap-2">
+
+          {/* Center: Zoom Controls */}
+          <div className="flex items-center gap-1 bg-gray-50 dark:bg-slate-800/60 rounded-xl px-1.5 py-1 border border-gray-200/80 dark:border-slate-700/60 shrink-0">
             <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800/60 flex items-center justify-center border-none cursor-pointer text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors shrink-0"
-              aria-label="Tutup"
+              onClick={handleZoomOut}
+              disabled={zoomIndex === 0}
+              className="w-7 h-7 rounded-lg flex items-center justify-center bg-transparent border-none cursor-pointer text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              aria-label="Perkecil"
+              title="Perkecil (Ctrl + -)" 
             >
-              <X size={16} />
+              <ZoomOut size={14} />
             </button>
+            <button
+              onClick={handleZoomReset}
+              className="min-w-[48px] h-7 rounded-lg flex items-center justify-center bg-transparent border-none cursor-pointer text-[11px] font-bold text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors tabular-nums"
+              title="Reset Zoom (Ctrl + 0)"
+            >
+              {zoomPct}%
+            </button>
+            <button
+              onClick={handleZoomIn}
+              disabled={zoomIndex === ZOOM_LEVELS.length - 1}
+              className="w-7 h-7 rounded-lg flex items-center justify-center bg-transparent border-none cursor-pointer text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              aria-label="Perbesar"
+              title="Perbesar (Ctrl + +)"
+            >
+              <ZoomIn size={14} />
+            </button>
+            {zoomIndex !== DEFAULT_ZOOM_INDEX && (
+              <button
+                onClick={handleZoomReset}
+                className="w-7 h-7 rounded-lg flex items-center justify-center bg-transparent border-none cursor-pointer text-gray-400 dark:text-slate-500 hover:bg-gray-200 dark:hover:bg-slate-700/65 hover:text-blue-500 transition-all"
+                aria-label="Reset Zoom"
+                title="Reset ke 100%"
+              >
+                <RotateCcw size={12} />
+              </button>
+            )}
           </div>
+
+          {/* Right: Close */}
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800/60 flex items-center justify-center border-none cursor-pointer text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors shrink-0"
+            aria-label="Tutup"
+          >
+            <X size={16} />
+          </button>
         </div>
 
-        {/* virtual printable area */}
-        <div 
-          ref={containerRef}
-          className="flex-1 overflow-auto p-4 pb-24 md:p-8 md:pb-24 bg-slate-100 dark:bg-[#0b1020] print:p-0 print:bg-white print:overflow-visible flex justify-center items-start"
+        {/* ─── Scrollable Preview Area ─── */}
+        <div
+          ref={scrollContainerRef}
+          className="flex-1 overflow-auto bg-slate-100 dark:bg-[#0b1020] print:p-0 print:bg-white print:overflow-visible"
         >
-          
-          {/* Scaling wrapper to preserve exact layout boundaries in scroll container */}
-          <div 
-            style={{
-              width: `${210 * (zoom / 100)}mm`,
-              height: `${297 * (zoom / 100)}mm`,
-              transition: 'all 0.15s ease-out',
-            }}
-            className="shrink-0 flex justify-center items-start print:w-full print:h-auto print:block"
-          >
-            {/* Virtual Paper Sheet (Fix A4: 210mm x 297mm) */}
-            <div 
-              style={{ 
-                transform: `scale(${zoom / 100})`, 
-                transformOrigin: 'top left',
-                width: '210mm',
-                height: '297mm',
+          <div className="p-4 md:p-8 flex justify-center print:p-0">
+            {/* Virtual Paper Sheet (Fix A4: 210mm x 297mm) with zoom transform */}
+            <div
+              className="bg-white text-slate-900 p-[20mm] shadow-sm border border-gray-200/60 w-[210mm] min-h-[297mm] box-border relative flex flex-col justify-between print:p-0 print:border-none print:shadow-none print:bg-white print:text-black shrink-0 font-sans print:transform-none"
+              style={{
+                transform: `scale(${zoom})`,
+                transformOrigin: "top center",
+                transition: "transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
               }}
-              className="bg-white text-slate-900 p-[20mm] shadow-sm border border-gray-200/60 relative flex flex-col justify-between print:p-0 print:border-none print:shadow-none print:bg-white print:text-black print:transform-none print:w-full print:h-auto shrink-0 font-sans box-border"
             >
               
               <div className="flex flex-col gap-6 w-full">
@@ -1533,57 +1582,16 @@ function ReportPreviewModal({
           </div>
         </div>
 
-        {/* Floating Action Bar - sticky at the bottom center of the modal panel */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[230] flex items-center gap-3 bg-white/90 dark:bg-[#1a2640]/90 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl border border-gray-200/50 dark:border-slate-800/80 print:hidden transition-all duration-300 hover:shadow-2xl hover:bg-white dark:hover:bg-[#1a2640] select-none">
-          {/* Zoom Controls */}
-          <div className="flex items-center bg-gray-100 dark:bg-slate-800/60 rounded-xl p-1 gap-1 border border-gray-200/30 dark:border-slate-700/30 shrink-0">
-            <button
-              onClick={() => setZoom(z => Math.max(40, z - 10))}
-              className="w-7 h-7 flex items-center justify-center border-none bg-transparent hover:bg-white dark:hover:bg-slate-700 rounded-lg text-gray-600 dark:text-gray-300 font-extrabold cursor-pointer transition-colors"
-              title="Perkecil"
-            >
-              -
-            </button>
-            <span className="text-[10px] font-mono font-bold text-gray-600 dark:text-gray-300 px-1 min-w-[36px] text-center">
-              {zoom}%
-            </span>
-            <button
-              onClick={() => setZoom(z => Math.min(150, z + 10))}
-              className="w-7 h-7 flex items-center justify-center border-none bg-transparent hover:bg-white dark:hover:bg-slate-700 rounded-lg text-gray-600 dark:text-gray-300 font-extrabold cursor-pointer transition-colors"
-              title="Perbesar"
-            >
-              +
-            </button>
-            <button
-              onClick={() => {
-                if (containerRef.current) {
-                  const containerWidth = containerRef.current.clientWidth;
-                  const paperWidthPx = 794;
-                  const availableWidth = containerWidth - 32;
-                  if (availableWidth < paperWidthPx) {
-                    setZoom(Math.max(40, Math.floor((availableWidth / paperWidthPx) * 100)));
-                  } else {
-                    setZoom(100);
-                  }
-                } else {
-                  setZoom(100);
-                }
-              }}
-              className="text-[9px] uppercase tracking-wider font-extrabold border-none px-2 h-7 bg-transparent hover:bg-white dark:hover:bg-slate-700 rounded-lg text-blue-600 dark:text-blue-400 cursor-pointer transition-colors"
-              title="Sesuaikan Layar"
-            >
-              Fit
-            </button>
-          </div>
-
-          <div className="w-[1px] h-6 bg-gray-200 dark:bg-slate-800"></div>
-
-          {/* Download PDF button */}
+        {/* ─── Sticky Bottom Action Bar ─── */}
+        <div className="shrink-0 px-5 py-3 bg-white dark:bg-[#1a2640] border-t border-gray-200 dark:border-slate-800/80 flex items-center justify-between gap-3 print:hidden">
+          <p className="text-[10px] text-gray-400 dark:text-slate-500 m-0 leading-tight">
+            <span className="font-semibold text-gray-500 dark:text-slate-400">Tip:</span> Ctrl + Scroll untuk zoom • Ctrl+0 reset
+          </p>
           <button
-            onClick={handlePrint}
-            className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-xl p-[8px_16px] text-[12px] font-bold cursor-pointer transition-all active:scale-[0.97] shrink-0 shadow-sm"
+            onClick={handleDownloadPDF}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-xl px-5 py-2.5 text-[13px] font-bold cursor-pointer transition-all active:scale-[0.97] shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40"
           >
-            <Download size={14} />
+            <Download size={16} />
             Download PDF (A4)
           </button>
         </div>
@@ -1591,3 +1599,4 @@ function ReportPreviewModal({
     </div>
   );
 }
+
