@@ -1329,51 +1329,12 @@ function ReportPreviewModal({
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* ─── Header: Title + Zoom Controls + Close ─── */}
+        {/* ─── Header: Title + Close ─── */}
         <div className="flex items-center justify-between px-5 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-3 bg-white dark:bg-[#1a2640] border-b border-gray-200 dark:border-slate-800/80 shrink-0 print:hidden gap-3">
           {/* Left: Title */}
           <div className="min-w-0 shrink">
             <h3 className="text-[14px] font-bold text-gray-800 dark:text-gray-100 m-0 truncate">Pratinjau Laporan Keuangan</h3>
             <p className="text-[10px] text-gray-400 dark:text-slate-400 m-0 mt-0.5">Format akuntansi standar PDF (A4)</p>
-          </div>
-
-          {/* Center: Zoom Controls */}
-          <div className="flex items-center gap-1 bg-gray-50 dark:bg-slate-800/60 rounded-xl px-1.5 py-1 border border-gray-200/80 dark:border-slate-700/60 shrink-0">
-            <button
-              onClick={handleZoomOut}
-              disabled={zoomIndex === 0}
-              className="w-7 h-7 rounded-lg flex items-center justify-center bg-transparent border-none cursor-pointer text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-              aria-label="Perkecil"
-              title="Perkecil (Ctrl + -)" 
-            >
-              <ZoomOut size={14} />
-            </button>
-            <button
-              onClick={handleZoomReset}
-              className="min-w-[48px] h-7 rounded-lg flex items-center justify-center bg-transparent border-none cursor-pointer text-[11px] font-bold text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors tabular-nums"
-              title="Reset Zoom (Ctrl + 0)"
-            >
-              {zoomPct}%
-            </button>
-            <button
-              onClick={handleZoomIn}
-              disabled={zoomIndex === ZOOM_LEVELS.length - 1}
-              className="w-7 h-7 rounded-lg flex items-center justify-center bg-transparent border-none cursor-pointer text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-              aria-label="Perbesar"
-              title="Perbesar (Ctrl + +)"
-            >
-              <ZoomIn size={14} />
-            </button>
-            {zoomIndex !== DEFAULT_ZOOM_INDEX && (
-              <button
-                onClick={handleZoomReset}
-                className="w-7 h-7 rounded-lg flex items-center justify-center bg-transparent border-none cursor-pointer text-gray-400 dark:text-slate-500 hover:bg-gray-200 dark:hover:bg-slate-700/65 hover:text-blue-500 transition-all"
-                aria-label="Reset Zoom"
-                title="Reset ke 100%"
-              >
-                <RotateCcw size={12} />
-              </button>
-            )}
           </div>
 
           {/* Right: Close */}
@@ -1585,9 +1546,44 @@ function ReportPreviewModal({
 
         {/* ─── Sticky Bottom Action Bar ─── */}
         <div className="shrink-0 px-5 py-3 bg-white dark:bg-[#1a2640] border-t border-gray-200 dark:border-slate-800/80 flex items-center justify-between gap-3 print:hidden">
-          <p className="text-[10px] text-gray-400 dark:text-slate-500 m-0 leading-tight">
-            <span className="font-semibold text-gray-500 dark:text-slate-400">Tip:</span> Ctrl + Scroll untuk zoom • Ctrl+0 reset
-          </p>
+          {/* Left: Zoom Controls */}
+          <div className="flex items-center gap-1 bg-gray-50 dark:bg-slate-800/60 rounded-xl px-1.5 py-1 border border-gray-200/80 dark:border-slate-700/60 shrink-0">
+            <button
+              onClick={handleZoomOut}
+              disabled={zoomIndex === 0}
+              className="w-7 h-7 rounded-lg flex items-center justify-center bg-transparent border-none cursor-pointer text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              aria-label="Perkecil"
+              title="Perkecil (Ctrl + -)" 
+            >
+              <ZoomOut size={14} />
+            </button>
+            <button
+              onClick={handleZoomReset}
+              className="min-w-[48px] h-7 rounded-lg flex items-center justify-center bg-transparent border-none cursor-pointer text-[11px] font-bold text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors tabular-nums"
+              title="Reset Zoom (Ctrl + 0)"
+            >
+              {zoomPct}%
+            </button>
+            <button
+              onClick={handleZoomIn}
+              disabled={zoomIndex === ZOOM_LEVELS.length - 1}
+              className="w-7 h-7 rounded-lg flex items-center justify-center bg-transparent border-none cursor-pointer text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              aria-label="Perbesar"
+              title="Perbesar (Ctrl + +)"
+            >
+              <ZoomIn size={14} />
+            </button>
+            {zoomIndex !== DEFAULT_ZOOM_INDEX && (
+              <button
+                onClick={handleZoomReset}
+                className="w-7 h-7 rounded-lg flex items-center justify-center bg-transparent border-none cursor-pointer text-gray-400 dark:text-slate-500 hover:bg-gray-200 dark:hover:bg-slate-700/65 hover:text-blue-500 transition-all"
+                aria-label="Reset Zoom"
+                title="Reset ke 100%"
+              >
+                <RotateCcw size={12} />
+              </button>
+            )}
+          </div>
           <button
             onClick={handleDownloadPDF}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-xl px-5 py-2.5 text-[13px] font-bold cursor-pointer transition-all active:scale-[0.97] shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40"
