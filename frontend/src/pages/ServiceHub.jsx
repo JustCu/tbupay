@@ -26,6 +26,7 @@ import {
   createTicketReply,
 } from "../application/use-cases/tickets/ticketUseCases";
 import { getTransactionCategories } from "../application/use-cases/transactions/transactionUseCases";
+import { getUsers } from "../application/use-cases/users/userUseCases";
 import {
   getNews,
   createNews,
@@ -97,6 +98,30 @@ const formatChatDateHeader = (dateStr) => {
 };
 
 // ---------- React Error Boundary Component ----------
+// ---------- ChatAvatar: shows profile photo or colored initials ----------
+const ChatAvatar = ({ name, idUser, usersMap, size = "w-8 h-8", textSize = "text-[11px]" }) => {
+  const photoUrl = usersMap?.get(String(idUser || ""));
+  const color = getDeterministicColor(name);
+  if (photoUrl) {
+    return (
+      <img
+        src={photoUrl}
+        alt={name}
+        className={`${size} rounded-full object-cover shrink-0 shadow-sm border-2 border-white dark:border-transparent select-none`}
+        onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }}
+      />
+    );
+  }
+  return (
+    <div
+      className={`${size} rounded-full flex items-center justify-center text-white ${textSize} font-black shrink-0 shadow-sm border border-white dark:border-transparent select-none uppercase`}
+      style={{ backgroundColor: color }}
+    >
+      {getInitials(name)}
+    </div>
+  );
+};
+
 class ServiceHubErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -223,6 +248,22 @@ function ServiceHub() {
   const [sendingTicketReply, setSendingTicketReply] = useState(false);
   const [loadingTicketReplies, setLoadingTicketReplies] = useState(false);
 
+  // Map id_user -> url_foto_profil for avatar resolution
+  const [usersMap, setUsersMap] = useState(() => {
+    try {
+      const cached = localStorage.getItem("tbu_pay_cache_v1:getUsers:{}");
+      if (cached) {
+        const entry = JSON.parse(cached);
+        if (entry?.response?.status === "success" && Array.isArray(entry.response.data)) {
+          const m = new Map();
+          entry.response.data.forEach((u) => { if (u.id_user && u.url_foto_profil) m.set(String(u.id_user), u.url_foto_profil); });
+          return m;
+        }
+      }
+    } catch (e) { console.error(e); }
+    return new Map();
+  });
+
   const [generalChats, setGeneralChats] = useState(() => {
     try {
       const cached = localStorage.getItem("tbu_pay_cache_v1:getGeneralChats:{}");
@@ -285,6 +326,19 @@ function ServiceHub() {
     finally { setLoading(false); setRefreshing(false); }
   };
 
+  const fetchUsersMap = async () => {
+    try {
+      const res = await getUsers();
+      if (res.status === "success" && Array.isArray(res.data)) {
+        const m = new Map();
+        res.data.forEach((u) => { if (u.id_user && u.url_foto_profil) m.set(String(u.id_user), u.url_foto_profil); });
+        setUsersMap(m);
+      }
+    } catch (err) {
+      console.error("Failed to load users map:", err);
+    }
+  };
+
   const fetchComplaintCategories = async () => {
     try {
       const res = await getTransactionCategories();
@@ -304,10 +358,11 @@ function ServiceHub() {
     fetchTickets();
     fetchNews();
     fetchComplaintCategories();
+    fetchUsersMap();
   }, []);
 
   const pull = usePullToRefresh({
-    onRefresh: async () => { await Promise.all([fetchTickets(true), fetchNews(true), fetchComplaintCategories()]); },
+    onRefresh: async () => { await Promise.all([fetchTickets(true), fetchNews(true), fetchComplaintCategories(), fetchUsersMap()]); },
     disabled: loading || refreshing || openSheet !== null,
   });
 
@@ -943,10 +998,11 @@ function ServiceHub() {
                         <div className={`flex items-start gap-2 max-w-[85%] ${isOwn ? "self-end flex-row-reverse ml-auto" : "self-start mr-auto"}`}>
                           {/* Avatar for others */}
                           {!isOwn && (
-                            <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-white text-[11px] font-black shrink-0 shadow-sm border border-white dark:border-transparent select-none uppercase"
-                                 style={{ backgroundColor: bubbleColor }}>
-                              {getInitials(chat.nama_pengirim)}
-                            </div>
+                            <ChatAvatar
+                              name={chat.nama_pengirim}
+                              idUser={chat.id_user}
+                              usersMap={usersMap}
+                            />
                           )}
                           
                           <div className={`rounded-2xl p-[9px_13px] relative shadow-[0_1px_1px_rgba(0,0,0,0.08)] flex flex-col ${
@@ -1317,10 +1373,11 @@ function ServiceHub() {
                               <div className={`flex items-start gap-2 max-w-[85%] ${isOwn ? "self-end flex-row-reverse ml-auto" : "self-start mr-auto"}`}>
                                 {/* Avatar for others */}
                                 {!isOwn && (
-                                  <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-white text-[11px] font-black shrink-0 shadow-sm border border-white dark:border-transparent select-none uppercase"
-                                       style={{ backgroundColor: bubbleColor }}>
-                                    {getInitials(reply.nama_pengirim || "Pengguna")}
-                                  </div>
+                                  <ChatAvatar
+                                    name={reply.nama_pengirim || "Pengguna"}
+                                    idUser={reply.id_user}
+                                    usersMap={usersMap}
+                                  />
                                 )}
                                 
                                 <div className={`rounded-2xl p-[9px_13px] relative shadow-[0_1px_1px_rgba(0,0,0,0.08)] flex flex-col ${
@@ -1705,10 +1762,11 @@ function ServiceHub() {
                               <div className={`flex items-start gap-2 max-w-[85%] ${isOwn ? "self-end flex-row-reverse ml-auto" : "self-start mr-auto"}`}>
                                 {/* Avatar for others */}
                                 {!isOwn && (
-                                  <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-white text-[11px] font-black shrink-0 shadow-sm border border-white dark:border-transparent select-none uppercase"
-                                       style={{ backgroundColor: bubbleColor }}>
-                                    {getInitials(reply.nama_pengirim || "Pengguna")}
-                                  </div>
+                                  <ChatAvatar
+                                    name={reply.nama_pengirim || "Pengguna"}
+                                    idUser={reply.id_user}
+                                    usersMap={usersMap}
+                                  />
                                 )}
                                 
                                 <div className={`rounded-2xl p-[9px_13px] relative shadow-[0_1px_1px_rgba(0,0,0,0.08)] flex flex-col ${
