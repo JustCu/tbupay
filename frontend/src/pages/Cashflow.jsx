@@ -658,14 +658,6 @@ export default function Cashflow() {
           <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-1 m-0">Pantau dan kelola arus kas warga secara real-time</p>
         </div>
         <div className="flex items-center gap-2 mt-1">
-          <button
-            onClick={() => setIsReportPreviewOpen(true)}
-            disabled={loading || refreshing}
-            className="flex items-center gap-1.5 bg-[#0f4c81] text-white hover:bg-[#0a3460] disabled:opacity-60 disabled:cursor-not-allowed border-none rounded-[10px] p-[8px_14px] text-[12px] font-bold cursor-pointer transition-all active:scale-[0.97]"
-          >
-            <FileText size={14} />
-            Ekspor
-          </button>
           <div
             className="cursor-pointer relative transition-all duration-200 flex items-center justify-center p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full active:scale-95 shrink-0"
             onClick={() => {
@@ -760,6 +752,14 @@ export default function Cashflow() {
               <>Tidak ada penambahan atau pengurangan saldo yang tercatat pada periode ini.</>
             )}
           </p>
+          <button
+            onClick={() => setIsReportPreviewOpen(true)}
+            disabled={loading || refreshing}
+            className="mt-3.5 w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 active:bg-white/20 disabled:opacity-50 text-white border border-white/15 rounded-xl py-2.5 text-xs font-bold transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+          >
+            <FileText size={14} className="stroke-[2.25]" />
+            Ekspor Laporan Kas ({periodTitle})
+          </button>
         </div>
       </div>
 
