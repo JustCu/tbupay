@@ -75,10 +75,11 @@ function NewsDetailSheet({ news, onClose }) {
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-[24px] shadow-[0_-8px_32px_rgba(0,0,0,0.18)] flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-          isOpen ? "translate-y-0" : "translate-y-full"
-        }`}
-        style={{ maxHeight: "85dvh" }}
+        className="w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-[24px] shadow-[0_-8px_32px_rgba(0,0,0,0.18)] flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        style={{
+          maxHeight: "85dvh",
+          transform: isOpen ? "translateY(0)" : "translateY(calc(100% + 80px))",
+        }}
         role="dialog"
         aria-modal="true"
       >
@@ -152,10 +153,12 @@ function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-[24px] shadow-[0_-8px_32px_rgba(0,0,0,0.18)] flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-          isOpen ? "translate-y-0" : "translate-y-full"
-        }`}
-        style={{ maxHeight: "85dvh", height: "85dvh" }}
+        className="w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-[24px] shadow-[0_-8px_32px_rgba(0,0,0,0.18)] flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        style={{
+          maxHeight: "85dvh",
+          height: "85dvh",
+          transform: isOpen ? "translateY(0)" : "translateY(calc(100% + 80px))",
+        }}
         role="dialog"
         aria-modal="true"
       >
@@ -1058,7 +1061,7 @@ export default function Home() {
 
   return (
     <>
-    <div className="flex flex-col gap-6 pb-24" {...pull.bind}>
+    <div className="flex flex-col gap-6 pb-6" {...pull.bind}>
       {pull.showPullHint && (
         <div className={`sticky top-2 z-[31] mx-auto mb-2.5 w-fit px-3 py-[7px] rounded-full border text-xs font-semibold ${pull.isReady ? "border-green-300 bg-green-50 text-green-800" : "border-indigo-200 bg-indigo-50 text-indigo-800"}`}>
           {pull.isReady ? "Lepas untuk muat ulang" : "Tarik untuk muat ulang"}

@@ -254,9 +254,10 @@ export default function NotificationModal({ isOpen, onClose, onPayNow }) {
       onClick={handleOverlayClick}
     >
       <div 
-        className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-3xl h-[75vh] flex flex-col shadow-[0_-4px_20px_rgba(0,0,0,0.15)] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-          isOpen ? "translate-y-0" : "translate-y-full"
-        }`}
+        className="w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-3xl h-[75vh] flex flex-col shadow-[0_-4px_20px_rgba(0,0,0,0.15)] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        style={{
+          transform: isOpen ? "translateY(0)" : "translateY(calc(100% + 80px))",
+        }}
       >
         {/* Header */}
         <div className="flex justify-between items-center p-5 border-b border-gray-100 dark:border-slate-800/80 shrink-0">

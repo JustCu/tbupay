@@ -81,9 +81,10 @@ export default function DialogModal() {
       onClick={handleOverlayClick}
     >
       <div
-        className={`w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-[28px] shadow-[0_-4px_24px_rgba(0,0,0,0.15)] overflow-hidden transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-          isOpen ? "translate-y-0" : "translate-y-full"
-        }`}
+        className="w-full max-w-[480px] bg-white dark:bg-[#131c33] rounded-t-[28px] shadow-[0_-4px_24px_rgba(0,0,0,0.15)] overflow-hidden transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        style={{
+          transform: isOpen ? "translateY(0)" : "translateY(calc(100% + 80px))",
+        }}
         role="dialog"
         aria-modal="true"
       >
