@@ -526,7 +526,10 @@ h3 {
   html.dark .app-container > *:not(.main-content),
   .main-content > div > *:not(.report-preview-modal-overlay),
   html.dark .main-content > div > *:not(.report-preview-modal-overlay),
-  .print\:hidden {
+  .print\:hidden,
+  /* Hide DialogModal, PaymentModal, or any other fixed overlays except the report preview overlay */
+  div.fixed:not(.report-preview-modal-overlay),
+  html.dark div.fixed:not(.report-preview-modal-overlay) {
     display: none !important;
   }
 
