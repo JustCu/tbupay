@@ -3,6 +3,7 @@ import {
   RefreshCw,
   CheckCircle2,
   XCircle,
+  X,
   Clock,
   ImageOff,
   ShieldCheck,
@@ -150,6 +151,7 @@ export default function AdminVerifikasi() {
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState("pending");
   const [processingId, setProcessingId] = useState(null);
+  const [previewImgUrl, setPreviewImgUrl] = useState(null);
 
   const [dataSource, setDataSource] = useState(() => {
     try {
@@ -697,7 +699,14 @@ export default function AdminVerifikasi() {
                 </div>
 
                 {/* Bukti foto */}
-                <div className="my-2.5 rounded-[10px] overflow-hidden border border-gray-200 bg-gray-50 max-h-[180px] flex items-center justify-center">
+                <div 
+                  className={`my-2.5 rounded-[10px] overflow-hidden border border-gray-200 bg-gray-50 max-h-[180px] flex items-center justify-center ${trx.url_bukti ? "cursor-pointer hover:opacity-90 transition-opacity" : ""}`}
+                  onClick={() => {
+                    if (trx.url_bukti) {
+                      setPreviewImgUrl(getDriveImgUrl(trx.url_bukti));
+                    }
+                  }}
+                >
                   {trx.url_bukti ? (
                     <img
                       src={getDriveImgUrl(trx.url_bukti)}
@@ -750,6 +759,31 @@ export default function AdminVerifikasi() {
           ))}
         </div>
       ))}
+
+      {/* Fullscreen Image Preview Modal */}
+      {previewImgUrl && (
+        <div
+          className="fixed inset-0 z-[250] flex items-center justify-center bg-black/85 backdrop-blur-[2px] p-4 cursor-zoom-out animate-[fadeIn_0.2s_ease-out]"
+          onClick={() => setPreviewImgUrl(null)}
+        >
+          <div className="relative max-w-full max-h-full flex items-center justify-center">
+            <img
+              src={previewImgUrl}
+              alt="Pratinjau Bukti Pembayaran"
+              className="max-w-full max-h-[90dvh] object-contain rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.5)] select-none pointer-events-auto"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <button
+              type="button"
+              className="absolute top-[-44px] right-0 md:right-[-44px] w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center border-none cursor-pointer active:scale-95 transition-all"
+              onClick={() => setPreviewImgUrl(null)}
+              aria-label="Tutup"
+            >
+              <X size={20} className="stroke-[2.5]" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
