@@ -262,6 +262,16 @@ export default function AdminVerifikasi() {
     return { unpaidList: unpaid, paidList: paid };
   }, [transactions, users, unpaidMonth]);
 
+  const userNameMap = useMemo(() => {
+    const map = new Map();
+    users.forEach((u) => {
+      if (u.id_user && u.nama) {
+        map.set(String(u.id_user), u.nama);
+      }
+    });
+    return map;
+  }, [users]);
+
   const pull = usePullToRefresh({
     onRefresh: () => fetchData(true, true),
     disabled: loading || refreshing || Boolean(processingId),
@@ -661,7 +671,9 @@ export default function AdminVerifikasi() {
               {/* Card Header */}
               <div className="flex justify-between items-center p-[14px_16px_10px] border-b border-dashed border-gray-100">
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-[14px] font-bold text-gray-800 dark:text-gray-100">{trx.id_user}</span>
+                  <span className="text-[14px] font-bold text-gray-800 dark:text-gray-100">
+                    {userNameMap.get(String(trx.id_user)) || trx.id_user}
+                  </span>
                   <span className="text-[11px] text-gray-400">
                     {timeAgo(trx.timestamp)}
                   </span>
