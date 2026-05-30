@@ -20,8 +20,11 @@ const AdminUserManagement = lazy(routeLoaders.adminUsers);
 
 function PageFallback() {
   return (
-    <div className="card" style={{ marginTop: 12 }}>
-      <p className="body-text">Memuat halaman...</p>
+    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-50/50 dark:bg-[#0b1329]/50 backdrop-blur-md p-6 max-w-[480px] mx-auto border-x border-slate-200 dark:border-slate-800/80">
+      <div className="bg-white/80 dark:bg-[#131c33]/80 backdrop-blur-xl border border-white dark:border-slate-800/40 rounded-2xl p-6 flex flex-col items-center gap-3.5 shadow-lg max-w-[200px] w-full relative overflow-hidden">
+        <div className="w-10 h-10 rounded-full border-4 border-slate-100 dark:border-slate-800 border-t-blue-600 dark:border-t-blue-400 animate-spin" />
+        <span className="text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest animate-pulse">Memuat...</span>
+      </div>
     </div>
   );
 }

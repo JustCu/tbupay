@@ -862,6 +862,23 @@ export default function Home() {
   const [isAllTrxOpen, setIsAllTrxOpen] = useState(false);
   const [isAddNewsOpen, setIsAddNewsOpen] = useState(false);
 
+  const [loadingStep, setLoadingStep] = useState(0);
+  const loadingSteps = [
+    "Menghubungkan ke server aman...",
+    "Mengunduh catatan kas lingkungan...",
+    "Menyinkronkan diskusi warga...",
+    "Mempersiapkan dasbor personal Anda..."
+  ];
+
+  useEffect(() => {
+    if (loading && transactions.length === 0) {
+      const interval = setInterval(() => {
+        setLoadingStep((s) => (s + 1) % loadingSteps.length);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [loading, transactions.length]);
+
   const myAllTransactions = useMemo(() => {
     return [...transactions]
       .filter((t) => t.id_user === user?.id_user)
@@ -1089,6 +1106,65 @@ export default function Home() {
     }
     return name.substring(0, 2).toUpperCase();
   };
+
+  if (loading && transactions.length === 0) {
+    return (
+      <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 dark:from-[#0b1329] dark:to-[#070b18] p-6 max-w-[480px] mx-auto border-x border-slate-200 dark:border-slate-800/80 select-none animate-[fadeIn_0.3s_ease-out]">
+        {/* Glow Background Decor */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-48 h-48 bg-blue-500/10 dark:bg-blue-500/5 rounded-full filter blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-64 h-64 bg-indigo-500/10 dark:bg-indigo-500/5 rounded-full filter blur-3xl pointer-events-none" />
+
+        {/* Loading card */}
+        <div className="w-full bg-white/70 dark:bg-[#131c33]/70 backdrop-blur-xl border border-white dark:border-slate-800/40 rounded-[28px] p-8 flex flex-col items-center shadow-xl dark:shadow-2xl relative overflow-hidden max-w-[340px]">
+          {/* Decorative subtle top line */}
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
+          
+          {/* Animated Spinner Ring */}
+          <div className="relative w-20 h-20 flex items-center justify-center mt-4">
+            {/* Outer spinning gradient ring */}
+            <div className="absolute inset-0 rounded-full border-4 border-slate-100 dark:border-slate-800" />
+            <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-600 dark:border-t-blue-400 border-r-indigo-500 dark:border-r-indigo-400 animate-spin" />
+            
+            {/* Inner pulsing app logo circle */}
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-[0_4px_16px_rgba(59,130,246,0.3)] animate-pulse select-none">
+              TBU
+            </div>
+          </div>
+
+          {/* App Title */}
+          <h1 className="text-[22px] font-black tracking-tight text-slate-850 dark:text-slate-100 mt-6 mb-1 text-center bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 dark:from-white dark:via-slate-200 dark:to-indigo-200 bg-clip-text text-transparent">
+            TBU Pay
+          </h1>
+          <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest text-center m-0 mb-8 leading-none">
+            Smart Portal Lingkungan
+          </p>
+
+          {/* Seamless Glowing Progress Bar */}
+          <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden relative mb-5">
+            <div className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full animate-[loadingProgress_2s_infinite_linear] shadow-[0_0_8px_rgba(99,102,241,0.5)]" style={{ width: '45%' }} />
+          </div>
+
+          {/* Cycling Status Label */}
+          <p className="text-[12px] font-bold text-slate-600 dark:text-slate-300 m-0 min-h-[18px] text-center transition-all duration-300 animate-pulse">
+            {loadingSteps[loadingStep]}
+          </p>
+        </div>
+
+        {/* Footer info */}
+        <span className="absolute bottom-8 text-[10px] font-semibold text-slate-400 dark:text-slate-600 tracking-wider">
+          MENGAMBIL DATA TERBARU
+        </span>
+
+        {/* Custom CSS for loader animations */}
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes loadingProgress {
+            0% { left: -45%; }
+            100% { left: 100%; }
+          }
+        `}} />
+      </div>
+    );
+  }
 
   return (
     <>
