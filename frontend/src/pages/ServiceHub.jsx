@@ -848,7 +848,7 @@ function ServiceHub() {
       {openSheet === "grupchat" && (
         <div className="fixed inset-0 z-[60] w-full bg-[#efeae2] dark:bg-[#0b141a] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
-          <div className="flex items-center justify-between px-5 py-3.5 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm z-10">
+          <div className="flex items-center justify-between px-5 pt-[calc(1rem+env(safe-area-inset-top,0px))] pb-3.5 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm z-10">
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -994,7 +994,7 @@ function ServiceHub() {
       {openSheet === "berita" && (
         <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
-          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
+          <div className="flex items-center gap-3 px-5 pt-[calc(1rem+env(safe-area-inset-top,0px))] pb-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
             <button
               type="button"
               className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-700/60 active:scale-95"
@@ -1151,7 +1151,7 @@ function ServiceHub() {
       {openSheet === "tambahBerita" && (
         <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
-          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
+          <div className="flex items-center gap-3 px-5 pt-[calc(1rem+env(safe-area-inset-top,0px))] pb-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
             <button
               type="button"
               className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-700/60 active:scale-95"
@@ -1206,7 +1206,7 @@ function ServiceHub() {
       {openSheet === "newsDetail" && selectedNews && (
         <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
-          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm z-10">
+          <div className="flex items-center gap-3 px-5 pt-[calc(1rem+env(safe-area-inset-top,0px))] pb-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm z-10">
             <button
               type="button"
               className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-205 dark:hover:bg-slate-700/60 active:scale-95"
@@ -1364,7 +1364,7 @@ function ServiceHub() {
       {openSheet === "pantauan" && (
         <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
-          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
+          <div className="flex items-center gap-3 px-5 pt-[calc(1rem+env(safe-area-inset-top,0px))] pb-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
             <button
               type="button"
               className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-205 dark:hover:bg-slate-700/60 active:scale-95"
@@ -1460,7 +1460,7 @@ function ServiceHub() {
       {openSheet === "ticketDetail" && selectedTicket && (
         <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
           {/* Header */}
-          <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm z-10">
+          <div className="flex items-center gap-3 px-5 pt-[calc(1rem+env(safe-area-inset-top,0px))] pb-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm z-10">
             <button
               type="button"
               className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-205 dark:hover:bg-slate-700/60 active:scale-95"
