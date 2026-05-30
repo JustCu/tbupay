@@ -128,7 +128,7 @@ export default function Profile() {
       </div>
 
       <div
-        className="relative overflow-hidden text-white rounded-2xl shadow-xl transition-all duration-300 select-none border border-white/10 w-full mb-6"
+        className="relative overflow-hidden text-white rounded-2xl shadow-xl transition-all duration-300 select-none border border-white/10 w-full mb-6 min-h-[205px] sm:min-h-[215px]"
         style={{
           background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", // Darker premium slate
           aspectRatio: "1.586 / 1",
@@ -140,7 +140,7 @@ export default function Profile() {
         {/* Hologram subtle effect */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJ0cmFuc3BhcmVudCI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwbDR2NE00IDBMMCA0IiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4wMykiIHN0cm9rZS13aWR0aD0iMSI+PC9wYXRoPgo8L3N2Zz4=')] opacity-50 pointer-events-none"></div>
 
-        <div className="p-5 flex flex-col h-full w-full relative z-10 justify-between">
+        <div className="p-4 sm:p-5 flex flex-col h-full w-full relative z-10 justify-between">
           
           {/* Top Header */}
           <div className="flex justify-between items-start w-full">
@@ -156,10 +156,10 @@ export default function Profile() {
           </div>
 
           {/* Main Body */}
-          <div className="flex gap-4 items-end mb-1 mt-auto pb-1">
+          <div className="flex gap-3 sm:gap-4 items-end mb-0.5 sm:mb-1 mt-auto pb-0.5 sm:pb-1">
             {/* Left: Photo */}
-            <div className="shrink-0 flex flex-col gap-2">
-              <div className="relative w-[72px] h-[90px] rounded-lg border-2 border-white/20 shadow-md overflow-hidden bg-slate-800 flex items-center justify-center shrink-0">
+            <div className="shrink-0 flex flex-col gap-1.5 sm:gap-2">
+              <div className="relative w-[68px] h-[85px] sm:w-[72px] sm:h-[90px] rounded-lg border-2 border-white/20 shadow-md overflow-hidden bg-slate-800 flex items-center justify-center shrink-0">
                 {user?.url_foto_profil ? (
                   <img
                     src={user.url_foto_profil}
@@ -175,36 +175,41 @@ export default function Profile() {
             </div>
 
             {/* Right: Info */}
-            <div className="flex-1 flex flex-col gap-2.5 pb-0.5">
+            <div className="flex-1 flex flex-col gap-1.5 sm:gap-2.5 pb-0.5">
               <div className="flex flex-col">
                 <span className="text-[7px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Nama Lengkap</span>
-                <span className="text-[15px] font-black tracking-wide text-white leading-none uppercase drop-shadow-xs truncate max-w-[170px]">
+                <span className="text-[14px] sm:text-[15px] font-black tracking-wide text-white leading-none uppercase drop-shadow-xs truncate max-w-[140px] xs:max-w-[170px]">
                   {user?.nama || "Nama Warga"}
                 </span>
               </div>
               
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                 <div className="flex flex-col">
                   <span className="text-[7px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Blok Rumah</span>
-                  <span className="text-[11px] font-bold text-white uppercase leading-none truncate">{user?.blok_rumah || "-"}</span>
+                  <span className="text-[10px] sm:text-[11px] font-bold text-white uppercase leading-none truncate">{user?.blok_rumah || "-"}</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[7px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Status Warga</span>
-                  <span className="text-[11px] font-bold uppercase leading-none text-emerald-400 truncate">{user?.status_warga || "Tetap"}</span>
+                  <span className={`text-[10px] sm:text-[11px] font-bold uppercase leading-none truncate ${
+                    user?.status_warga === 'tetap' ? 'text-emerald-400' :
+                    user?.status_warga === 'kontrak' ? 'text-indigo-400' :
+                    user?.status_warga === 'kos' ? 'text-amber-400' :
+                    'text-rose-400'
+                  }`}>{user?.status_warga || "Tetap"}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Bottom Footer */}
-          <div className="flex justify-between items-end border-t border-white/10 pt-2.5 mt-2">
+          <div className="flex justify-between items-end border-t border-white/10 pt-2 sm:pt-2.5 mt-1.5 sm:mt-2">
             <div className="flex items-center gap-1.5 opacity-90">
               <ShieldCheck size={11} className="text-emerald-400" />
               <span className="text-[9px] uppercase tracking-wider font-bold text-white">{user?.role || "warga"}</span>
             </div>
             <div className="flex flex-col items-end">
               <span className="text-[7px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Phone Number</span>
-              <span className="text-[10px] font-mono tracking-widest text-white/90">{user?.no_hp || "000000000"}</span>
+              <span className="text-[10px] font-mono tracking-widest text-white/90">{user?.no_hp || "-"}</span>
             </div>
           </div>
 

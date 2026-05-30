@@ -687,9 +687,9 @@ export default function AdminUserManagement() {
             >
               <X size={16} />
             </button>
-
+            
             {/* Content Area */}
-            <div className="p-6 flex flex-col gap-5">
+            <div className="p-5 sm:p-6 flex flex-col gap-4 sm:gap-5">
               
               {/* Header Title */}
               <div className="text-left mt-1">
@@ -703,7 +703,7 @@ export default function AdminUserManagement() {
 
               {/* Resident Identity Card (Copied directly from Profile.jsx) */}
               <div
-                className="relative overflow-hidden text-white rounded-2xl shadow-xl transition-all duration-300 select-none border border-white/10 w-full"
+                className="relative overflow-hidden text-white rounded-2xl shadow-xl transition-all duration-300 select-none border border-white/10 w-full min-h-[205px] sm:min-h-[215px]"
                 style={{
                   background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", // Darker premium slate
                   aspectRatio: "1.586 / 1",
@@ -715,7 +715,7 @@ export default function AdminUserManagement() {
                 {/* Hologram subtle effect */}
                 <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJ0cmFuc3BhcmVudCI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwbDR2NE00IDBMMCA0IiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4wMykiIHN0cm9rZS13aWR0aD0iMSI+PC9wYXRoPgo8L3N2Zz4=')] opacity-50 pointer-events-none"></div>
 
-                <div className="p-5 flex flex-col h-full w-full relative z-10 justify-between">
+                <div className="p-4 sm:p-5 flex flex-col h-full w-full relative z-10 justify-between">
                   
                   {/* Top Header */}
                   <div className="flex justify-between items-start w-full">
@@ -731,10 +731,10 @@ export default function AdminUserManagement() {
                   </div>
 
                   {/* Main Body */}
-                  <div className="flex gap-4 items-end mb-1 mt-auto pb-1">
+                  <div className="flex gap-3 sm:gap-4 items-end mb-0.5 sm:mb-1 mt-auto pb-0.5 sm:pb-1">
                     {/* Left: Photo */}
-                    <div className="shrink-0 flex flex-col gap-2">
-                      <div className="relative w-[72px] h-[90px] rounded-lg border-2 border-white/20 shadow-md overflow-hidden bg-slate-800 flex items-center justify-center shrink-0">
+                    <div className="shrink-0 flex flex-col gap-1.5 sm:gap-2">
+                      <div className="relative w-[68px] h-[85px] sm:w-[72px] sm:h-[90px] rounded-lg border-2 border-white/20 shadow-md overflow-hidden bg-slate-800 flex items-center justify-center shrink-0">
                         {selectedUser.url_foto_profil ? (
                           <img
                             src={selectedUser.url_foto_profil}
@@ -750,22 +750,22 @@ export default function AdminUserManagement() {
                     </div>
 
                     {/* Right: Info */}
-                    <div className="flex-1 flex flex-col gap-2.5 pb-0.5">
+                    <div className="flex-1 flex flex-col gap-1.5 sm:gap-2.5 pb-0.5">
                       <div className="flex flex-col">
                         <span className="text-[7px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Nama Lengkap</span>
-                        <span className="text-[15px] font-black tracking-wide text-white leading-none uppercase drop-shadow-xs truncate max-w-[170px]">
+                        <span className="text-[14px] sm:text-[15px] font-black tracking-wide text-white leading-none uppercase drop-shadow-xs truncate max-w-[140px] xs:max-w-[170px]">
                           {selectedUser.nama || "Nama Warga"}
                         </span>
                       </div>
                       
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                         <div className="flex flex-col">
                           <span className="text-[7px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Blok Rumah</span>
-                          <span className="text-[11px] font-bold text-white uppercase leading-none truncate">{selectedUser.blok_rumah || "-"}</span>
+                          <span className="text-[10px] sm:text-[11px] font-bold text-white uppercase leading-none truncate">{selectedUser.blok_rumah || "-"}</span>
                         </div>
                         <div className="flex flex-col">
                           <span className="text-[7px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Status Warga</span>
-                          <span className={`text-[11px] font-bold uppercase leading-none truncate ${
+                          <span className={`text-[10px] sm:text-[11px] font-bold uppercase leading-none truncate ${
                             selectedUser.status_warga === 'tetap' ? 'text-emerald-400' :
                             selectedUser.status_warga === 'kontrak' ? 'text-indigo-400' :
                             selectedUser.status_warga === 'kos' ? 'text-amber-400' :
@@ -777,7 +777,7 @@ export default function AdminUserManagement() {
                   </div>
 
                   {/* Bottom Footer */}
-                  <div className="flex justify-between items-end border-t border-white/10 pt-2.5 mt-2">
+                  <div className="flex justify-between items-end border-t border-white/10 pt-2 sm:pt-2.5 mt-1.5 sm:mt-2">
                     <div className="flex items-center gap-1.5 opacity-90">
                       <ShieldCheck size={11} className="text-emerald-400" />
                       <span className="text-[9px] uppercase tracking-wider font-bold text-white">{selectedUser.role || "warga"}</span>
@@ -792,13 +792,13 @@ export default function AdminUserManagement() {
               </div>
 
               {/* Action and Detail buttons */}
-              <div className="flex flex-col gap-2.5 mt-2">
+              <div className="flex flex-col gap-2 sm:gap-2.5 mt-1 sm:mt-2">
                 {selectedUser.no_hp && (
                   <a
                     href={`https://wa.me/${selectedUser.no_hp.replace(/^0/, "62")}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 py-3 bg-[#25d366] hover:bg-[#20ba5a] text-white rounded-xl text-[13px] font-bold cursor-pointer transition-colors border-none shadow-sm text-center no-underline"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 sm:py-3 bg-[#25d366] hover:bg-[#20ba5a] text-white rounded-xl text-[13px] font-bold cursor-pointer transition-colors border-none shadow-sm text-center no-underline active:scale-[0.99] transition-all"
                   >
                     Hubungi via WhatsApp
                   </a>
@@ -811,14 +811,14 @@ export default function AdminUserManagement() {
                         setSelectedUser(null);
                         openEdit(selectedUser);
                       }}
-                      className="flex-1 py-3 bg-blue-50 dark:bg-slate-800/60 hover:bg-blue-100 dark:hover:bg-slate-700/60 text-blue-600 dark:text-indigo-400 rounded-xl text-[13px] font-bold cursor-pointer transition-colors border-none"
+                      className="flex-1 py-2.5 sm:py-3 bg-blue-50 dark:bg-slate-800/60 hover:bg-blue-100 dark:hover:bg-slate-700/60 text-blue-600 dark:text-indigo-400 rounded-xl text-[13px] font-bold cursor-pointer transition-colors border-none active:scale-[0.99] transition-all"
                     >
                       Ubah Data
                     </button>
                   )}
                   <button
                     onClick={() => setSelectedUser(null)}
-                    className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800/40 dark:hover:bg-slate-800/80 text-gray-600 dark:text-gray-400 rounded-xl text-[13px] font-bold cursor-pointer transition-colors border-none"
+                    className="flex-1 py-2.5 sm:py-3 bg-gray-100 dark:bg-slate-800/60 hover:bg-gray-200 dark:hover:bg-slate-700/60 text-gray-700 dark:text-slate-350 rounded-xl text-[13px] font-bold cursor-pointer transition-colors border-none active:scale-[0.99] transition-all"
                   >
                     Tutup
                   </button>
