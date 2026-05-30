@@ -1304,49 +1304,56 @@ function ServiceHub() {
                             lastDateHeader = currentDateHeader;
                           }
                           
+                          const bubbleColor = getDeterministicColor(reply.nama_pengirim || "Pengguna");
                           return (
-                            <div key={reply.id_balasan} className="flex flex-col gap-1.5">
+                            <div key={reply.id_balasan} className="flex flex-col w-full gap-1.5">
                               {showDateHeader && (
-                                <div className="flex justify-center my-2 sticky top-1 z-10">
-                                  <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-gray-555 dark:text-gray-400 text-[10px] font-extrabold uppercase px-3 py-1 rounded-lg shadow-sm border border-gray-150/50 dark:border-transparent backdrop-blur-xs tracking-wider">
+                                <div className="flex justify-center my-3.5 select-none">
+                                  <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-[10px] text-gray-555 dark:text-gray-455 font-extrabold px-3.5 py-1.5 rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.05)] uppercase tracking-wider">
                                     {currentDateHeader}
                                   </span>
                                 </div>
                               )}
-                              <div
-                                className={`flex flex-col gap-0.5 max-w-[85%] rounded-[18px] px-3.5 py-2 shadow-[0_1px_1px_rgba(0,0,0,0.1)] ${
-                                  isOwn
-                                    ? "self-end bg-[#d9fdd3] dark:bg-[#005c4b] text-gray-900 dark:text-gray-100 rounded-tr-none ml-auto border border-[#e1f5fe]/10 dark:border-transparent"
-                                    : "self-start bg-white dark:bg-[#202c33] text-gray-900 dark:text-gray-100 rounded-tl-none mr-auto border border-gray-100 dark:border-transparent"
-                                }`}
-                              >
+                              <div className={`flex items-start gap-2 max-w-[85%] ${isOwn ? "self-end flex-row-reverse ml-auto" : "self-start mr-auto"}`}>
+                                {/* Avatar for others */}
                                 {!isOwn && (
-                                  <div className="flex items-center gap-1 text-[10px] font-bold text-blue-655 dark:text-blue-400 mb-0.5">
-                                    <span>{reply.nama_pengirim || "Pengguna"}</span>
-                                    {reply.role_pengirim && reply.role_pengirim !== "warga" && (
-                                      <span className={`px-1.5 py-0.2 rounded text-[8px] font-extrabold uppercase tracking-wide ${
-                                        reply.role_pengirim === "admin" ? "bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-400 border border-red-200" :
-                                        "bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200"
-                                      }`}>
-                                        {reply.role_pengirim}
+                                  <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-white text-[11px] font-black shrink-0 shadow-sm border border-white dark:border-transparent select-none uppercase"
+                                       style={{ backgroundColor: bubbleColor }}>
+                                    {getInitials(reply.nama_pengirim || "Pengguna")}
+                                  </div>
+                                )}
+                                
+                                <div className={`rounded-2xl p-[9px_13px] relative shadow-[0_1px_1px_rgba(0,0,0,0.08)] flex flex-col ${
+                                  isOwn 
+                                    ? "bg-[#d9fdd3] dark:bg-[#005c4b] text-gray-900 dark:text-gray-100 rounded-tr-xs" 
+                                    : "bg-white dark:bg-[#202c33] text-gray-900 dark:text-gray-100 rounded-tl-xs"
+                                }`}>
+                                  {/* Sender Info for others */}
+                                  {!isOwn && (
+                                    <div className="flex items-center gap-1.5 mb-1 shrink-0 select-none">
+                                      <span className="text-[11px] font-extrabold leading-none truncate" style={{ color: bubbleColor }}>
+                                        {reply.nama_pengirim || "Pengguna"}
                                       </span>
-                                    )}
-                                  </div>
-                                )}
-                                {isOwn && reply.role_pengirim && reply.role_pengirim !== "warga" && (
-                                  <div className="text-[9px] font-extrabold text-red-655 dark:text-red-400 uppercase tracking-wide self-end mb-0.5">
-                                    Anda ({reply.role_pengirim})
-                                  </div>
-                                )}
-                                {isOwn && (!reply.role_pengirim || reply.role_pengirim === "warga") && (
-                                  <span className="text-[9px] font-extrabold text-emerald-700 dark:text-emerald-300 uppercase tracking-wide self-end mb-0.5">
-                                    Anda
+                                      {reply.role_pengirim && reply.role_pengirim !== "warga" && (
+                                        <span className={`text-[8px] font-black px-1.5 py-0.5 rounded-md leading-none uppercase tracking-wider border ${
+                                          reply.role_pengirim === "admin" ? "bg-red-500/10 text-red-500 border-red-500/20" : "bg-blue-500/10 text-blue-500 border-blue-500/20"
+                                        }`}>
+                                          {reply.role_pengirim}
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+                                  
+                                  {/* Message body */}
+                                  <p className="m-0 text-[13px] leading-relaxed break-words whitespace-pre-wrap pr-10">
+                                    {reply.isi_balasan}
+                                  </p>
+                                  
+                                  {/* Timestamp in corner */}
+                                  <span className="absolute bottom-1 right-2 text-[9px] text-gray-400 dark:text-gray-550 font-medium select-none tabular-nums">
+                                    {reply.timestamp ? safeDate(reply.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
                                   </span>
-                                )}
-                                <p className="m-0 text-[13px] leading-relaxed whitespace-pre-wrap break-words">{reply.isi_balasan}</p>
-                                <span className="text-[9px] text-gray-555 dark:text-gray-555 shrink-0">
-                                  {reply.timestamp ? safeDate(reply.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
-                                </span>
+                                </div>
                               </div>
                             </div>
                           );
@@ -1685,44 +1692,56 @@ function ServiceHub() {
                             lastDateHeader = currentDateHeader;
                           }
 
+                          const bubbleColor = getDeterministicColor(reply.nama_pengirim || "Pengguna");
                           return (
-                            <div key={reply.id_balasan} className="flex flex-col gap-1.5">
+                            <div key={reply.id_balasan} className="flex flex-col w-full gap-1.5">
                               {showDateHeader && (
-                                <div className="flex justify-center my-2 sticky top-1 z-10">
-                                  <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-gray-555 dark:text-gray-400 text-[10px] font-extrabold uppercase px-3 py-1 rounded-lg shadow-sm border border-gray-150/50 dark:border-transparent backdrop-blur-xs tracking-wider">
+                                <div className="flex justify-center my-3.5 select-none">
+                                  <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-[10px] text-gray-555 dark:text-gray-455 font-extrabold px-3.5 py-1.5 rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.05)] uppercase tracking-wider">
                                     {currentDateHeader}
                                   </span>
                                 </div>
                               )}
-                              <div
-                                className={`flex flex-col gap-0.5 max-w-[85%] rounded-[18px] px-3.5 py-2 shadow-[0_1px_1px_rgba(0,0,0,0.1)] ${
-                                  isOwn
-                                    ? "self-end bg-[#d9fdd3] dark:bg-[#005c4b] text-gray-900 dark:text-gray-100 rounded-tr-none ml-auto border border-[#e1f5fe]/10 dark:border-transparent"
-                                    : "self-start bg-white dark:bg-[#202c33] text-gray-900 dark:text-gray-100 rounded-tl-none mr-auto border border-gray-100 dark:border-transparent"
-                                }`}
-                              >
+                              <div className={`flex items-start gap-2 max-w-[85%] ${isOwn ? "self-end flex-row-reverse ml-auto" : "self-start mr-auto"}`}>
+                                {/* Avatar for others */}
                                 {!isOwn && (
-                                  <div className="flex items-center gap-1 text-[10px] font-bold text-blue-650 dark:text-blue-400 mb-0.5">
-                                    <span>{reply.nama_pengirim || "Pengguna"}</span>
-                                    {reply.role_pengirim && reply.role_pengirim !== "warga" && (
-                                      <span className={`px-1.5 py-0.2 rounded text-[8px] font-extrabold uppercase tracking-wide ${
-                                        reply.role_pengirim === "admin" ? "bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-400 border border-red-200" :
-                                        "bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200"
-                                      }`}>
-                                        {reply.role_pengirim}
+                                  <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-white text-[11px] font-black shrink-0 shadow-sm border border-white dark:border-transparent select-none uppercase"
+                                       style={{ backgroundColor: bubbleColor }}>
+                                    {getInitials(reply.nama_pengirim || "Pengguna")}
+                                  </div>
+                                )}
+                                
+                                <div className={`rounded-2xl p-[9px_13px] relative shadow-[0_1px_1px_rgba(0,0,0,0.08)] flex flex-col ${
+                                  isOwn 
+                                    ? "bg-[#d9fdd3] dark:bg-[#005c4b] text-gray-900 dark:text-gray-100 rounded-tr-xs" 
+                                    : "bg-white dark:bg-[#202c33] text-gray-900 dark:text-gray-100 rounded-tl-xs"
+                                }`}>
+                                  {/* Sender Info for others */}
+                                  {!isOwn && (
+                                    <div className="flex items-center gap-1.5 mb-1 shrink-0 select-none">
+                                      <span className="text-[11px] font-extrabold leading-none truncate" style={{ color: bubbleColor }}>
+                                        {reply.nama_pengirim || "Pengguna"}
                                       </span>
-                                    )}
-                                  </div>
-                                )}
-                                {isOwn && reply.role_pengirim && reply.role_pengirim !== "warga" && (
-                                  <div className="text-[9px] font-extrabold text-red-650 dark:text-red-400 uppercase tracking-wide self-end mb-0.5">
-                                    Anda ({reply.role_pengirim})
-                                  </div>
-                                )}
-                                <p className="m-0 text-[13px] leading-relaxed whitespace-pre-wrap break-words">{reply.isi_balasan}</p>
-                                <span className="text-[9px] text-gray-555 dark:text-gray-555 shrink-0">
-                                  {reply.timestamp ? safeDate(reply.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
-                                </span>
+                                      {reply.role_pengirim && reply.role_pengirim !== "warga" && (
+                                        <span className={`text-[8px] font-black px-1.5 py-0.5 rounded-md leading-none uppercase tracking-wider border ${
+                                          reply.role_pengirim === "admin" ? "bg-red-500/10 text-red-500 border-red-500/20" : "bg-blue-500/10 text-blue-500 border-blue-500/20"
+                                        }`}>
+                                          {reply.role_pengirim}
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+                                  
+                                  {/* Message body */}
+                                  <p className="m-0 text-[13px] leading-relaxed break-words whitespace-pre-wrap pr-10">
+                                    {reply.isi_balasan}
+                                  </p>
+                                  
+                                  {/* Timestamp in corner */}
+                                  <span className="absolute bottom-1 right-2 text-[9px] text-gray-400 dark:text-gray-555 font-medium select-none tabular-nums">
+                                    {reply.timestamp ? safeDate(reply.timestamp).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : ""}
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           );
