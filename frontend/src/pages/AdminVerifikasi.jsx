@@ -24,13 +24,6 @@ import useStore from "../store/useStore";
 import CacheFallbackBadge from "../components/CacheFallbackBadge";
 import usePullToRefresh from "../hooks/usePullToRefresh";
 
-const FILTERS = [
-  { key: "pending", label: "Menunggu" },
-  { key: "all", label: "Semua" },
-  { key: "verified", label: "Terverifikasi" },
-  { key: "rejected", label: "Ditolak" },
-  { key: "belum_bayar", label: "Belum Bayar" },
-];
 
 /** Format YYYY-MM ke nama bulan Indonesia */
 function formatBulan(ym) {
@@ -481,45 +474,6 @@ export default function AdminVerifikasi() {
             Ditolak
           </div>
         </div>
-      </div>
-
-      {/* Filter Tabs */}
-      <div className="flex gap-2 mb-5 overflow-x-auto pb-1.5 no-scrollbar">
-        {FILTERS.map((f) => (
-          <button
-            key={f.key}
-            className={`shrink-0 p-[7px_16px] rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1a2640] text-[12px] font-bold text-gray-500 dark:text-gray-400 cursor-pointer whitespace-nowrap transition-all duration-200 shadow-sm hover:border-gray-300 dark:hover:border-slate-650 ${
-              filter === f.key
-                ? "!bg-blue-600 !border-blue-600 !text-white shadow-blue-500/10"
-                : ""
-            }`}
-            onClick={() => setFilter(f.key)}
-          >
-            {f.label}
-            {f.key === "pending" && pendingCount > 0 && (
-              <span
-                className={`ml-1.5 rounded-full p-[1.5px_6.5px] text-[9.5px] font-black ${
-                  filter === "pending"
-                    ? "bg-white/25 text-white"
-                    : "bg-amber-100 dark:bg-amber-950/45 text-amber-600 dark:text-amber-400"
-                }`}
-              >
-                {pendingCount}
-              </span>
-            )}
-            {f.key === "belum_bayar" && unpaidList.length > 0 && (
-              <span
-                className={`ml-1.5 rounded-full p-[1.5px_6.5px] text-[9.5px] font-black ${
-                  filter === "belum_bayar"
-                    ? "bg-white/25 text-white"
-                    : "bg-red-100 dark:bg-red-950/45 text-red-600 dark:text-red-400"
-                }`}
-              >
-                {unpaidList.length}
-              </span>
-            )}
-          </button>
-        ))}
       </div>
 
       {/* ── Tab: Belum Bayar ── */}
