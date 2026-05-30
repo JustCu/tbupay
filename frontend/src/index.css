@@ -489,6 +489,64 @@ h3 {
   }
 }
 
+/* ── Force Print Preview to always be A4 White Paper in both Light and Dark mode on screen ── */
+#printable-report,
+html.dark #printable-report {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  color: #0f172a !important; /* slate-900 */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  border-color: #e2e8f0 !important; /* slate-200 */
+}
+
+/* Force dark text and clean borders for all children inside the preview */
+#printable-report *,
+html.dark #printable-report * {
+  color: #0f172a !important; /* slate-900 */
+  background-color: transparent !important;
+  border-color: #e2e8f0 !important; /* slate-200 */
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Force light gray background exceptions on summary card and table rows in dark mode preview */
+#printable-report .bg-slate-50,
+html.dark #printable-report .bg-slate-50 {
+  background-color: #f8fafc !important; /* Slate 50 */
+}
+#printable-report .bg-slate-100,
+html.dark #printable-report .bg-slate-100 {
+  background-color: #f1f5f9 !important; /* Slate 100 */
+}
+
+/* Retain exact semantic accent colors for cashflow stats */
+#printable-report .text-emerald-600,
+html.dark #printable-report .text-emerald-600 {
+  color: #059669 !important; /* Emerald 600 */
+}
+#printable-report .text-rose-500,
+html.dark #printable-report .text-rose-500 {
+  color: #ef4444 !important; /* Rose 500 */
+}
+#printable-report .text-rose-600,
+html.dark #printable-report .text-rose-600 {
+  color: #dc2626 !important; /* Rose 600 */
+}
+#printable-report .text-slate-500,
+html.dark #printable-report .text-slate-500,
+#printable-report .text-slate-400,
+html.dark #printable-report .text-slate-400 {
+  color: #475569 !important; /* Slate 600 */
+}
+#printable-report .text-slate-655,
+html.dark #printable-report .text-slate-655 {
+  color: #475569 !important;
+}
+#printable-report .text-slate-600,
+html.dark #printable-report .text-slate-600 {
+  color: #334155 !important;
+}
+
 /* ── Printing Stylesheet for Professional Financial Reports ────────────────── */
 @media print {
   /* 1. Reset all containers to be visible, light theme, and unconstrained (Neutralize Dark Mode) */
