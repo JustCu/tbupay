@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import useStore from "../store/useStore";
 import imageCompression from "browser-image-compression";
-import { Camera, CalendarDays, X, Eye, ArrowLeft, Info, Copy } from "lucide-react";
+import { Camera, CalendarDays, X, Eye, ArrowLeft, Info, Copy, ChevronUp, ChevronDown, GripVertical, Trash2 } from "lucide-react";
 import {
   createTransaction,
   addTransactionCategory,
@@ -607,40 +607,44 @@ export default function PaymentModal({ isOpen, onClose }) {
  
           {isAdmin && isCategoryEditorOpen && (
             <div
-              className="absolute inset-0 z-[5] bg-slate-900/45 flex items-center justify-center p-4 max-h-[820px]:fixed max-h-[820px]:z-[120] max-h-[820px]:p-0 max-[480px]:items-stretch"
+              className="absolute inset-0 z-[5] bg-slate-900/45 flex items-center justify-center p-4 max-h-[820px]:fixed max-h-[820px]:z-[120] max-h-[820px]:p-0 max-[480px]:items-stretch animate-[fadeIn_0.2s_ease-out]"
               onClick={(e) => {
                 if (e.target === e.currentTarget) setIsCategoryEditorOpen(false);
               }}
             >
-              <div className="w-full max-w-[420px] max-h-[78vh] overflow-y-auto bg-white dark:bg-[#131c33] rounded-2xl p-4 border border-slate-200 dark:border-slate-800/80 shadow-[0_14px_40px_rgba(15,23,42,0.2)] dark:shadow-[0_14px_40px_rgba(0,0,0,0.5)] max-[480px]:max-w-none max-[480px]:max-h-none max-[480px]:h-full max-[480px]:rounded-none max-[480px]:border-none max-[480px]:shadow-none max-[480px]:p-4 max-[480px]:flex max-[480px]:flex-col">
-                <div className="flex items-center justify-between mb-4 max-[480px]:sticky max-[480px]:top-0 max-[480px]:z-[2] max-[480px]:bg-white dark:max-[480px]:bg-[#131c33] max-[480px]:pb-2 max-[480px]:mb-2 max-[480px]:border-b max-[480px]:border-slate-200 dark:border-slate-800/80">
-                  <h4 className="m-0 text-[13px] font-bold text-slate-900 dark:text-gray-100">
+              <div className="w-full max-w-[420px] max-h-[82vh] overflow-y-auto bg-white dark:bg-[#131c33] rounded-2xl p-5 border border-slate-200 dark:border-slate-800/80 shadow-[0_14px_40px_rgba(15,23,42,0.2)] dark:shadow-[0_14px_40px_rgba(0,0,0,0.5)] max-[480px]:max-w-none max-[480px]:max-h-none max-[480px]:h-full max-[480px]:rounded-none max-[480px]:border-none max-[480px]:shadow-none max-[480px]:p-5 max-[480px]:flex max-[480px]:flex-col animate-[scaleUp_0.25s_cubic-bezier(0.34,1.56,0.64,1)]">
+                
+                {/* Header with notch padding on mobile */}
+                <div className="flex items-center justify-between mb-4 max-[480px]:sticky max-[480px]:top-0 max-[480px]:z-[2] max-[480px]:bg-white dark:max-[480px]:bg-[#131c33] max-[480px]:pt-[calc(1rem+env(safe-area-inset-top,0px))] max-[480px]:pb-3 max-[480px]:mb-3 max-[480px]:border-b border-slate-200/60 dark:border-slate-800/80 shrink-0">
+                  <h4 className="m-0 text-[14px] font-black text-slate-850 dark:text-gray-100 uppercase tracking-wide">
                     {transactionType === "pengeluaran" ? "Kelola Kategori Pengeluaran" : "Kelola Jenis Iuran"}
                   </h4>
                   <button
                     type="button"
-                    className="border-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg w-7 h-7 inline-flex items-center justify-center cursor-pointer"
+                    className="border-none bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 rounded-full w-8 h-8 inline-flex items-center justify-center cursor-pointer transition-colors active:scale-90"
                     onClick={() => setIsCategoryEditorOpen(false)}
+                    aria-label="Tutup"
                   >
-                    <X size={16} />
+                    <X size={16} className="stroke-[2.5]" />
                   </button>
                 </div>
  
-                <p className="m-0 mb-3 text-[11px] text-slate-500 dark:text-gray-400 max-[480px]:mb-2">
-                  Tambah, hapus, atau drag kategori untuk mengatur urutan dropdown.
+                <p className="m-0 mb-4 text-[11px] font-medium text-slate-550 dark:text-gray-400 leading-relaxed shrink-0 text-left">
+                  Tambah, hapus, atau atur posisi urutan kategori kontribusi di bawah ini untuk menyusun menu pilihan form pengisian:
                 </p>
  
-                <div className="grid grid-cols-[1fr_auto] gap-2 mb-3 max-[480px]:mb-2">
+                {/* Add Category Form Row */}
+                <div className="grid grid-cols-[1fr_auto] gap-2 mb-4 shrink-0">
                   <input
                     type="text"
-                    className="w-full min-h-[44px] px-4 py-3 rounded-xl text-[13px] bg-[#fcfdff] dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] outline-none font-sans text-gray-900 dark:text-gray-100 focus:border-blue-500"
-                    placeholder={transactionType === "pengeluaran" ? "Tambah kategori pengeluaran" : "Tambah jenis iuran"}
+                    className="w-full min-h-[44px] px-4 py-3 rounded-2xl text-[13px] bg-[#fcfdff] dark:bg-[#1b2641] border border-gray-200 dark:border-[#2c3c5e] outline-none font-sans text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-indigo-500/10 transition-all text-left"
+                    placeholder={transactionType === "pengeluaran" ? "Masukkan nama kategori baru" : "Masukkan nama jenis iuran baru"}
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
                   />
                   <button
                     type="button"
-                    className="border-none rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[12px] font-bold px-4 min-h-[44px] cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="border-none rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-[12px] font-extrabold px-5 min-h-[44px] cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] transition-all shadow-xs"
                     onClick={handleAddCategory}
                     disabled={addingCategory}
                   >
@@ -648,13 +652,14 @@ export default function PaymentModal({ isOpen, onClose }) {
                   </button>
                 </div>
  
-                <div className="flex flex-col gap-2 mt-4 max-h-[42vh] overflow-y-auto pr-1">
+                {/* Scrollable Categories List */}
+                <div className="flex flex-col gap-2 mt-2 max-h-[42vh] max-[480px]:max-h-[60dvh] overflow-y-auto pr-1 flex-1 custom-scrollbar">
                   {getActiveOptions().map((opt, idx) => (
                     <div
                       key={opt}
-                      className={`flex items-center justify-between bg-slate-50 dark:bg-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/40 border rounded-xl p-3.5 cursor-grab transition-all ${
+                      className={`flex items-center justify-between bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100/50 dark:hover:bg-slate-800/20 border rounded-2xl p-3 transition-all ${
                         kategori === opt 
-                          ? "border-indigo-300 dark:border-indigo-500/50 bg-indigo-50/20 dark:bg-indigo-500/10" 
+                          ? "border-indigo-300 dark:border-indigo-500/50 bg-indigo-50/10 dark:bg-indigo-500/5 shadow-xs" 
                           : "border-slate-100 dark:border-slate-800/80"
                       } ${dragIndex === idx ? "opacity-50" : ""}`}
                       onClick={() => setKategori(opt)}
@@ -667,27 +672,65 @@ export default function PaymentModal({ isOpen, onClose }) {
                       }}
                       onDragEnd={() => setDragIndex(null)}
                     >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <span className="text-[12px] font-bold text-slate-300 select-none tracking-tighter">::</span>
-                        <span className="text-[12px] font-bold text-slate-700 dark:text-gray-250 truncate">{opt}</span>
+                      {/* Left: Grip Handle + Sorting Arrows + Label */}
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1 text-left">
+                        {/* Drag grip handle */}
+                        <div className="text-slate-300 dark:text-slate-600 shrink-0 select-none">
+                          <GripVertical size={16} />
+                        </div>
+                        
+                        {/* Quick sorting buttons for mobile/touch reliability */}
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            type="button"
+                            disabled={idx === 0}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              moveOption(idx, idx - 1);
+                            }}
+                            className="border-none bg-slate-200/50 hover:bg-slate-200 dark:bg-slate-800/40 dark:hover:bg-slate-800/80 text-slate-650 dark:text-slate-400 rounded-lg w-[26px] h-[26px] flex items-center justify-center cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-90"
+                            title="Pindah ke Atas"
+                          >
+                            <ChevronUp size={15} className="stroke-[2.5]" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === getActiveOptions().length - 1}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              moveOption(idx, idx + 1);
+                            }}
+                            className="border-none bg-slate-200/50 hover:bg-slate-200 dark:bg-slate-800/40 dark:hover:bg-slate-800/80 text-slate-650 dark:text-slate-400 rounded-lg w-[26px] h-[26px] flex items-center justify-center cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-90"
+                            title="Pindah ke Bawah"
+                          >
+                            <ChevronDown size={15} className="stroke-[2.5]" />
+                          </button>
+                        </div>
+
+                        <span className="text-[13px] font-bold text-slate-750 dark:text-gray-200 truncate ml-1 leading-none">
+                          {opt}
+                        </span>
                       </div>
+
+                      {/* Right: Delete Action */}
                       <button
                         type="button"
-                        className="border-none bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 text-rose-500 rounded-lg p-1.5 cursor-pointer flex items-center justify-center transition-all duration-200"
+                        className="border-none bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/20 text-rose-500 rounded-lg p-2 cursor-pointer flex items-center justify-center transition-all duration-250 active:scale-90 shrink-0"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteCategory(opt);
                         }}
+                        title="Hapus Kategori"
                       >
-                        <X size={14} className="stroke-[2.5]" />
+                        <Trash2 size={15} className="stroke-[2.5]" />
                       </button>
                     </div>
                   ))}
                 </div>
  
                 {sortingCategory && (
-                  <span className="inline-block mt-2.5 text-[11px] text-slate-500 dark:text-gray-400">
-                    Menyimpan urutan...
+                  <span className="inline-block mt-3 text-[11px] font-semibold text-slate-400 dark:text-gray-500 shrink-0 text-left">
+                    Menyimpan urutan baru...
                   </span>
                 )}
               </div>
