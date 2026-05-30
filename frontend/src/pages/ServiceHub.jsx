@@ -254,7 +254,6 @@ function ServiceHub() {
   const [sendingReply, setSendingReply] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [loadingReplies, setLoadingReplies] = useState(false);
-  const [newsDateFilter, setNewsDateFilter] = useState(""); // "" = semua, "YYYY-MM" = filter bulan
   const [ticketReplies, setTicketReplies] = useState([]);
   const [ticketReplyForm, setTicketReplyForm] = useState("");
   const [sendingTicketReply, setSendingTicketReply] = useState(false);
@@ -269,24 +268,12 @@ function ServiceHub() {
     setTicketPage(1);
   }, [openSheet]);
 
-  // Reset news page when news filter changes
-  useEffect(() => {
-    setNewsPage(1);
-  }, [newsDateFilter]);
-
   // Pagination constants and useMemos
   const ITEMS_PER_PAGE = 10;
 
   const filteredNews = useMemo(() => {
-    return newsDateFilter
-      ? newsList.filter((n) => {
-          if (!n.tanggal) return false;
-          const d = safeDate(n.tanggal);
-          const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-          return ym === newsDateFilter;
-        })
-      : newsList;
-  }, [newsList, newsDateFilter]);
+    return newsList;
+  }, [newsList]);
 
   const totalNewsPages = useMemo(() => {
     return Math.ceil(filteredNews.length / ITEMS_PER_PAGE) || 1;
@@ -1196,37 +1183,19 @@ function ServiceHub() {
 
           {/* Body content */}
           <div className="p-5 flex flex-col gap-4 overflow-y-auto flex-1">
-            {/* Toolbar: Filter Tanggal + Tambah Berita (Admin) */}
-            <div className="flex items-center gap-2 shrink-0">
-              <div className="flex-1 relative">
-                <CalendarDays size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none" />
-                <input
-                  type="month"
-                  className="w-full border border-gray-200 dark:border-[#2c3c5e] rounded-xl pl-9 pr-3 py-2.5 text-[12px] bg-white dark:bg-[#1b2641] text-gray-650 dark:text-gray-250 focus:outline-none focus:border-blue-400 appearance-none"
-                  value={newsDateFilter}
-                  onChange={(e) => setNewsDateFilter(e.target.value)}
-                />
-              </div>
-              {newsDateFilter && (
-                <button
-                  type="button"
-                  className="px-3.5 py-2.5 text-[11px] font-bold text-gray-650 dark:text-gray-300 bg-gray-150 dark:bg-slate-800 border-none rounded-xl cursor-pointer hover:bg-gray-205 dark:hover:bg-slate-750 transition-colors whitespace-nowrap active:scale-95"
-                  onClick={() => setNewsDateFilter("")}
-                >
-                  Reset
-                </button>
-              )}
-              {user?.role === "admin" && (
+            {/* Toolbar: Tambah Berita (Admin Only) */}
+            {user?.role === "admin" && (
+              <div className="flex justify-end shrink-0">
                 <button
                   type="button"
                   className="flex items-center gap-1.5 px-4 py-2.5 bg-blue-600 text-white text-[12px] font-extrabold border-none rounded-xl cursor-pointer hover:bg-blue-700 transition-colors whitespace-nowrap shadow-sm active:scale-95"
                   onClick={() => setOpenSheet("tambahBerita")}
                 >
                   <Plus size={14} />
-                  Tambah
+                  Tambah Berita Baru
                 </button>
-              )}
-            </div>
+              </div>
+            )}
    
 
             {loading && (
@@ -1242,17 +1211,8 @@ function ServiceHub() {
                   <div className="text-center py-8 bg-white dark:bg-[#131c33] rounded-2xl border border-dashed border-gray-200 dark:border-slate-800/80 p-5">
                     <Newspaper size={32} className="mx-auto mb-2 text-gray-300 dark:text-slate-600" />
                     <p className="text-[13px] text-gray-555 dark:text-gray-400 m-0 font-semibold">
-                      {newsDateFilter ? "Tidak ada berita di bulan ini" : "Belum ada berita terbaru"}
+                      Belum ada berita terbaru
                     </p>
-                    {newsDateFilter && (
-                      <button
-                        type="button"
-                        className="mt-2 text-[12px] text-blue-600 dark:text-indigo-400 font-bold bg-transparent border-none cursor-pointer underline"
-                        onClick={() => setNewsDateFilter("")}
-                      >
-                        Tampilkan semua berita
-                      </button>
-                    )}
                   </div>
                 );
               }
