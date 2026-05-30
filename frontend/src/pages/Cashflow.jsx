@@ -1228,7 +1228,7 @@ function AllCashflowTransactionsSheet({
 
 // ── Report Preview & Export Modal ──────────────────────────────────────────
 const ZOOM_LEVELS = [0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0];
-const DEFAULT_ZOOM_INDEX = 6; // 1.0 = 100%
+const DEFAULT_ZOOM_INDEX = 0; // 0.5 = 50%
 
 function ReportPreviewModal({
   isOpen,

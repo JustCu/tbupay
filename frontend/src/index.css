@@ -501,7 +501,9 @@ h3 {
   .app-container,
   html.dark .app-container,
   .main-content,
-  html.dark .main-content {
+  html.dark .main-content,
+  .main-content > div,
+  html.dark .main-content > div {
     display: block !important;
     position: static !important;
     width: 100% !important;
@@ -522,8 +524,8 @@ h3 {
   /* 2. Hide everything else inside the app container except our report modal */
   .app-container > *:not(.main-content),
   html.dark .app-container > *:not(.main-content),
-  .main-content > *:not(.report-preview-modal-overlay),
-  html.dark .main-content > *:not(.report-preview-modal-overlay),
+  .main-content > div > *:not(.report-preview-modal-overlay),
+  html.dark .main-content > div > *:not(.report-preview-modal-overlay),
   .print\:hidden {
     display: none !important;
   }
