@@ -189,48 +189,65 @@ function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
                   : trx.status === "pending"
                     ? "Menunggu Verifikasi"
                     : "Ditolak";
-              const statusDot =
-                trx.status === "verified" ? "bg-emerald-400" :
-                trx.status === "pending" ? "bg-amber-400" : "bg-rose-400";
+              const statusColor =
+                trx.status === "verified"
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : trx.status === "pending"
+                    ? "text-amber-600 dark:text-amber-400"
+                    : "text-rose-600 dark:text-rose-400";
 
               return (
-                <div key={trx.id_transaksi} className={`flex items-center justify-between gap-3 px-4 py-3.5 ${
-                  index !== transactions.length - 1 ? 'border-b border-gray-100 dark:border-slate-800/60' : ''
-                } hover:bg-gray-50/70 dark:hover:bg-white/[0.03] transition-colors`}>
-                  {/* Left: icon + info */}
+                <div
+                  key={trx.id_transaksi || Math.random()}
+                  className={`flex items-center justify-between gap-2.5 p-3.5 ${
+                    index !== transactions.length - 1 ? "border-b border-gray-100/60 dark:border-slate-800/40" : ""
+                  } transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/20`}
+                >
                   <div className="flex items-center gap-3 min-w-0">
-                    {/* Icon container — neutral square with subtle border */}
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border ${
-                      isPemasukan
-                        ? "bg-gray-50 dark:bg-slate-800/60 border-gray-200 dark:border-slate-700 text-gray-400 dark:text-slate-400"
-                        : "bg-gray-50 dark:bg-slate-800/60 border-gray-200 dark:border-slate-700 text-gray-400 dark:text-slate-400"
-                    }`}>
-                      {isPemasukan ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}
+                    {/* Arrow Icon instead of user photo/initials */}
+                    <div className="shrink-0 select-none">
+                      <div className={`w-[36px] h-[36px] min-w-[36px] min-h-[36px] rounded-full flex items-center justify-center border shadow-sm ${
+                        isPemasukan 
+                          ? "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800/30 text-green-600 dark:text-green-400" 
+                          : "bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-800/30 text-rose-600 dark:text-rose-400"
+                      }`}>
+                        {isPemasukan ? (
+                          <ArrowDownLeft size={16} className="stroke-[2.5]" />
+                        ) : (
+                          <ArrowUpRight size={16} className="stroke-[2.5]" />
+                        )}
+                      </div>
                     </div>
+
                     <div className="min-w-0">
-                      <p className="text-[13.5px] font-semibold text-gray-800 dark:text-gray-100 leading-snug m-0 truncate">
-                        {trx.keterangan || "-"}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-[13px] font-bold text-gray-800 dark:text-gray-100 m-0 truncate leading-snug">
+                          {trx.keterangan || "Tanpa Keterangan"}
+                        </p>
+                      </div>
+                      {/* Verification status instead of user */}
                       <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusDot}`} />
-                        <span className="text-[11px] text-gray-400 dark:text-gray-500">
+                        <span className={`text-[10px] font-bold truncate leading-none ${statusColor}`}>
                           {statusLabel}
                         </span>
-                        <span className="text-gray-300 dark:text-gray-600 text-[11px]">·</span>
-                        <span className="text-[11px] text-gray-400 dark:text-gray-500">
+                        <span className="text-[10px] text-gray-400 dark:text-slate-655 font-bold leading-none select-none">
+                          •
+                        </span>
+                        <span className="text-[10px] text-gray-555 dark:text-gray-400 font-medium whitespace-nowrap leading-none">
                           {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
                             day: "numeric",
                             month: "short",
-                            year: "numeric",
+                            year: "numeric"
                           })}
                         </span>
                       </div>
                     </div>
                   </div>
-                  {/* Right: amount */}
-                  <p className={`text-[13.5px] font-semibold shrink-0 tabular-nums m-0 ${
-                    isPemasukan ? "text-emerald-600 dark:text-emerald-400" : "text-gray-500 dark:text-slate-400"
-                  }`}>
+                  <p
+                    className={`text-[13px] font-bold tabular-nums shrink-0 m-0 ${
+                      isPemasukan ? "text-green-600 dark:text-green-400" : "text-rose-500 dark:text-rose-400"
+                    }`}
+                  >
                     {isPemasukan ? "+" : "-"} {formatRupiah(Number(trx.nominal) || 0)}
                   </p>
                 </div>
