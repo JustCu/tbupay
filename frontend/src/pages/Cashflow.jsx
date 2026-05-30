@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import useStore from "../store/useStore";
-import { TrendingUp, ArrowDownLeft, ArrowUpRight, Bell, ChevronLeft, ChevronRight, X, Filter, FileText, Printer } from "lucide-react";
+import { TrendingUp, ArrowDownLeft, ArrowUpRight, Bell, ChevronLeft, ChevronRight, X, Filter, FileText, Download, Printer } from "lucide-react";
 import { getTransactions } from "../application/use-cases/transactions/transactionUseCases";
 import { getUsers } from "../application/use-cases/users/userUseCases";
 import {
@@ -1281,15 +1281,15 @@ function ReportPreviewModal({
         <div className="flex items-center justify-between px-6 py-4 bg-white dark:bg-[#1a2640] border-b border-gray-200 dark:border-slate-800/80 shrink-0 print:hidden">
           <div>
             <h3 className="text-base font-bold text-gray-800 dark:text-gray-100 m-0">Pratinjau Laporan Keuangan</h3>
-            <p className="text-[11px] text-gray-400 dark:text-slate-400 m-0 mt-0.5">Format akuntansi standar cetak & PDF</p>
+            <p className="text-[11px] text-gray-400 dark:text-slate-400 m-0 mt-0.5">Format akuntansi standar PDF (A4)</p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
               className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-xl p-[8px_14px] text-[12px] font-bold cursor-pointer transition-all active:scale-[0.97]"
             >
-              <Printer size={14} />
-              Cetak / PDF (A4)
+              <Download size={14} />
+              Download PDF (A4)
             </button>
             <button
               onClick={onClose}
