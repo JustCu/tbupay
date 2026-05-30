@@ -981,6 +981,8 @@ function AllCashflowTransactionsSheet({
   currentPage,
   setCurrentPage
 }) {
+  const [selectedMonth, setSelectedMonth] = useState(-1);
+
   // Lock body scroll when open
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
@@ -996,11 +998,27 @@ function AllCashflowTransactionsSheet({
     return () => window.removeEventListener("keydown", handler);
   }, [isOpen, onClose]);
 
+  // Reset filter and page when sheet closes or opens
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedMonth(-1);
+      setCurrentPage(1);
+    }
+  }, [isOpen]);
+
+  const filteredTransactions = useMemo(() => {
+    if (selectedMonth === -1) return transactions;
+    return transactions.filter((t) => {
+      const date = safeDate(t.timestamp);
+      return date.getMonth() === selectedMonth;
+    });
+  }, [transactions, selectedMonth]);
+
   const ITEMS_PER_PAGE = 10;
-  const totalPages = Math.ceil(transactions.length / ITEMS_PER_PAGE) || 1;
+  const totalPages = Math.ceil(filteredTransactions.length / ITEMS_PER_PAGE) || 1;
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const paginatedTransactions = transactions.slice(startIndex, endIndex);
+  const paginatedTransactions = filteredTransactions.slice(startIndex, endIndex);
 
   return (
     <div
@@ -1023,7 +1041,7 @@ function AllCashflowTransactionsSheet({
         <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto mt-3 mb-0 shrink-0" />
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-gray-100 dark:border-slate-800/80 shrink-0">
+        <div className="flex items-center justify-between px-5 pt-4 pb-3 shrink-0">
           <h3 className="text-[16px] font-bold text-gray-800 dark:text-gray-100 m-0">Semua Riwayat Transaksi</h3>
           <button
             onClick={onClose}
@@ -1032,6 +1050,33 @@ function AllCashflowTransactionsSheet({
           >
             <X size={16} />
           </button>
+        </div>
+
+        {/* Filter Bar */}
+        <div className="px-5 pb-3 pt-1 border-b border-gray-100 dark:border-slate-800/80 flex gap-2 items-center shrink-0">
+          <span className="text-xs text-gray-500 dark:text-gray-400 font-semibold shrink-0">Filter Bulan:</span>
+          <select
+            value={selectedMonth}
+            onChange={(e) => {
+              setSelectedMonth(Number(e.target.value));
+              setCurrentPage(1);
+            }}
+            className="text-xs font-semibold py-1.5 px-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-gray-200 outline-none cursor-pointer focus:border-blue-500 transition-colors"
+          >
+            <option value={-1}>Semua Bulan</option>
+            <option value={0}>Januari</option>
+            <option value={1}>Februari</option>
+            <option value={2}>Maret</option>
+            <option value={3}>April</option>
+            <option value={4}>Mei</option>
+            <option value={5}>Juni</option>
+            <option value={6}>Juli</option>
+            <option value={7}>Agustus</option>
+            <option value={8}>September</option>
+            <option value={9}>Oktober</option>
+            <option value={10}>November</option>
+            <option value={11}>Desember</option>
+          </select>
         </div>
 
         {/* Scrollable list */}
@@ -1120,7 +1165,7 @@ function AllCashflowTransactionsSheet({
           ) : (
             <div className="py-12 px-6 text-center">
               <p className="text-sm font-normal text-gray-500 m-0">
-                Belum ada riwayat transaksi.
+                Belum ada riwayat transaksi pada bulan ini.
               </p>
             </div>
           )}
