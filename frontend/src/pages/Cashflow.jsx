@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import useStore from "../store/useStore";
-import { TrendingUp, ArrowDownLeft, ArrowUpRight, Bell, ChevronLeft, ChevronRight, X, Filter, FileText, Download, Printer } from "lucide-react";
+import { TrendingUp, ArrowDownLeft, ArrowUpRight, Bell, ChevronLeft, ChevronRight, X, Filter, FileText, Printer } from "lucide-react";
 import { getTransactions } from "../application/use-cases/transactions/transactionUseCases";
 import { getUsers } from "../application/use-cases/users/userUseCases";
 import {
@@ -1265,63 +1265,6 @@ function ReportPreviewModal({
     window.print();
   };
 
-  const handleExportCSV = () => {
-    const csvContent = [];
-    csvContent.push(`"LAPORAN ARUS KAS WARGA (CASH FLOW STATEMENT)"`);
-    csvContent.push(`"Perumahan Teras Bali Ungaran (TBU)"`);
-    csvContent.push(`"Periode Laporan: ${periodTitle}"`);
-    csvContent.push(`"Tanggal Unduh: ${new Date().toLocaleDateString("id-ID")}"`);
-    csvContent.push(""); // empty row
-
-    // Summary block
-    csvContent.push(`"Ringkasan Keuangan"`);
-    csvContent.push(`"Saldo Awal","${beginningBalance}"`);
-    csvContent.push(`"Total Pemasukan","${totalMasuk}"`);
-    csvContent.push(`"Total Pengeluaran","${totalKeluar}"`);
-    csvContent.push(`"Saldo Akhir","${beginningBalance + totalMasuk - totalKeluar}"`);
-    csvContent.push(`"Surplus/Defisit","${netChange}"`);
-    csvContent.push(""); // empty row
-
-    // General Ledger
-    csvContent.push(`"Buku Kas Rinci (General Ledger)"`);
-    csvContent.push(`"No","Tanggal","Keterangan","Kategori","Oleh","Debit (Masuk)","Kredit (Keluar)","Saldo Berjalan"`);
-
-    chronologicalLedger.forEach((trx, idx) => {
-      const isMasuk = trx.jenis === "pemasukan";
-      const nominal = Number(trx.nominal) || 0;
-      const debit = isMasuk ? nominal : 0;
-      const kredit = !isMasuk ? nominal : 0;
-      const trxUser = userMap[trx.id_user] || {};
-      const userName = trxUser.nama || "Warga";
-      
-      const dateStr = safeDate(trx.timestamp).toLocaleDateString("id-ID", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric"
-      });
-
-      csvContent.push(`"${idx + 1}","${dateStr}","${(trx.keterangan || "").replace(/"/g, '""')}","${(trx.kategori || "Lainnya").replace(/"/g, '""')}","${userName.replace(/"/g, '""')}","${debit}","${kredit}","${trx.runningBalance}"`);
-    });
-
-    // Expenses per Category
-    csvContent.push("");
-    csvContent.push(`"Rekapitulasi Pengeluaran Per Kategori"`);
-    csvContent.push(`"No","Kategori Pengeluaran","Total Nominal"`);
-    pengeluaranPerPos.forEach(([kategori, nominal], idx) => {
-      csvContent.push(`"${idx + 1}","${kategori.replace(/"/g, '""')}","${nominal}"`);
-    });
-
-    const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent.join("\n")], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    const cleanPeriod = periodTitle.replace(/[^a-zA-Z0-9]/g, "_");
-    link.setAttribute("download", `Laporan_Keuangan_TBU_${cleanPeriod}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
     <div
       className="fixed inset-0 z-[220] overflow-y-auto bg-slate-900/70 dark:bg-black/80 backdrop-blur-[2px] p-0 md:p-6 flex justify-center items-start print:static print:bg-white print:p-0 print:overflow-visible"
@@ -1330,7 +1273,7 @@ function ReportPreviewModal({
       }}
     >
       <div
-        className="w-full max-w-[840px] bg-slate-100 dark:bg-[#131c33] rounded-t-[24px] md:rounded-[24px] shadow-2xl flex flex-col overflow-hidden border border-gray-200 dark:border-slate-800/80 animate-[scaleUp_0.25s_ease-out] print:rounded-none print:shadow-none print:border-none print:bg-white print:text-black print:w-full print:static"
+        className="w-full max-w-[880px] bg-slate-100 dark:bg-[#131c33] rounded-t-[24px] md:rounded-[24px] shadow-2xl flex flex-col overflow-hidden border border-gray-200 dark:border-slate-800/80 animate-[scaleUp_0.25s_ease-out] print:rounded-none print:shadow-none print:border-none print:bg-white print:text-black print:w-full print:static"
         role="dialog"
         aria-modal="true"
       >
@@ -1338,7 +1281,7 @@ function ReportPreviewModal({
         <div className="flex items-center justify-between px-6 py-4 bg-white dark:bg-[#1a2640] border-b border-gray-200 dark:border-slate-800/80 shrink-0 print:hidden">
           <div>
             <h3 className="text-base font-bold text-gray-800 dark:text-gray-100 m-0">Pratinjau Laporan Keuangan</h3>
-            <p className="text-[11px] text-gray-400 dark:text-slate-400 m-0 mt-0.5">Format akuntansi standar ekspor & cetak</p>
+            <p className="text-[11px] text-gray-400 dark:text-slate-400 m-0 mt-0.5">Format akuntansi standar cetak & PDF</p>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -1346,14 +1289,7 @@ function ReportPreviewModal({
               className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-xl p-[8px_14px] text-[12px] font-bold cursor-pointer transition-all active:scale-[0.97]"
             >
               <Printer size={14} />
-              Cetak / PDF
-            </button>
-            <button
-              onClick={handleExportCSV}
-              className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white border-none rounded-xl p-[8px_14px] text-[12px] font-bold cursor-pointer transition-all active:scale-[0.97]"
-            >
-              <Download size={14} />
-              CSV / Excel
+              Cetak / PDF (A4)
             </button>
             <button
               onClick={onClose}
@@ -1366,10 +1302,10 @@ function ReportPreviewModal({
         </div>
 
         {/* virtual printable area */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-100 dark:bg-[#0b1020] print:p-0 print:bg-white print:overflow-visible">
+        <div className="flex-1 overflow-y-auto overflow-x-auto p-4 md:p-8 bg-slate-100 dark:bg-[#0b1020] print:p-0 print:bg-white print:overflow-visible flex justify-start md:justify-center">
           
-          {/* Virtual Paper Sheet */}
-          <div className="bg-white text-slate-900 p-8 md:p-12 shadow-sm border border-gray-200/60 mx-auto w-full min-h-[842px] relative flex flex-col justify-between print:p-0 print:border-none print:shadow-none print:bg-white print:text-black">
+          {/* Virtual Paper Sheet (Fix A4: 210mm x 297mm) */}
+          <div className="bg-white text-slate-900 p-[20mm] shadow-sm border border-gray-200/60 mx-auto w-[210mm] min-h-[297mm] box-border relative flex flex-col justify-between print:p-0 print:border-none print:shadow-none print:bg-white print:text-black shrink-0 font-sans">
             
             <div className="flex flex-col gap-6 w-full">
               {/* Kop Laporan / Letterhead */}
@@ -1429,12 +1365,12 @@ function ReportPreviewModal({
                       <tr className="bg-slate-100 border-t border-b border-slate-300 print:bg-transparent print:border-t-2 print:border-b-2 print:border-slate-900">
                         <th className="p-2 text-left font-bold w-[4%]">No</th>
                         <th className="p-2 text-left font-bold w-[12%]">Tanggal</th>
-                        <th className="p-2 text-left font-bold w-[28%]">Keterangan</th>
-                        <th className="p-2 text-left font-bold w-[16%]">Kategori</th>
-                        <th className="p-2 text-left font-bold w-[12%]">Oleh</th>
-                        <th className="p-2 text-right font-bold w-[13%]">Debit</th>
-                        <th className="p-2 text-right font-bold w-[13%]">Kredit</th>
-                        <th className="p-2 text-right font-bold w-[14%]">Saldo</th>
+                        <th className="p-2 text-left font-bold w-[26%]">Keterangan</th>
+                        <th className="p-2 text-left font-bold w-[15%]">Kategori</th>
+                        <th className="p-2 text-left font-bold w-[11%]">Oleh</th>
+                        <th className="p-2 text-right font-bold w-[10%]">Debit</th>
+                        <th className="p-2 text-right font-bold w-[10%]">Kredit</th>
+                        <th className="p-2 text-right font-bold w-[12%]">Saldo</th>
                       </tr>
                     </thead>
                     <tbody>
