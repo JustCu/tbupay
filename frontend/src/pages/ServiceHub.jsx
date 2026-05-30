@@ -11,6 +11,7 @@ import {
   Send,
   Clock3,
   ChevronRight,
+  ChevronLeft,
   RefreshCw,
   CalendarDays,
   CheckCircle,
@@ -247,6 +248,60 @@ function ServiceHub() {
   const [ticketReplyForm, setTicketReplyForm] = useState("");
   const [sendingTicketReply, setSendingTicketReply] = useState(false);
   const [loadingTicketReplies, setLoadingTicketReplies] = useState(false);
+
+  const [newsPage, setNewsPage] = useState(1);
+  const [ticketPage, setTicketPage] = useState(1);
+
+  // Reset pages when openSheet transitions
+  useEffect(() => {
+    setNewsPage(1);
+    setTicketPage(1);
+  }, [openSheet]);
+
+  // Reset news page when news filter changes
+  useEffect(() => {
+    setNewsPage(1);
+  }, [newsDateFilter]);
+
+  // Pagination constants and useMemos
+  const ITEMS_PER_PAGE = 10;
+
+  const filteredNews = useMemo(() => {
+    return newsDateFilter
+      ? newsList.filter((n) => {
+          if (!n.tanggal) return false;
+          const d = safeDate(n.tanggal);
+          const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+          return ym === newsDateFilter;
+        })
+      : newsList;
+  }, [newsList, newsDateFilter]);
+
+  const totalNewsPages = useMemo(() => {
+    return Math.ceil(filteredNews.length / ITEMS_PER_PAGE) || 1;
+  }, [filteredNews]);
+
+  const activeNewsPage = useMemo(() => {
+    return Math.min(newsPage, totalNewsPages);
+  }, [newsPage, totalNewsPages]);
+
+  const paginatedNews = useMemo(() => {
+    const newsStartIndex = (activeNewsPage - 1) * ITEMS_PER_PAGE;
+    return filteredNews.slice(newsStartIndex, newsStartIndex + ITEMS_PER_PAGE);
+  }, [filteredNews, activeNewsPage]);
+
+  const totalTicketPages = useMemo(() => {
+    return Math.ceil(tickets.length / ITEMS_PER_PAGE) || 1;
+  }, [tickets]);
+
+  const activeTicketPage = useMemo(() => {
+    return Math.min(ticketPage, totalTicketPages);
+  }, [ticketPage, totalTicketPages]);
+
+  const paginatedTickets = useMemo(() => {
+    const ticketStartIndex = (activeTicketPage - 1) * ITEMS_PER_PAGE;
+    return tickets.slice(ticketStartIndex, ticketStartIndex + ITEMS_PER_PAGE);
+  }, [tickets, activeTicketPage]);
 
   // Map id_user -> url_foto_profil for avatar resolution
   const [usersMap, setUsersMap] = useState(() => {
@@ -1138,15 +1193,6 @@ function ServiceHub() {
             )}
             
             {(() => {
-              const filteredNews = newsDateFilter
-                ? newsList.filter((n) => {
-                    if (!n.tanggal) return false;
-                    const d = safeDate(n.tanggal);
-                    const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-                    return ym === newsDateFilter;
-                  })
-                : newsList;
-
               if (!loading && filteredNews.length === 0) {
                 return (
                   <div className="text-center py-8 bg-white dark:bg-[#131c33] rounded-2xl border border-dashed border-gray-200 dark:border-slate-800/80 p-5">
@@ -1169,7 +1215,7 @@ function ServiceHub() {
 
               return (
                 <div className="flex flex-col gap-3">
-                  {filteredNews.map((news) => {
+                  {paginatedNews.map((news) => {
                     if (!news) return null;
                     return (
                       <button
@@ -1222,6 +1268,33 @@ function ServiceHub() {
               );
             })()}
           </div>
+
+          {/* Pagination Footer */}
+          {totalNewsPages > 1 && (
+            <div className="flex items-center justify-between px-5 py-4 border-t border-gray-100 dark:border-slate-800/80 bg-gray-50 dark:bg-slate-900/40 shrink-0 select-none">
+              <button
+                type="button"
+                onClick={() => setNewsPage((p) => Math.max(1, p - 1))}
+                disabled={activeNewsPage === 1}
+                className="flex items-center gap-1 text-[11px] font-bold text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 disabled:opacity-50 disabled:cursor-not-allowed bg-transparent border-none cursor-pointer"
+              >
+                <ChevronLeft size={16} />
+                Sebelumnya
+              </button>
+              <span className="text-[11px] font-extrabold text-gray-500 dark:text-gray-400">
+                Halaman {activeNewsPage} dari {totalNewsPages}
+              </span>
+              <button
+                type="button"
+                onClick={() => setNewsPage((p) => Math.min(totalNewsPages, p + 1))}
+                disabled={activeNewsPage === totalNewsPages}
+                className="flex items-center gap-1 text-[11px] font-bold text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 disabled:opacity-50 disabled:cursor-not-allowed bg-transparent border-none cursor-pointer"
+              >
+                Berikutnya
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -1485,7 +1558,7 @@ function ServiceHub() {
             )}
             
             <div className="flex flex-col gap-3">
-              {tickets.map((ticket) => {
+              {paginatedTickets.map((ticket) => {
                 if (!ticket) return null;
                 const isOpenStatus = ticket.status === "open";
                 const isProsesStatus = ticket.status === "proses";
@@ -1509,7 +1582,7 @@ function ServiceHub() {
                           {ticket.kategori}
                         </span>
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
-                        <span className="text-[10px] text-slate-450 dark:text-slate-500 font-medium">
+                        <span className="text-[10px] text-slate-455 dark:text-slate-500 font-medium">
                           #{ticket.id_tiket ? ticket.id_tiket.slice(-5).toUpperCase() : ""}
                         </span>
                       </div>
@@ -1539,6 +1612,33 @@ function ServiceHub() {
               })}
             </div>
           </div>
+
+          {/* Pagination Footer */}
+          {totalTicketPages > 1 && (
+            <div className="flex items-center justify-between px-5 py-4 border-t border-gray-100 dark:border-slate-800/80 bg-gray-50 dark:bg-slate-900/40 shrink-0 select-none">
+              <button
+                type="button"
+                onClick={() => setTicketPage((p) => Math.max(1, p - 1))}
+                disabled={activeTicketPage === 1}
+                className="flex items-center gap-1 text-[11px] font-bold text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 disabled:opacity-50 disabled:cursor-not-allowed bg-transparent border-none cursor-pointer"
+              >
+                <ChevronLeft size={16} />
+                Sebelumnya
+              </button>
+              <span className="text-[11px] font-extrabold text-gray-500 dark:text-gray-400">
+                Halaman {activeTicketPage} dari {totalTicketPages}
+              </span>
+              <button
+                type="button"
+                onClick={() => setTicketPage((p) => Math.min(totalTicketPages, p + 1))}
+                disabled={activeTicketPage === totalTicketPages}
+                className="flex items-center gap-1 text-[11px] font-bold text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 disabled:opacity-50 disabled:cursor-not-allowed bg-transparent border-none cursor-pointer"
+              >
+                Berikutnya
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
         </div>
       )}
 
