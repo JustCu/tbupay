@@ -488,3 +488,94 @@ h3 {
     transform: scale(1);
   }
 }
+
+/* ── Printing Stylesheet for Professional Financial Reports ────────────────── */
+@media print {
+  /* Hide all generic PWA interface items */
+  body, 
+  #root, 
+  .app-container, 
+  .main-content, 
+  .bottom-nav, 
+  .bell-button, 
+  header, 
+  nav, 
+  aside,
+  footer,
+  button,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Force display only the target report overlay backdrop and document */
+  div.fixed.inset-0.z-\[220\] {
+    position: static !important;
+    display: block !important;
+    background: white !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    z-index: auto !important;
+  }
+
+  div.w-full.max-w-\[840px\] {
+    max-width: 100% !important;
+    width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    color: #000 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  /* Set print page parameters */
+  @page {
+    size: portrait;
+    margin: 15mm 20mm;
+  }
+
+  /* Ensure all tables and page breaks print professionally */
+  table {
+    page-break-inside: auto;
+  }
+  
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
+
+  .page-break-avoid {
+    page-break-inside: avoid !important;
+  }
+
+  /* Force light colors and borders */
+  .bg-white {
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+
+  .text-slate-900,
+  .text-slate-800,
+  .text-slate-700,
+  .text-slate-600,
+  .text-slate-500 {
+    color: #000 !important;
+  }
+  
+  .border,
+  .border-b,
+  .border-t,
+  .border-b-2 {
+    border-color: #000 !important;
+  }
+}

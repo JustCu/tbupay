@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import useStore from "../store/useStore";
-import { TrendingUp, ArrowDownLeft, ArrowUpRight, Bell, ChevronLeft, ChevronRight, X, Filter } from "lucide-react";
+import { TrendingUp, ArrowDownLeft, ArrowUpRight, Bell, ChevronLeft, ChevronRight, X, Filter, FileText, Download, Printer } from "lucide-react";
 import { getTransactions } from "../application/use-cases/transactions/transactionUseCases";
 import { getUsers } from "../application/use-cases/users/userUseCases";
 import {
@@ -152,6 +152,7 @@ export default function Cashflow() {
   const [isAllTrxOpen, setIsAllTrxOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [isReportPreviewOpen, setIsReportPreviewOpen] = useState(false);
   const chartScrollRef = useRef(null);
   const [users, setUsers] = useState(() => {
     try {
@@ -224,6 +225,8 @@ export default function Cashflow() {
     keluarChange,
     netChange,
     labelPeriodText,
+    beginningBalance,
+    chronologicalLedger,
   } = useMemo(() => {
     let masuk = 0;
     let keluar = 0;
@@ -403,6 +406,40 @@ export default function Cashflow() {
       ],
     };
 
+    // Calculate Beginning Balance (accumulated before currentStart)
+    let beginningBalance = 0;
+    verifiedTransactions.forEach((trx) => {
+      const date = parseDate(trx.timestamp);
+      if (!date) return;
+      const nominal = Number(trx.nominal) || 0;
+      if (date < currentStart) {
+        if (trx.jenis === "pemasukan") {
+          beginningBalance += nominal;
+        } else if (trx.jenis === "pengeluaran") {
+          beginningBalance -= nominal;
+        }
+      }
+    });
+
+    // Chronological Ledger (oldest to newest within currentStart and currentEnd)
+    const reportTransactions = verifiedTransactions
+      .filter((trx) => {
+        const date = parseDate(trx.timestamp);
+        return date && date >= currentStart && date <= currentEnd;
+      })
+      .sort((a, b) => safeDate(a.timestamp) - safeDate(b.timestamp));
+
+    let currentRunningBalance = beginningBalance;
+    const chronologicalLedger = reportTransactions.map((trx) => {
+      const nominal = Number(trx.nominal) || 0;
+      const isMasuk = trx.jenis === "pemasukan";
+      currentRunningBalance += isMasuk ? nominal : -nominal;
+      return {
+        ...trx,
+        runningBalance: currentRunningBalance,
+      };
+    });
+
     const sortedPos = Object.entries(posMap).sort((a, b) => b[1] - a[1]);
 
     return {
@@ -415,6 +452,8 @@ export default function Cashflow() {
       keluarChange: changeKeluar,
       netChange: net,
       labelPeriodText: periodLabel,
+      beginningBalance,
+      chronologicalLedger,
     };
   }, [verifiedTransactions, filter]);
 
@@ -618,20 +657,30 @@ export default function Cashflow() {
           <h2 className="text-xl font-bold m-0 text-gray-800 dark:text-gray-100">Laporan Keuangan</h2>
           <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-1 m-0">Pantau dan kelola arus kas warga secara real-time</p>
         </div>
-        <div
-          className="cursor-pointer relative transition-all duration-200 flex items-center justify-center p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full active:scale-95 shrink-0 mt-1"
-          onClick={() => {
-            setIsNotifOpen(true);
-            setHasUnreadNotif(false);
-          }}
-        >
-          <Bell 
-            size={24} 
-            className={`stroke-[1.75] transition-all duration-500 ${(loading || refreshing) ? "text-gray-400 dark:text-gray-500 fill-transparent" : "fill-amber-400 text-amber-500"}`} 
-          />
-          {hasUnreadNotif && !loading && !refreshing && (
-            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 border border-white rounded-full animate-pulse z-10"></span>
-          )}
+        <div className="flex items-center gap-2 mt-1">
+          <button
+            onClick={() => setIsReportPreviewOpen(true)}
+            disabled={loading || refreshing}
+            className="flex items-center gap-1.5 bg-[#0f4c81] text-white hover:bg-[#0a3460] disabled:opacity-60 disabled:cursor-not-allowed border-none rounded-[10px] p-[8px_14px] text-[12px] font-bold cursor-pointer transition-all active:scale-[0.97]"
+          >
+            <FileText size={14} />
+            Ekspor
+          </button>
+          <div
+            className="cursor-pointer relative transition-all duration-200 flex items-center justify-center p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full active:scale-95 shrink-0"
+            onClick={() => {
+              setIsNotifOpen(true);
+              setHasUnreadNotif(false);
+            }}
+          >
+            <Bell 
+              size={24} 
+              className={`stroke-[1.75] transition-all duration-500 ${(loading || refreshing) ? "text-gray-400 dark:text-gray-500 fill-transparent" : "fill-amber-400 text-amber-500"}`} 
+            />
+            {hasUnreadNotif && !loading && !refreshing && (
+              <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 border border-white rounded-full animate-pulse z-10"></span>
+            )}
+          </div>
         </div>
       </div>
 
@@ -966,6 +1015,21 @@ export default function Cashflow() {
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
       />
+
+      {/* Report Preview Modal */}
+      <ReportPreviewModal
+        isOpen={isReportPreviewOpen}
+        onClose={() => setIsReportPreviewOpen(false)}
+        periodTitle={periodTitle}
+        beginningBalance={beginningBalance}
+        totalMasuk={totalMasuk}
+        totalKeluar={totalKeluar}
+        netChange={netChange}
+        chronologicalLedger={chronologicalLedger}
+        pengeluaranPerPos={pengeluaranPerPos}
+        formatRupiah={formatRupiah}
+        userMap={userMap}
+      />
     </div>
   );
 }
@@ -1157,6 +1221,334 @@ function AllCashflowTransactionsSheet({
             </button>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// ── Report Preview & Export Modal ──────────────────────────────────────────
+function ReportPreviewModal({
+  isOpen,
+  onClose,
+  periodTitle,
+  beginningBalance,
+  totalMasuk,
+  totalKeluar,
+  netChange,
+  chronologicalLedger,
+  pengeluaranPerPos,
+  formatRupiah,
+  userMap,
+}) {
+  // Lock body scroll
+  useEffect(() => {
+    if (isOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  // Close on Escape
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleExportCSV = () => {
+    const csvContent = [];
+    csvContent.push(`"LAPORAN ARUS KAS WARGA (CASH FLOW STATEMENT)"`);
+    csvContent.push(`"Perumahan Teras Bali Ungaran (TBU)"`);
+    csvContent.push(`"Periode Laporan: ${periodTitle}"`);
+    csvContent.push(`"Tanggal Unduh: ${new Date().toLocaleDateString("id-ID")}"`);
+    csvContent.push(""); // empty row
+
+    // Summary block
+    csvContent.push(`"Ringkasan Keuangan"`);
+    csvContent.push(`"Saldo Awal","${beginningBalance}"`);
+    csvContent.push(`"Total Pemasukan","${totalMasuk}"`);
+    csvContent.push(`"Total Pengeluaran","${totalKeluar}"`);
+    csvContent.push(`"Saldo Akhir","${beginningBalance + totalMasuk - totalKeluar}"`);
+    csvContent.push(`"Surplus/Defisit","${netChange}"`);
+    csvContent.push(""); // empty row
+
+    // General Ledger
+    csvContent.push(`"Buku Kas Rinci (General Ledger)"`);
+    csvContent.push(`"No","Tanggal","Keterangan","Kategori","Oleh","Debit (Masuk)","Kredit (Keluar)","Saldo Berjalan"`);
+
+    chronologicalLedger.forEach((trx, idx) => {
+      const isMasuk = trx.jenis === "pemasukan";
+      const nominal = Number(trx.nominal) || 0;
+      const debit = isMasuk ? nominal : 0;
+      const kredit = !isMasuk ? nominal : 0;
+      const trxUser = userMap[trx.id_user] || {};
+      const userName = trxUser.nama || "Warga";
+      
+      const dateStr = safeDate(trx.timestamp).toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      });
+
+      csvContent.push(`"${idx + 1}","${dateStr}","${(trx.keterangan || "").replace(/"/g, '""')}","${(trx.kategori || "Lainnya").replace(/"/g, '""')}","${userName.replace(/"/g, '""')}","${debit}","${kredit}","${trx.runningBalance}"`);
+    });
+
+    // Expenses per Category
+    csvContent.push("");
+    csvContent.push(`"Rekapitulasi Pengeluaran Per Kategori"`);
+    csvContent.push(`"No","Kategori Pengeluaran","Total Nominal"`);
+    pengeluaranPerPos.forEach(([kategori, nominal], idx) => {
+      csvContent.push(`"${idx + 1}","${kategori.replace(/"/g, '""')}","${nominal}"`);
+    });
+
+    const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    const cleanPeriod = periodTitle.replace(/[^a-zA-Z0-9]/g, "_");
+    link.setAttribute("download", `Laporan_Keuangan_TBU_${cleanPeriod}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-[220] overflow-y-auto bg-slate-900/70 dark:bg-black/80 backdrop-blur-[2px] p-0 md:p-6 flex justify-center items-start print:static print:bg-white print:p-0 print:overflow-visible"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className="w-full max-w-[840px] bg-slate-100 dark:bg-[#131c33] rounded-t-[24px] md:rounded-[24px] shadow-2xl flex flex-col overflow-hidden border border-gray-200 dark:border-slate-800/80 animate-[scaleUp_0.25s_ease-out] print:rounded-none print:shadow-none print:border-none print:bg-white print:text-black print:w-full print:static"
+        role="dialog"
+        aria-modal="true"
+      >
+        {/* Header / Control Bar */}
+        <div className="flex items-center justify-between px-6 py-4 bg-white dark:bg-[#1a2640] border-b border-gray-200 dark:border-slate-800/80 shrink-0 print:hidden">
+          <div>
+            <h3 className="text-base font-bold text-gray-800 dark:text-gray-100 m-0">Pratinjau Laporan Keuangan</h3>
+            <p className="text-[11px] text-gray-400 dark:text-slate-400 m-0 mt-0.5">Format akuntansi standar ekspor & cetak</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handlePrint}
+              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-xl p-[8px_14px] text-[12px] font-bold cursor-pointer transition-all active:scale-[0.97]"
+            >
+              <Printer size={14} />
+              Cetak / PDF
+            </button>
+            <button
+              onClick={handleExportCSV}
+              className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white border-none rounded-xl p-[8px_14px] text-[12px] font-bold cursor-pointer transition-all active:scale-[0.97]"
+            >
+              <Download size={14} />
+              CSV / Excel
+            </button>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800/60 flex items-center justify-center border-none cursor-pointer text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors shrink-0"
+              aria-label="Tutup"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* virtual printable area */}
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-100 dark:bg-[#0b1020] print:p-0 print:bg-white print:overflow-visible">
+          
+          {/* Virtual Paper Sheet */}
+          <div className="bg-white text-slate-900 p-8 md:p-12 shadow-sm border border-gray-200/60 mx-auto w-full min-h-[842px] relative flex flex-col justify-between print:p-0 print:border-none print:shadow-none print:bg-white print:text-black">
+            
+            <div className="flex flex-col gap-6 w-full">
+              {/* Kop Laporan / Letterhead */}
+              <div className="text-center pb-4 border-b-2 border-slate-900 flex flex-col items-center">
+                <span className="text-[17px] font-black tracking-widest text-slate-900 leading-none">LAPORAN ARUS KAS KEUANGAN WARGA</span>
+                <span className="text-[12px] font-extrabold tracking-wider text-slate-600 mt-1.5 uppercase">PERUMAHAN TERAS BALI UNGARAN (TBU)</span>
+                <span className="text-[10px] font-bold text-slate-500 mt-2 uppercase tracking-wide bg-slate-100 px-3 py-1 rounded-md print:bg-transparent print:p-0">
+                  PERIODE: {periodTitle}
+                </span>
+                <div className="text-[8px] font-mono text-slate-400 mt-2.5 print:text-slate-500">
+                  Dicetak secara otomatis pada: {new Date().toLocaleString("id-ID", { dateStyle: "long", timeStyle: "short" })}
+                </div>
+              </div>
+
+              {/* Ringkasan Saldo (Executive Summary) */}
+              <div className="mt-2">
+                <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-800 mb-2 border-l-4 border-blue-600 pl-2 print:border-slate-800">
+                  I. Ringkasan Eksekutif
+                </h4>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl print:bg-transparent print:rounded-none">
+                    <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Saldo Awal</span>
+                    <span className="text-[13px] font-extrabold text-slate-800 mt-1 block">{formatRupiah(beginningBalance)}</span>
+                  </div>
+                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl print:bg-transparent print:rounded-none">
+                    <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Total Pemasukan</span>
+                    <span className="text-[13px] font-extrabold text-emerald-600 mt-1 block">+{formatRupiah(totalMasuk)}</span>
+                  </div>
+                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl print:bg-transparent print:rounded-none">
+                    <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Total Pengeluaran</span>
+                    <span className="text-[13px] font-extrabold text-rose-500 mt-1 block">-{formatRupiah(totalKeluar)}</span>
+                  </div>
+                </div>
+                
+                <div className="mt-3 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between print:bg-transparent print:rounded-none">
+                  <div>
+                    <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Saldo Akhir Tersedia</span>
+                    <span className="text-[15px] font-black text-slate-900 block mt-0.5">{formatRupiah(beginningBalance + totalMasuk - totalKeluar)}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Surplus / Defisit</span>
+                    <span className={`text-[12px] font-black block mt-0.5 ${netChange >= 0 ? "text-emerald-600" : "text-rose-500"}`}>
+                      {netChange >= 0 ? "Surplus " : "Defisit "} {formatRupiah(Math.abs(netChange))}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Buku Kas Rinci (Ledger Table) */}
+              <div className="mt-2">
+                <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-800 mb-2 border-l-4 border-blue-600 pl-2 print:border-slate-800">
+                  II. Buku Kas Rinci (General Ledger)
+                </h4>
+                <div className="w-full overflow-x-auto print:overflow-visible">
+                  <table className="w-full border-collapse text-[10px] text-slate-700">
+                    <thead>
+                      <tr className="bg-slate-100 border-t border-b border-slate-300 print:bg-transparent print:border-t-2 print:border-b-2 print:border-slate-900">
+                        <th className="p-2 text-left font-bold w-[4%]">No</th>
+                        <th className="p-2 text-left font-bold w-[12%]">Tanggal</th>
+                        <th className="p-2 text-left font-bold w-[28%]">Keterangan</th>
+                        <th className="p-2 text-left font-bold w-[16%]">Kategori</th>
+                        <th className="p-2 text-left font-bold w-[12%]">Oleh</th>
+                        <th className="p-2 text-right font-bold w-[13%]">Debit</th>
+                        <th className="p-2 text-right font-bold w-[13%]">Kredit</th>
+                        <th className="p-2 text-right font-bold w-[14%]">Saldo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {/* Saldo Awal Row */}
+                      <tr className="border-b border-slate-150">
+                        <td className="p-2 text-left font-semibold" colSpan={5}>
+                          SALDO AWAL PERIODE
+                        </td>
+                        <td className="p-2 text-right">-</td>
+                        <td className="p-2 text-right">-</td>
+                        <td className="p-2 text-right font-black tabular-nums">
+                          {formatRupiah(beginningBalance)}
+                        </td>
+                      </tr>
+
+                      {/* Transaction Rows */}
+                      {chronologicalLedger.length > 0 ? (
+                        chronologicalLedger.map((trx, index) => {
+                          const isMasuk = trx.jenis === "pemasukan";
+                          const trxUser = userMap[trx.id_user] || {};
+                          const userName = trxUser.nama || "Warga";
+                          return (
+                            <tr key={trx.id_transaksi || index} className="border-b border-slate-100 hover:bg-slate-50/50 print:hover:bg-transparent">
+                              <td className="p-2 text-left text-slate-500 tabular-nums">{index + 1}</td>
+                              <td className="p-2 text-left tabular-nums">
+                                {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric"
+                                })}
+                              </td>
+                              <td className="p-2 text-left font-bold text-slate-800 truncate max-w-[140px] print:max-w-none print:whitespace-normal">
+                                {trx.keterangan || "Tanpa Keterangan"}
+                              </td>
+                              <td className="p-2 text-left text-slate-500">{trx.kategori || "Lainnya"}</td>
+                              <td className="p-2 text-left text-slate-500 truncate max-w-[70px]">{userName}</td>
+                              <td className="p-2 text-right text-emerald-600 font-bold tabular-nums">
+                                {isMasuk ? `+${formatRupiah(trx.nominal)}` : "-"}
+                              </td>
+                              <td className="p-2 text-right text-rose-500 font-bold tabular-nums">
+                                {!isMasuk ? `-${formatRupiah(trx.nominal)}` : "-"}
+                              </td>
+                              <td className="p-2 text-right font-bold text-slate-800 tabular-nums">
+                                {formatRupiah(trx.runningBalance)}
+                              </td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan={8} className="p-6 text-center text-slate-400 italic">
+                            Tidak ada transaksi mutasi kas dalam periode ini
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Rekapitulasi Pengeluaran Per Pos */}
+              {pengeluaranPerPos.length > 0 && (
+                <div className="mt-2 page-break-avoid">
+                  <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-800 mb-2 border-l-4 border-blue-600 pl-2 print:border-slate-800">
+                    III. Rekapitulasi Pengeluaran Per Kategori (Pos Pengeluaran)
+                  </h4>
+                  <div className="w-[60%] print:w-[80%]">
+                    <table className="w-full border-collapse text-[10px] text-slate-700">
+                      <thead>
+                        <tr className="bg-slate-100 border-t border-b border-slate-300 print:bg-transparent print:border-t-2 print:border-b-2 print:border-slate-900">
+                          <th className="p-2 text-left font-bold w-[10%]">No</th>
+                          <th className="p-2 text-left font-bold w-[60%]">Kategori Pengeluaran</th>
+                          <th className="p-2 text-right font-bold w-[30%]">Total Nominal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pengeluaranPerPos.map(([kategori, nominal], index) => (
+                          <tr key={kategori} className="border-b border-slate-100">
+                            <td className="p-2 text-left text-slate-500 tabular-nums">{index + 1}</td>
+                            <td className="p-2 text-left font-bold text-slate-800">{kategori}</td>
+                            <td className="p-2 text-right text-rose-600 font-extrabold tabular-nums">
+                              {formatRupiah(nominal)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Validation / Sign-off Block */}
+            <div className="mt-12 pt-6 border-t border-dashed border-slate-200 grid grid-cols-2 gap-8 text-[10px] text-slate-800 page-break-avoid print:mt-16 print:border-slate-400">
+              <div className="flex flex-col items-center text-center">
+                <span className="text-slate-400 uppercase tracking-wider text-[8px] font-extrabold">Disusun Oleh,</span>
+                <span className="font-extrabold text-slate-800 mt-1 uppercase">Bendahara TBU</span>
+                <div className="h-16 w-32 flex items-end justify-center border-b border-slate-300 text-[8px] text-slate-400 italic pb-1">
+                  ( Tanda Tangan & Tanggal )
+                </div>
+                <span className="mt-2 text-slate-500">Petugas Keuangan Lingkungan</span>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <span className="text-slate-400 uppercase tracking-wider text-[8px] font-extrabold">Mengetahui & Menyetujui,</span>
+                <span className="font-extrabold text-slate-800 mt-1 uppercase">Ketua RT / RW TBU</span>
+                <div className="h-16 w-32 flex items-end justify-center border-b border-slate-300 text-[8px] text-slate-400 italic pb-1">
+                  ( Tanda Tangan & Tanggal )
+                </div>
+                <span className="mt-2 text-slate-500">Perwakilan Warga Hunian</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
     </div>
   );
