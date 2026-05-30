@@ -462,3 +462,12 @@ h2,
 h3 {
   transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease;
 }
+
+/* ── Prevent iOS Safari automatic zoom-in on focus ────────── */
+@media screen and (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
