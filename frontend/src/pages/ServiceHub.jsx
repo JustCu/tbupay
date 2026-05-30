@@ -49,6 +49,17 @@ const safeDate = (dateVal) => {
   return new Date(dateVal);
 };
 
+const getTicketSubCategory = (ticket) => {
+  if (!ticket || !ticket.deskripsi) return "";
+  const match = ticket.deskripsi.match(/^\[(.*?)\]/);
+  return match ? match[1] : "";
+};
+
+const getTicketCleanDeskripsi = (ticket) => {
+  if (!ticket || !ticket.deskripsi) return "";
+  return ticket.deskripsi.replace(/^\[.*?\]\s*/, "");
+};
+
 // ---------- Helpers for WhatsApp Style Chat ----------
 const getInitials = (name) => {
   if (!name) return "?";
@@ -319,6 +330,22 @@ function ServiceHub() {
     return new Map();
   });
 
+  // Map id_user -> nama for name resolution in complaints
+  const [userNameMap, setUserNameMap] = useState(() => {
+    try {
+      const cached = localStorage.getItem("tbu_pay_cache_v1:getUsers:{}");
+      if (cached) {
+        const entry = JSON.parse(cached);
+        if (entry?.response?.status === "success" && Array.isArray(entry.response.data)) {
+          const m = new Map();
+          entry.response.data.forEach((u) => { if (u.id_user && u.nama) m.set(String(u.id_user), u.nama); });
+          return m;
+        }
+      }
+    } catch (e) { console.error(e); }
+    return new Map();
+  });
+
   const [generalChats, setGeneralChats] = useState(() => {
     try {
       const cached = localStorage.getItem("tbu_pay_cache_v1:getGeneralChats:{}");
@@ -386,8 +413,15 @@ function ServiceHub() {
       const res = await getUsers();
       if (res.status === "success" && Array.isArray(res.data)) {
         const m = new Map();
-        res.data.forEach((u) => { if (u.id_user && u.url_foto_profil) m.set(String(u.id_user), u.url_foto_profil); });
+        const nm = new Map();
+        res.data.forEach((u) => {
+          if (u.id_user) {
+            if (u.url_foto_profil) m.set(String(u.id_user), u.url_foto_profil);
+            if (u.nama) nm.set(String(u.id_user), u.nama);
+          }
+        });
         setUsersMap(m);
+        setUserNameMap(nm);
       }
     } catch (err) {
       console.error("Failed to load users map:", err);
@@ -845,16 +879,26 @@ function ServiceHub() {
 
                 {/* Complaint Text Preview */}
                 <p className="m-0 text-[12px] font-semibold text-slate-700 dark:text-slate-250 line-clamp-2 leading-relaxed transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
-                  {ticket.deskripsi || "Tidak ada deskripsi."}
+                  {getTicketCleanDeskripsi(ticket) || "Tidak ada deskripsi."}
                 </p>
 
                 {/* Footer Section: Reporter & Status Badge */}
                 <div className="flex items-center justify-between w-full shrink-0 select-none text-[10px] pt-2 border-t border-slate-100/60 dark:border-slate-800/40">
-                  <span className="text-[10px] text-slate-400 dark:text-slate-500">
-                    Oleh: <span className="font-bold text-slate-600 dark:text-slate-300">{ticket.id_user_pelapor || "Warga"}</span>
-                  </span>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="font-bold text-slate-600 dark:text-slate-300 text-[10px] truncate max-w-[120px]">
+                      {userNameMap.get(String(ticket.id_user_pelapor)) || ticket.id_user_pelapor || "Warga"}
+                    </span>
+                    {getTicketSubCategory(ticket) && (
+                      <>
+                        <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700 shrink-0"></span>
+                        <span className="inline-flex items-center bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 px-1.5 py-0.5 rounded text-[8.5px] font-bold border border-indigo-100 dark:border-indigo-900/20 uppercase tracking-wide shrink-0">
+                          {getTicketSubCategory(ticket)}
+                        </span>
+                      </>
+                    )}
+                  </div>
                   
-                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider ${statusTheme}`}>
+                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider shrink-0 ${statusTheme}`}>
                     {ticket.status}
                   </span>
                 </div>
@@ -1594,16 +1638,26 @@ function ServiceHub() {
 
                     {/* Complaint Text Preview */}
                     <p className="m-0 text-[12px] font-semibold text-slate-700 dark:text-slate-250 line-clamp-2 leading-relaxed transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
-                      {ticket.deskripsi || "Tidak ada deskripsi."}
+                      {getTicketCleanDeskripsi(ticket) || "Tidak ada deskripsi."}
                     </p>
 
                     {/* Footer Section: Reporter & Status Badge */}
                     <div className="flex items-center justify-between w-full shrink-0 select-none text-[10px] pt-2 border-t border-slate-100/60 dark:border-slate-800/40">
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500">
-                        Oleh: <span className="font-bold text-slate-600 dark:text-slate-300">{ticket.id_user_pelapor || "Warga"}</span>
-                      </span>
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="font-bold text-slate-600 dark:text-slate-300 text-[10px] truncate max-w-[120px]">
+                          {userNameMap.get(String(ticket.id_user_pelapor)) || ticket.id_user_pelapor || "Warga"}
+                        </span>
+                        {getTicketSubCategory(ticket) && (
+                          <>
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 shrink-0"></span>
+                            <span className="inline-flex items-center bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 px-1.5 py-0.5 rounded text-[8.5px] font-bold border border-indigo-100 dark:border-indigo-900/20 uppercase tracking-wide shrink-0">
+                              {getTicketSubCategory(ticket)}
+                            </span>
+                          </>
+                        )}
+                      </div>
                       
-                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider ${statusTheme}`}>
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider shrink-0 ${statusTheme}`}>
                         {ticket.status}
                       </span>
                     </div>
@@ -1756,7 +1810,7 @@ function ServiceHub() {
                 {/* Main Content: Description */}
                 <div className="border-l-2 border-indigo-500/30 pl-3.5 my-1">
                   <p className="m-0 text-[13px] leading-relaxed text-slate-700 dark:text-slate-200 font-medium font-sans whitespace-pre-wrap">
-                    {selectedTicket.deskripsi}
+                    {getTicketCleanDeskripsi(selectedTicket)}
                   </p>
                 </div>
 
@@ -1776,7 +1830,7 @@ function ServiceHub() {
                   <div className="flex flex-col gap-0.5">
                     <span>Pelapor:</span>
                     <span className="text-slate-700 dark:text-slate-355 font-bold bg-slate-50 dark:bg-slate-800/80 px-2 py-0.75 rounded border border-slate-100/50 dark:border-transparent w-fit">
-                      {selectedTicket.id_user_pelapor || "Warga"}
+                      {userNameMap.get(String(selectedTicket.id_user_pelapor)) || selectedTicket.id_user_pelapor || "Warga"}
                     </span>
                   </div>
                   
