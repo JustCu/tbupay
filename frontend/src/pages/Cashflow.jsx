@@ -1318,19 +1318,19 @@ function ReportPreviewModal({
 
   return (
     <div
-      className="fixed inset-0 z-[220] bg-slate-900/70 dark:bg-black/80 backdrop-blur-[2px] p-0 flex flex-col print:static print:bg-white print:p-0 print:overflow-visible"
+      className="report-preview-modal-overlay fixed inset-0 z-[220] bg-slate-900/70 dark:bg-black/80 backdrop-blur-[2px] p-0 flex flex-col print:static print:bg-white print:p-0 print:overflow-visible"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
-        className="w-full h-full flex flex-col bg-slate-100 dark:bg-[#131c33] md:max-w-[920px] md:max-h-[95vh] md:mx-auto md:my-auto md:rounded-[24px] md:shadow-2xl overflow-hidden border-0 md:border border-gray-200 dark:border-slate-800/80 animate-[scaleUp_0.25s_ease-out] print:rounded-none print:shadow-none print:border-none print:bg-white print:text-black print:w-full print:static print:max-h-none"
+        className="report-preview-modal-dialog w-full h-full flex flex-col bg-slate-100 dark:bg-[#131c33] md:max-w-[920px] md:max-h-[95vh] md:mx-auto md:my-auto md:rounded-[24px] md:shadow-2xl overflow-hidden border-0 md:border border-gray-200 dark:border-slate-800/80 animate-[scaleUp_0.25s_ease-out] print:rounded-none print:shadow-none print:border-none print:bg-white print:text-black print:w-full print:static print:max-h-none"
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
       >
         {/* ─── Header: Title + Zoom Controls + Close ─── */}
-        <div className="flex items-center justify-between px-5 py-3 bg-white dark:bg-[#1a2640] border-b border-gray-200 dark:border-slate-800/80 shrink-0 print:hidden gap-3">
+        <div className="flex items-center justify-between px-5 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-3 bg-white dark:bg-[#1a2640] border-b border-gray-200 dark:border-slate-800/80 shrink-0 print:hidden gap-3">
           {/* Left: Title */}
           <div className="min-w-0 shrink">
             <h3 className="text-[14px] font-bold text-gray-800 dark:text-gray-100 m-0 truncate">Pratinjau Laporan Keuangan</h3>
@@ -1394,6 +1394,7 @@ function ReportPreviewModal({
           <div className="p-4 md:p-8 flex justify-center print:p-0">
             {/* Virtual Paper Sheet (Fix A4: 210mm x 297mm) with zoom transform */}
             <div
+              id="printable-report"
               className="bg-white text-slate-900 p-[20mm] shadow-sm border border-gray-200/60 w-[210mm] min-h-[297mm] box-border relative flex flex-col justify-between print:p-0 print:border-none print:shadow-none print:bg-white print:text-black shrink-0 font-sans print:transform-none"
               style={{
                 transform: `scale(${zoom})`,

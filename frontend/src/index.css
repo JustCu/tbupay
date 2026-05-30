@@ -491,54 +491,148 @@ h3 {
 
 /* ── Printing Stylesheet for Professional Financial Reports ────────────────── */
 @media print {
-  /* Hide all generic PWA interface items */
-  body, 
-  #root, 
-  .app-container, 
-  .main-content, 
-  .bottom-nav, 
-  .bell-button, 
-  header, 
-  nav, 
-  aside,
-  footer,
-  button,
+  /* 1. Reset all containers to be visible and unconstrained */
+  html,
+  body,
+  #root,
+  .app-container,
+  .main-content {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* 2. Hide everything else inside the app container except our report modal */
+  .app-container > *:not(.main-content),
+  .main-content > *:not(.report-preview-modal-overlay),
   .print\:hidden {
     display: none !important;
   }
 
-  /* Force display only the target report overlay backdrop and document */
-  div.fixed.inset-0.z-\[220\] {
+  /* 3. Style the modal viewport to be static and cover full page */
+  .report-preview-modal-overlay {
     position: static !important;
     display: block !important;
     background: white !important;
     padding: 0 !important;
+    margin: 0 !important;
     overflow: visible !important;
     z-index: auto !important;
   }
 
-  div.w-full.max-w-\[840px\] {
+  /* 4. Style the inner modal dialog to be unconstrained */
+  .report-preview-modal-dialog {
     max-width: 100% !important;
     width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
     border: none !important;
     box-shadow: none !important;
     margin: 0 !important;
     padding: 0 !important;
     background: white !important;
-    color: #000 !important;
-    transform: none !important;
+    color: black !important;
+    transform: none !important; /* Force override any React inline zoom styles */
     animation: none !important;
+    position: static !important;
+    display: block !important;
+  }
+
+  /* Hide the modal header/footer and only show the scrollable preview container */
+  .report-preview-modal-dialog > div.shrink-0 {
+    display: none !important;
+  }
+
+  /* Preview container should have no scroll and be fully visible */
+  .report-preview-modal-dialog > div.flex-1 {
+    overflow: visible !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+  }
+
+  /* The outer padding wrapper around A4 */
+  .report-preview-modal-dialog > div.flex-1 > div {
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+
+  /* 5. Force A4 Paper Sheet to be exact dimensions, no scale/transform, and visible */
+  #printable-report {
+    display: flex !important;
+    transform: none !important; /* Force override any React inline zoom styles */
+    width: 210mm !important;
+    min-height: 297mm !important;
+    height: auto !important;
+    padding: 20mm !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    background-color: white !important;
+    color: black !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Force light theme colors on print regardless of Dark Mode */
+  #printable-report * {
+    color: #0f172a !important; /* slate-900 */
+    background-color: transparent !important;
+    border-color: #cbd5e1 !important; /* slate-200 */
+  }
+
+  /* Exception for table headings, cards, and special texts */
+  #printable-report .bg-slate-50 {
+    background-color: #f8fafc !important; /* Slate 50 */
+  }
+  #printable-report .bg-slate-100 {
+    background-color: #f1f5f9 !important; /* Slate 100 */
+  }
+  #printable-report .text-emerald-600 {
+    color: #059669 !important; /* Emerald 600 */
+  }
+  #printable-report .text-rose-500 {
+    color: #ef4444 !important; /* Rose 500 */
+  }
+  #printable-report .text-rose-600 {
+    color: #dc2626 !important; /* Rose 600 */
+  }
+  #printable-report .text-slate-500,
+  #printable-report .text-slate-400 {
+    color: #475569 !important; /* Slate 600 */
+  }
+  #printable-report .text-slate-600 {
+    color: #334155 !important;
+  }
+
+  /* Force color and background printing */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-scheme: light !important;
   }
 
   /* Set print page parameters */
   @page {
-    size: portrait;
-    margin: 15mm 20mm;
+    size: A4 portrait;
+    margin: 0; /* Let #printable-report dictate margins */
   }
 
   /* Ensure all tables and page breaks print professionally */
   table {
     page-break-inside: auto;
+    width: 100% !important;
   }
   
   tr {
@@ -557,25 +651,5 @@ h3 {
   .page-break-avoid {
     page-break-inside: avoid !important;
   }
-
-  /* Force light colors and borders */
-  .bg-white {
-    background-color: #fff !important;
-    color: #000 !important;
-  }
-
-  .text-slate-900,
-  .text-slate-800,
-  .text-slate-700,
-  .text-slate-600,
-  .text-slate-500 {
-    color: #000 !important;
-  }
-  
-  .border,
-  .border-b,
-  .border-t,
-  .border-b-2 {
-    border-color: #000 !important;
-  }
 }
+
