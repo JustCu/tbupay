@@ -1306,7 +1306,7 @@ function ReportPreviewModal({
       }}
     >
       <div
-        className="w-full max-w-[880px] bg-slate-100 dark:bg-[#131c33] rounded-t-[24px] md:rounded-[24px] shadow-2xl flex flex-col overflow-hidden border border-gray-200 dark:border-slate-800/80 animate-[scaleUp_0.25s_ease-out] print:rounded-none print:shadow-none print:border-none print:bg-white print:text-black print:w-full print:static"
+        className="w-full max-w-[880px] h-[100vh] md:h-[90vh] bg-slate-100 dark:bg-[#131c33] rounded-t-[24px] md:rounded-[24px] shadow-2xl flex flex-col overflow-hidden border border-gray-200 dark:border-slate-800/80 animate-[scaleUp_0.25s_ease-out] print:rounded-none print:shadow-none print:border-none print:bg-white print:text-black print:w-full print:static relative"
         role="dialog"
         aria-modal="true"
       >
@@ -1317,54 +1317,6 @@ function ReportPreviewModal({
             <p className="text-[11px] text-gray-400 dark:text-slate-400 m-0 mt-0.5">Format akuntansi standar PDF (A4)</p>
           </div>
           <div className="flex items-center gap-2">
-            {/* Zoom Controls */}
-            <div className="flex items-center bg-gray-100 dark:bg-slate-800/60 rounded-xl p-1 gap-1 border border-gray-200/40 dark:border-slate-700/40 shrink-0 select-none">
-              <button
-                onClick={() => setZoom(z => Math.max(40, z - 10))}
-                className="w-7 h-7 flex items-center justify-center border-none bg-transparent hover:bg-white dark:hover:bg-slate-700 rounded-lg text-gray-600 dark:text-gray-300 font-extrabold cursor-pointer transition-colors"
-                title="Perkecil"
-              >
-                -
-              </button>
-              <span className="text-[10px] font-mono font-bold text-gray-600 dark:text-gray-300 px-1 min-w-[36px] text-center">
-                {zoom}%
-              </span>
-              <button
-                onClick={() => setZoom(z => Math.min(150, z + 10))}
-                className="w-7 h-7 flex items-center justify-center border-none bg-transparent hover:bg-white dark:hover:bg-slate-700 rounded-lg text-gray-600 dark:text-gray-300 font-extrabold cursor-pointer transition-colors"
-                title="Perbesar"
-              >
-                +
-              </button>
-              <button
-                onClick={() => {
-                  if (containerRef.current) {
-                    const containerWidth = containerRef.current.clientWidth;
-                    const paperWidthPx = 794;
-                    const availableWidth = containerWidth - 32;
-                    if (availableWidth < paperWidthPx) {
-                      setZoom(Math.max(40, Math.floor((availableWidth / paperWidthPx) * 100)));
-                    } else {
-                      setZoom(100);
-                    }
-                  } else {
-                    setZoom(100);
-                  }
-                }}
-                className="text-[9px] uppercase tracking-wider font-extrabold border-none px-2 h-7 bg-transparent hover:bg-white dark:hover:bg-slate-700 rounded-lg text-blue-600 dark:text-blue-400 cursor-pointer transition-colors"
-                title="Sesuaikan Layar"
-              >
-                Fit
-              </button>
-            </div>
-
-            <button
-              onClick={handlePrint}
-              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-xl p-[8px_14px] text-[12px] font-bold cursor-pointer transition-all active:scale-[0.97] shrink-0"
-            >
-              <Download size={14} />
-              Download PDF (A4)
-            </button>
             <button
               onClick={onClose}
               className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800/60 flex items-center justify-center border-none cursor-pointer text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors shrink-0"
@@ -1378,7 +1330,7 @@ function ReportPreviewModal({
         {/* virtual printable area */}
         <div 
           ref={containerRef}
-          className="flex-1 overflow-auto p-4 md:p-8 bg-slate-100 dark:bg-[#0b1020] print:p-0 print:bg-white print:overflow-visible flex justify-center items-start"
+          className="flex-1 overflow-auto p-4 pb-24 md:p-8 md:pb-24 bg-slate-100 dark:bg-[#0b1020] print:p-0 print:bg-white print:overflow-visible flex justify-center items-start"
         >
           
           {/* Scaling wrapper to preserve exact layout boundaries in scroll container */}
@@ -1579,6 +1531,61 @@ function ReportPreviewModal({
 
             </div>
           </div>
+        </div>
+
+        {/* Floating Action Bar - sticky at the bottom center of the modal panel */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[230] flex items-center gap-3 bg-white/90 dark:bg-[#1a2640]/90 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl border border-gray-200/50 dark:border-slate-800/80 print:hidden transition-all duration-300 hover:shadow-2xl hover:bg-white dark:hover:bg-[#1a2640] select-none">
+          {/* Zoom Controls */}
+          <div className="flex items-center bg-gray-100 dark:bg-slate-800/60 rounded-xl p-1 gap-1 border border-gray-200/30 dark:border-slate-700/30 shrink-0">
+            <button
+              onClick={() => setZoom(z => Math.max(40, z - 10))}
+              className="w-7 h-7 flex items-center justify-center border-none bg-transparent hover:bg-white dark:hover:bg-slate-700 rounded-lg text-gray-600 dark:text-gray-300 font-extrabold cursor-pointer transition-colors"
+              title="Perkecil"
+            >
+              -
+            </button>
+            <span className="text-[10px] font-mono font-bold text-gray-600 dark:text-gray-300 px-1 min-w-[36px] text-center">
+              {zoom}%
+            </span>
+            <button
+              onClick={() => setZoom(z => Math.min(150, z + 10))}
+              className="w-7 h-7 flex items-center justify-center border-none bg-transparent hover:bg-white dark:hover:bg-slate-700 rounded-lg text-gray-600 dark:text-gray-300 font-extrabold cursor-pointer transition-colors"
+              title="Perbesar"
+            >
+              +
+            </button>
+            <button
+              onClick={() => {
+                if (containerRef.current) {
+                  const containerWidth = containerRef.current.clientWidth;
+                  const paperWidthPx = 794;
+                  const availableWidth = containerWidth - 32;
+                  if (availableWidth < paperWidthPx) {
+                    setZoom(Math.max(40, Math.floor((availableWidth / paperWidthPx) * 100)));
+                  } else {
+                    setZoom(100);
+                  }
+                } else {
+                  setZoom(100);
+                }
+              }}
+              className="text-[9px] uppercase tracking-wider font-extrabold border-none px-2 h-7 bg-transparent hover:bg-white dark:hover:bg-slate-700 rounded-lg text-blue-600 dark:text-blue-400 cursor-pointer transition-colors"
+              title="Sesuaikan Layar"
+            >
+              Fit
+            </button>
+          </div>
+
+          <div className="w-[1px] h-6 bg-gray-200 dark:bg-slate-800"></div>
+
+          {/* Download PDF button */}
+          <button
+            onClick={handlePrint}
+            className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-xl p-[8px_16px] text-[12px] font-bold cursor-pointer transition-all active:scale-[0.97] shrink-0 shadow-sm"
+          >
+            <Download size={14} />
+            Download PDF (A4)
+          </button>
         </div>
       </div>
     </div>
