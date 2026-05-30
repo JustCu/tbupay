@@ -1851,7 +1851,7 @@ function ServiceHub() {
                         Petugas PIC:
                       </span>
                       <strong className="font-extrabold uppercase tracking-wide bg-blue-100 dark:bg-blue-900/30 px-2 py-0.5 rounded text-[10px]">
-                        {selectedTicket.id_petugas_pic}
+                        {userNameMap.get(String(selectedTicket.id_petugas_pic)) || selectedTicket.id_petugas_pic}
                       </strong>
                     </div>
                   ) : (
