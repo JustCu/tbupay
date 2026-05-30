@@ -854,10 +854,15 @@ export default function Cashflow() {
           <div className="flex flex-col">
             {displayedTransactions.map((trx, index) => {
               const isPemasukan = trx.jenis === "pemasukan";
-              const isVerified = String(trx.status).toLowerCase() === "verified";
-              const trxUser = userMap[trx.id_user] || {};
-              const userPhoto = trxUser.url_foto_profil;
-              const userName = trxUser.nama || "Warga";
+              const statusLabel =
+                trx.status === "verified"
+                  ? "Terverifikasi"
+                  : trx.status === "pending"
+                    ? "Menunggu Verifikasi"
+                    : "Ditolak";
+              const statusDot =
+                trx.status === "verified" ? "bg-emerald-400" :
+                trx.status === "pending" ? "bg-amber-400" : "bg-rose-400";
               
               return (
                 <div
@@ -867,53 +872,26 @@ export default function Cashflow() {
                   } transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/20`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    {/* User Avatar with Cashflow Direction Indicator Badge */}
-                    <div className="relative shrink-0 select-none">
-                      {userPhoto ? (
-                        <img
-                          src={userPhoto}
-                          alt={userName}
-                          className="w-[36px] h-[36px] min-w-[36px] min-h-[36px] rounded-full object-cover border border-gray-100 dark:border-slate-700 shadow-sm"
-                        />
-                      ) : (
-                        <div className="w-[36px] h-[36px] min-w-[36px] min-h-[36px] rounded-full border border-gray-100 dark:border-slate-700 shadow-sm bg-gradient-to-br from-blue-400 to-indigo-500 text-white flex items-center justify-center text-xs font-black tracking-widest overflow-hidden">
-                          {getInitials(userName)}
-                        </div>
-                      )}
-                      {/* Small overlay badge in bottom-right corner */}
-                      <div 
-                        className={`absolute bottom-[-2px] right-[-2px] w-[16px] h-[16px] min-w-[16px] min-h-[16px] rounded-full flex items-center justify-center border border-white dark:border-[#131c33] shadow-sm shrink-0 ${
-                          isPemasukan 
-                            ? "bg-green-500 text-white" 
-                            : "bg-red-500 text-white"
-                        }`}
-                      >
-                        {isPemasukan ? (
-                          <ArrowDownLeft size={9} className="stroke-[3]" />
-                        ) : (
-                          <ArrowUpRight size={9} className="stroke-[3]" />
-                        )}
-                      </div>
+                    {/* Icon container — neutral square with subtle border */}
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/60 text-gray-400 dark:text-slate-400">
+                      {isPemasukan ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}
                     </div>
 
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="text-[13px] font-bold text-gray-800 dark:text-gray-100 m-0 truncate leading-snug">{trx.keterangan || "Tanpa Keterangan"}</p>
-                        {!isVerified && (
-                          <span className="text-[8px] font-extrabold px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200/40 dark:border-amber-500/20 uppercase tracking-wider leading-none">
-                            Pending
-                          </span>
-                        )}
-                      </div>
-                      {/* Display user name who performed the transaction, along with the date */}
+                      <p className="text-[13px] font-semibold text-gray-800 dark:text-gray-100 m-0 truncate leading-snug">
+                        {trx.keterangan || "Tanpa Keterangan"}
+                      </p>
+                      
+                      {/* Verification Status & Date */}
                       <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold max-w-[80px] truncate leading-none">
-                          {userName}
+                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusDot}`} />
+                        <span className="text-[11px] text-gray-400 dark:text-gray-500 leading-none">
+                          {statusLabel}
                         </span>
-                        <span className="text-[10px] text-gray-400 dark:text-slate-655 font-bold leading-none select-none">
+                        <span className="text-gray-300 dark:text-gray-600 text-[11px] leading-none select-none">
                           •
                         </span>
-                        <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium whitespace-nowrap leading-none">
+                        <span className="text-[11px] text-gray-400 dark:text-gray-500 leading-none whitespace-nowrap">
                           {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
                             day: "numeric",
                             month: "short",
@@ -924,8 +902,8 @@ export default function Cashflow() {
                     </div>
                   </div>
                   <p
-                    className={`text-[13px] font-bold tabular-nums shrink-0 m-0 ${
-                      isPemasukan ? "text-green-600 dark:text-green-400" : "text-rose-500 dark:text-rose-400"
+                    className={`text-[13.5px] font-semibold shrink-0 tabular-nums m-0 ${
+                      isPemasukan ? "text-emerald-600 dark:text-emerald-400" : "text-gray-500 dark:text-slate-400"
                     }`}
                   >
                     {isPemasukan ? "+" : "-"} {formatRupiah(trx.nominal)}
