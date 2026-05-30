@@ -23,6 +23,7 @@ import {
   Landmark,
   Lightbulb,
   MessageCircle,
+  Filter,
 } from "lucide-react";
 import { getTransactions } from "../application/use-cases/transactions/transactionUseCases";
 import { getNews, createNews } from "../application/use-cases/news/newsUseCases";
@@ -186,37 +187,40 @@ function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
         {/* Drag handle */}
         <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto mt-3 mb-0 shrink-0" />
 
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 pt-4 pb-3 shrink-0">
-          <h3 className="text-[16px] font-bold text-gray-800 dark:text-gray-100 m-0">Semua Riwayat Transaksi</h3>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center border-none cursor-pointer text-gray-500 hover:bg-gray-200 transition-colors shrink-0"
-            aria-label="Tutup"
-          >
-            <X size={16} />
-          </button>
-        </div>
-
-        {/* Filter Bar */}
-        <div className="px-5 pb-3 pt-1 border-b border-gray-100 dark:border-slate-800/80 flex gap-2 items-center shrink-0">
-          <span className="text-xs text-gray-500 dark:text-gray-400 font-semibold shrink-0">Filter Periode:</span>
-          <div className="flex items-center gap-1.5 min-w-0">
-            <input
-              type="month"
-              value={selectedPeriod}
-              onChange={(e) => setSelectedPeriod(e.target.value)}
-              className="text-xs font-semibold py-1.5 px-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-gray-200 outline-none cursor-pointer focus:border-blue-500 transition-colors"
-            />
+        {/* Header with Integrated Filter and Close Button */}
+        <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-3 border-b border-gray-100 dark:border-slate-800/80 shrink-0">
+          <h3 className="text-[15px] font-bold text-gray-800 dark:text-gray-100 m-0 truncate min-w-0 flex-1">
+            Semua Riwayat Transaksi
+          </h3>
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Period Filter Input styled as a clean button with filter icon */}
+            <div className="relative flex items-center">
+              <Filter size={11} className="absolute left-2.5 text-gray-400 dark:text-slate-500 pointer-events-none" />
+              <input
+                type="month"
+                value={selectedPeriod}
+                onChange={(e) => setSelectedPeriod(e.target.value)}
+                className="text-[10px] font-bold pl-6 pr-2 py-1 rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-600 dark:text-gray-300 outline-none cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-750 transition-colors w-[115px]"
+              />
+            </div>
             {selectedPeriod && (
               <button
                 onClick={() => setSelectedPeriod("")}
-                className="text-xs font-bold text-rose-500 hover:text-rose-600 bg-transparent border-none cursor-pointer p-1"
+                className="text-[10px] font-bold text-rose-500 hover:text-rose-600 bg-transparent border-none cursor-pointer p-0.5 shrink-0"
                 title="Hapus filter"
               >
                 Hapus
               </button>
             )}
+            
+            {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="w-7 h-7 rounded-full bg-gray-100 dark:bg-slate-800/60 flex items-center justify-center border-none cursor-pointer text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700/65 transition-colors shrink-0"
+              aria-label="Tutup"
+            >
+              <X size={14} />
+            </button>
           </div>
         </div>
 
