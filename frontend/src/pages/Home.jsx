@@ -188,36 +188,49 @@ function AllTransactionsSheet({ transactions, isOpen, onClose, formatRupiah }) {
                   : trx.status === "pending"
                     ? "Menunggu Verifikasi"
                     : "Ditolak";
+              const statusDot =
+                trx.status === "verified" ? "bg-emerald-400" :
+                trx.status === "pending" ? "bg-amber-400" : "bg-rose-400";
 
               return (
-                <div key={trx.id_transaksi} className={`flex items-center justify-between gap-2.5 p-4 ${index !== transactions.length - 1 ? 'border-b border-gray-100' : ''} hover:bg-slate-50 transition-colors`}>
+                <div key={trx.id_transaksi} className={`flex items-center justify-between gap-3 px-4 py-3.5 ${
+                  index !== transactions.length - 1 ? 'border-b border-gray-100 dark:border-slate-800/60' : ''
+                } hover:bg-gray-50/70 dark:hover:bg-white/[0.03] transition-colors`}>
+                  {/* Left: icon + info */}
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${isPemasukan ? "bg-green-100 text-green-600 dark:bg-green-950/30 dark:text-green-400" : "bg-red-100 text-red-600 dark:bg-rose-950/30 dark:text-rose-400"}`}>
-                      {isPemasukan ? <ArrowDownLeft size={18} /> : <ArrowUpRight size={18} />}
+                    {/* Icon container — neutral square with subtle border */}
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border ${
+                      isPemasukan
+                        ? "bg-gray-50 dark:bg-slate-800/60 border-gray-200 dark:border-slate-700 text-gray-400 dark:text-slate-400"
+                        : "bg-gray-50 dark:bg-slate-800/60 border-gray-200 dark:border-slate-700 text-gray-400 dark:text-slate-400"
+                    }`}>
+                      {isPemasukan ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[14px] font-bold text-gray-800 leading-snug m-0 truncate">
+                      <p className="text-[13.5px] font-semibold text-gray-800 dark:text-gray-100 leading-snug m-0 truncate">
                         {trx.keterangan || "-"}
                       </p>
-                      <p className="mt-0.5 text-[12px] text-gray-400 flex items-center gap-1.5 m-0">
-                        {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                        <span className={`inline-flex items-center justify-center px-2 py-0.5 rounded-full text-[10px] font-bold leading-tight ${
-                          trx.status === "verified" ? "bg-green-100 text-green-800" :
-                          trx.status === "pending" ? "bg-amber-100 text-amber-800" :
-                          "bg-red-100 text-red-800"
-                        }`}>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusDot}`} />
+                        <span className="text-[11px] text-gray-400 dark:text-gray-500">
                           {statusLabel}
                         </span>
-                      </p>
+                        <span className="text-gray-300 dark:text-gray-600 text-[11px]">·</span>
+                        <span className="text-[11px] text-gray-400 dark:text-gray-500">
+                          {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <p className={`text-sm font-bold shrink-0 tabular-nums m-0 ${isPemasukan ? "text-green-500" : "text-red-500"}`}>
-                    {isPemasukan ? "+" : "-"}{" "}
-                    {formatRupiah(Number(trx.nominal) || 0)}
+                  {/* Right: amount */}
+                  <p className={`text-[13.5px] font-semibold shrink-0 tabular-nums m-0 ${
+                    isPemasukan ? "text-emerald-600 dark:text-emerald-400" : "text-gray-500 dark:text-slate-400"
+                  }`}>
+                    {isPemasukan ? "+" : "-"} {formatRupiah(Number(trx.nominal) || 0)}
                   </p>
                 </div>
               );
@@ -1213,55 +1226,58 @@ export default function Home() {
             <ChevronRight size={13} />
           </button>
         </div>
-        <div className="bg-white dark:bg-[#131c33] border border-gray-200 dark:border-slate-800/80 rounded-xl overflow-hidden">
+        <div className="bg-white dark:bg-[#131c33] border border-gray-100 dark:border-slate-800/60 rounded-2xl overflow-hidden divide-y divide-gray-100 dark:divide-slate-800/60">
           {myLatestTransactions.length > 0 ? (
-            <div className="flex flex-col">
-              {myLatestTransactions.map((trx, index) => {
-                const isPemasukan = trx.jenis === "pemasukan";
-                const statusLabel =
-                  trx.status === "verified"
-                    ? "Terverifikasi"
-                    : trx.status === "pending"
-                      ? "Menunggu Verifikasi"
-                      : "Ditolak";
-                
-                return (
-                  <div key={trx.id_transaksi} className={`flex items-center justify-between gap-2.5 p-3.5 ${index !== myLatestTransactions.length - 1 ? 'border-b border-gray-100' : ''} transition-colors hover:bg-slate-50`}>
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className={`w-[30px] h-[30px] min-w-[30px] min-h-[30px] rounded-full flex items-center justify-center shrink-0 ${isPemasukan ? "bg-green-100 text-green-600 dark:bg-green-950/30 dark:text-green-400" : "bg-red-100 text-red-600 dark:bg-rose-950/30 dark:text-rose-400"}`}>
-                        {isPemasukan ? <ArrowDownLeft size={14} /> : <ArrowUpRight size={14} />}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-[13px] font-bold text-gray-800 leading-snug m-0 truncate">
-                          {trx.keterangan || "-"}
-                        </p>
-                        <p className="mt-0.5 text-[11px] text-gray-400 flex items-center gap-1.5 m-0">
+            myLatestTransactions.map((trx) => {
+              const isPemasukan = trx.jenis === "pemasukan";
+              const statusLabel =
+                trx.status === "verified"
+                  ? "Terverifikasi"
+                  : trx.status === "pending"
+                    ? "Menunggu Verifikasi"
+                    : "Ditolak";
+              const statusDot =
+                trx.status === "verified" ? "bg-emerald-400" :
+                trx.status === "pending" ? "bg-amber-400" : "bg-rose-400";
+
+              return (
+                <div key={trx.id_transaksi} className="flex items-center justify-between gap-3 px-4 py-3.5 hover:bg-gray-50/70 dark:hover:bg-white/[0.03] transition-colors">
+                  {/* Left: icon + info */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    {/* Neutral icon container */}
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700 text-gray-400 dark:text-slate-400">
+                      {isPemasukan ? <ArrowDownLeft size={15} /> : <ArrowUpRight size={15} />}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[13px] font-semibold text-gray-800 dark:text-gray-100 leading-snug m-0 truncate">
+                        {trx.keterangan || "-"}
+                      </p>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusDot}`} />
+                        <span className="text-[11px] text-gray-400 dark:text-gray-500">{statusLabel}</span>
+                        <span className="text-gray-300 dark:text-gray-600 text-[11px]">·</span>
+                        <span className="text-[11px] text-gray-400 dark:text-gray-500">
                           {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
                             day: "numeric",
                             month: "short",
                             year: "numeric",
                           })}
-                          <span className={`inline-flex items-center justify-center px-2 py-0.5 rounded-full text-[10px] font-bold leading-tight ${
-                            trx.status === "verified" ? "bg-green-100 text-green-800" :
-                            trx.status === "pending" ? "bg-amber-100 text-amber-800" :
-                            "bg-red-100 text-red-800"
-                          }`}>
-                            {statusLabel}
-                          </span>
-                        </p>
+                        </span>
                       </div>
                     </div>
-                    <p className={`text-xs font-bold shrink-0 tabular-nums m-0 ${isPemasukan ? "text-green-500" : "text-red-500"}`}>
-                      {isPemasukan ? "+" : "-"}{" "}
-                      {formatRupiah(Number(trx.nominal) || 0)}
-                    </p>
                   </div>
-                );
-              })}
-            </div>
+                  {/* Right: amount */}
+                  <p className={`text-[13px] font-semibold shrink-0 tabular-nums m-0 ${
+                    isPemasukan ? "text-emerald-600 dark:text-emerald-400" : "text-gray-500 dark:text-slate-400"
+                  }`}>
+                    {isPemasukan ? "+" : "−"} {formatRupiah(Number(trx.nominal) || 0)}
+                  </p>
+                </div>
+              );
+            })
           ) : (
-            <div className="py-4.5 px-3.5 text-center">
-              <p className="text-sm font-normal text-gray-500 m-0">
+            <div className="py-5 px-4 text-center">
+              <p className="text-sm font-normal text-gray-400 dark:text-gray-500 m-0">
                 {loading
                   ? "Memuat riwayat transaksi..."
                   : "Belum ada riwayat transaksi."}
