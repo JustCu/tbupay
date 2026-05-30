@@ -491,12 +491,17 @@ h3 {
 
 /* ── Printing Stylesheet for Professional Financial Reports ────────────────── */
 @media print {
-  /* 1. Reset all containers to be visible and unconstrained */
+  /* 1. Reset all containers to be visible, light theme, and unconstrained (Neutralize Dark Mode) */
   html,
   body,
+  html.dark,
+  html.dark body,
   #root,
+  html.dark #root,
   .app-container,
-  .main-content {
+  html.dark .app-container,
+  .main-content,
+  html.dark .main-content {
     display: block !important;
     position: static !important;
     width: 100% !important;
@@ -504,8 +509,10 @@ h3 {
     height: auto !important;
     min-height: 0 !important;
     overflow: visible !important;
-    background: white !important;
-    color: black !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    color-scheme: light !important;
     margin: 0 !important;
     padding: 0 !important;
     border: none !important;
@@ -514,24 +521,29 @@ h3 {
 
   /* 2. Hide everything else inside the app container except our report modal */
   .app-container > *:not(.main-content),
+  html.dark .app-container > *:not(.main-content),
   .main-content > *:not(.report-preview-modal-overlay),
+  html.dark .main-content > *:not(.report-preview-modal-overlay),
   .print\:hidden {
     display: none !important;
   }
 
-  /* 3. Style the modal viewport to be static and cover full page */
-  .report-preview-modal-overlay {
+  /* 3. Style the modal viewport to be static, white background, and cover full page */
+  .report-preview-modal-overlay,
+  html.dark .report-preview-modal-overlay {
     position: static !important;
     display: block !important;
-    background: white !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
     padding: 0 !important;
     margin: 0 !important;
     overflow: visible !important;
     z-index: auto !important;
   }
 
-  /* 4. Style the inner modal dialog to be unconstrained */
-  .report-preview-modal-dialog {
+  /* 4. Style the inner modal dialog to be unconstrained and light background */
+  .report-preview-modal-dialog,
+  html.dark .report-preview-modal-dialog {
     max-width: 100% !important;
     width: 100% !important;
     height: auto !important;
@@ -540,8 +552,9 @@ h3 {
     box-shadow: none !important;
     margin: 0 !important;
     padding: 0 !important;
-    background: white !important;
-    color: black !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #000000 !important;
     transform: none !important; /* Force override any React inline zoom styles */
     animation: none !important;
     position: static !important;
@@ -559,7 +572,8 @@ h3 {
     display: block !important;
     padding: 0 !important;
     margin: 0 !important;
-    background: white !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
   }
 
   /* The outer padding wrapper around A4 */
@@ -567,10 +581,13 @@ h3 {
     padding: 0 !important;
     margin: 0 !important;
     display: block !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
   }
 
   /* 5. Force A4 Paper Sheet to be exact dimensions, no scale/transform, and visible */
-  #printable-report {
+  #printable-report,
+  html.dark #printable-report {
     display: flex !important;
     transform: none !important; /* Force override any React inline zoom styles */
     width: 210mm !important;
@@ -579,40 +596,50 @@ h3 {
     padding: 20mm !important;
     margin: 0 auto !important;
     box-sizing: border-box !important;
-    background-color: white !important;
-    color: black !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #000000 !important;
     border: none !important;
     box-shadow: none !important;
   }
 
   /* Force light theme colors on print regardless of Dark Mode */
-  #printable-report * {
+  #printable-report *,
+  html.dark #printable-report * {
     color: #0f172a !important; /* slate-900 */
     background-color: transparent !important;
     border-color: #cbd5e1 !important; /* slate-200 */
   }
 
   /* Exception for table headings, cards, and special texts */
-  #printable-report .bg-slate-50 {
+  #printable-report .bg-slate-50,
+  html.dark #printable-report .bg-slate-50 {
     background-color: #f8fafc !important; /* Slate 50 */
   }
-  #printable-report .bg-slate-100 {
+  #printable-report .bg-slate-100,
+  html.dark #printable-report .bg-slate-100 {
     background-color: #f1f5f9 !important; /* Slate 100 */
   }
-  #printable-report .text-emerald-600 {
+  #printable-report .text-emerald-600,
+  html.dark #printable-report .text-emerald-600 {
     color: #059669 !important; /* Emerald 600 */
   }
-  #printable-report .text-rose-500 {
+  #printable-report .text-rose-500,
+  html.dark #printable-report .text-rose-500 {
     color: #ef4444 !important; /* Rose 500 */
   }
-  #printable-report .text-rose-600 {
+  #printable-report .text-rose-600,
+  html.dark #printable-report .text-rose-600 {
     color: #dc2626 !important; /* Rose 600 */
   }
   #printable-report .text-slate-500,
-  #printable-report .text-slate-400 {
+  html.dark #printable-report .text-slate-500,
+  #printable-report .text-slate-400,
+  html.dark #printable-report .text-slate-400 {
     color: #475569 !important; /* Slate 600 */
   }
-  #printable-report .text-slate-600 {
+  #printable-report .text-slate-600,
+  html.dark #printable-report .text-slate-600 {
     color: #334155 !important;
   }
 
