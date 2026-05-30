@@ -442,9 +442,9 @@ function ServiceHub() {
     disabled: loading || refreshing || openSheet !== null,
   });
 
-  const fetchNewsReplies = async (id_berita, forceRefresh = false) => {
+  const fetchNewsReplies = async (id_berita, forceRefresh = false, isBackground = false) => {
     if (!id_berita) return;
-    setLoadingReplies(true);
+    if (!isBackground) setLoadingReplies(true);
     try {
       const res = await getNewsReplies(id_berita, forceRefresh ? { forceRefresh: true } : {});
       const list = res?.status === "success" && Array.isArray(res.data) ? res.data : [];
@@ -454,13 +454,13 @@ function ServiceHub() {
       console.error("Error fetching news replies:", e);
       setNewsReplies([]); 
     } finally { 
-      setLoadingReplies(false); 
+      if (!isBackground) setLoadingReplies(false); 
     }
   };
 
-  const fetchTicketReplies = async (id_tiket, forceRefresh = false) => {
+  const fetchTicketReplies = async (id_tiket, forceRefresh = false, isBackground = false) => {
     if (!id_tiket) return;
-    setLoadingTicketReplies(true);
+    if (!isBackground) setLoadingTicketReplies(true);
     try {
       const res = await getTicketReplies(id_tiket, forceRefresh ? { forceRefresh: true } : {});
       const list = res?.status === "success" && Array.isArray(res.data) ? res.data : [];
@@ -471,12 +471,12 @@ function ServiceHub() {
       console.error("Error fetching ticket replies:", e);
       setTicketReplies([]); 
     } finally { 
-      setLoadingTicketReplies(false); 
+      if (!isBackground) setLoadingTicketReplies(false); 
     }
   };
 
-  const fetchGeneralChats = async (forceRefresh = false) => {
-    setLoadingGeneralChats(true);
+  const fetchGeneralChats = async (forceRefresh = false, isBackground = false) => {
+    if (!isBackground) setLoadingGeneralChats(true);
     try {
       const res = await getGeneralChats(forceRefresh ? { forceRefresh: true } : {});
       if (res?.status === "success" && Array.isArray(res.data)) {
@@ -486,7 +486,7 @@ function ServiceHub() {
     } catch (e) {
       console.error(e);
     } finally {
-      setLoadingGeneralChats(false);
+      if (!isBackground) setLoadingGeneralChats(false);
     }
   };
 
@@ -518,9 +518,31 @@ function ServiceHub() {
 
   useEffect(() => {
     if (openSheet === "grupchat") {
-      fetchGeneralChats(true);
+      fetchGeneralChats(true); // Initial fetch with spinner
+      const interval = setInterval(() => {
+        fetchGeneralChats(true, true); // Background fetch (no spinner)
+      }, 5000);
+      return () => clearInterval(interval);
     }
   }, [openSheet]);
+
+  useEffect(() => {
+    if (openSheet === "newsDetail" && selectedNews?.id_berita) {
+      const interval = setInterval(() => {
+        fetchNewsReplies(selectedNews.id_berita, true, true); // Background fetch (no spinner)
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [openSheet, selectedNews?.id_berita]);
+
+  useEffect(() => {
+    if (openSheet === "ticketDetail" && selectedTicket?.id_tiket) {
+      const interval = setInterval(() => {
+        fetchTicketReplies(selectedTicket.id_tiket, true, true); // Background fetch (no spinner)
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [openSheet, selectedTicket?.id_tiket]);
 
   const openTicketDetail = async (ticket) => {
     setSelectedTicket(ticket);
