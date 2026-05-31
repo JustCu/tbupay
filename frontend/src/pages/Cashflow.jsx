@@ -1466,8 +1466,15 @@ function ReportPreviewModal({
                                   })}
                                 </td>
                                 <td className="p-2 text-left font-bold text-slate-800 truncate max-w-[140px] print:max-w-none print:whitespace-normal">
-                                  {trx.keterangan || "Tanpa Keterangan"}
-                                </td>
+                                   {(() => {
+                                     if (!trx.keterangan) return "Tanpa Keterangan";
+                                     const parts = trx.keterangan.split(" - ");
+                                     if (parts.length > 1) {
+                                       return parts.slice(1).join(" - ");
+                                     }
+                                     return trx.keterangan;
+                                   })()}
+                                 </td>
                                 <td className="p-2 text-left text-slate-500">
                                    {(() => {
                                      if (!trx.keterangan) return "Lainnya";
