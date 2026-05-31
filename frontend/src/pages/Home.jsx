@@ -1344,44 +1344,27 @@ export default function Home() {
                     index !== myLatestTransactions.length - 1 ? "border-b border-gray-100/60 dark:border-slate-800/40" : ""
                   } transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/20`}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    {/* Arrow Icon instead of user photo/initials */}
-                    <div className="shrink-0 select-none">
-                      <div className={`w-[36px] h-[36px] min-w-[36px] min-h-[36px] rounded-full flex items-center justify-center border shadow-sm ${
-                        isPemasukan 
-                          ? "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800/30 text-green-600 dark:text-green-400" 
-                          : "bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-800/30 text-rose-600 dark:text-rose-400"
-                      }`}>
-                        {isPemasukan ? (
-                          <ArrowDownLeft size={16} className="stroke-[2.5]" />
-                        ) : (
-                          <ArrowUpRight size={16} className="stroke-[2.5]" />
-                        )}
-                      </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-[13px] font-bold text-gray-800 dark:text-gray-100 m-0 truncate leading-snug">
+                        {trx.keterangan || "Tanpa Keterangan"}
+                      </p>
                     </div>
-
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="text-[13px] font-bold text-gray-800 dark:text-gray-100 m-0 truncate leading-snug">
-                          {trx.keterangan || "Tanpa Keterangan"}
-                        </p>
-                      </div>
-                      {/* Verification status instead of user */}
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className={`text-[10px] font-bold truncate leading-none ${statusColor}`}>
-                          {statusLabel}
-                        </span>
-                        <span className="text-[10px] text-gray-400 dark:text-slate-655 font-bold leading-none select-none">
-                          •
-                        </span>
-                        <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium whitespace-nowrap leading-none">
-                          {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric"
-                          })}
-                        </span>
-                      </div>
+                    {/* Verification status instead of user */}
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <span className={`text-[10px] font-bold truncate leading-none ${statusColor}`}>
+                        {statusLabel}
+                      </span>
+                      <span className="text-[10px] text-gray-400 dark:text-slate-655 font-bold leading-none select-none">
+                        •
+                      </span>
+                      <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium whitespace-nowrap leading-none">
+                        {safeDate(trx.timestamp).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric"
+                        })}
+                      </span>
                     </div>
                   </div>
                   <p

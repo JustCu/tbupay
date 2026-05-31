@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, Wallet, MessageSquare, User, Plus } from "lucide-react";
+import { Home, Wallet, MessageSquare, User, Plus } from "lucide-react";
 import useStore from "../store/useStore";
 import PaymentModal from "../components/PaymentModal";
 import {
@@ -19,7 +19,7 @@ export default function MainLayout() {
     {
       id: "home",
       path: "/",
-      icon: LayoutDashboard,
+      icon: Home,
       label: "Beranda",
       roles: ["warga", "petugas", "admin"],
     },
