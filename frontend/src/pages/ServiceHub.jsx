@@ -551,6 +551,18 @@ function ServiceHub() {
     }
   };
 
+  // Disable body scroll when a standalone view/sheet is open
+  useEffect(() => {
+    if (openSheet) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [openSheet]);
+
   useEffect(() => {
     if (openSheet === "grupchat") {
       setLastReadChatTime(Date.now());
