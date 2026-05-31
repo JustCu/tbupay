@@ -385,7 +385,7 @@ export default function PaymentModal({ isOpen, onClose }) {
         </button>
         <div className="flex flex-col flex-1">
           <h2 className="text-xl font-bold m-0 text-slate-800 dark:text-slate-100 leading-tight">
-            {isAdmin ? "Input Iuran Baru" : "Lapor Iuran Warga"}
+            {isAdmin ? "Catat Iuran Baru" : "Lapor Iuran Warga"}
           </h2>
           <p className="text-[12px] text-slate-500 dark:text-slate-400 m-0 mt-1 leading-normal">
             {isAdmin
