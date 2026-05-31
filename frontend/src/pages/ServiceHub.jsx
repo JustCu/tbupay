@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, Component } from "react";
+import { useState, useEffect, useMemo, useRef, Component } from "react";
 import { useLocation } from "react-router-dom";
 import useStore from "../store/useStore";
 import {
@@ -342,7 +342,7 @@ function ServiceHub() {
       if (cached) {
         const parsed = JSON.parse(cached);
         if (parsed?.response?.status === "success" && Array.isArray(parsed.response.data)) {
-          return parsed.response.data;
+          return [...parsed.response.data].sort((a, b) => safeDate(a.timestamp || 0) - safeDate(b.timestamp || 0));
         }
       }
     } catch (e) {
@@ -353,6 +353,38 @@ function ServiceHub() {
   const [generalChatForm, setGeneralChatForm] = useState("");
   const [sendingGeneralChat, setSendingGeneralChat] = useState(false);
   const [loadingGeneralChats, setLoadingGeneralChats] = useState(false);
+
+  // Ref and helper to scroll group chat to bottom
+  const chatContainerRef = useRef(null);
+
+  const scrollToBottom = (behavior = "auto") => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: behavior
+      });
+    }
+  };
+
+  // Scroll to bottom on initial load/open
+  useEffect(() => {
+    if (openSheet === "grupchat" && generalChats.length > 0) {
+      const timer = setTimeout(() => {
+        scrollToBottom("auto");
+      }, 60);
+      return () => clearTimeout(timer);
+    }
+  }, [openSheet]);
+
+  // Scroll to bottom on new messages
+  useEffect(() => {
+    if (openSheet === "grupchat" && generalChats.length > 0) {
+      const timer = setTimeout(() => {
+        scrollToBottom("smooth");
+      }, 60);
+      return () => clearTimeout(timer);
+    }
+  }, [generalChats.length]);
 
   const ticketSummary = useMemo(() => {
     const counts = { open: 0, proses: 0, done: 0 };
@@ -1082,7 +1114,7 @@ function ServiceHub() {
           </div>
 
           {/* Main chat messages list */}
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5 shadow-inner">
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5 shadow-inner">
             {loadingGeneralChats && generalChats.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 gap-2">
                 <RefreshCw size={22} className="text-emerald-500 animate-spin" />
