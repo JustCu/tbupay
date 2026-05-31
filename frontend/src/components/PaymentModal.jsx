@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import useStore from "../store/useStore";
 import imageCompression from "browser-image-compression";
-import { Camera, CalendarDays, X, Eye, ArrowLeft, Info, Copy, ChevronUp, ChevronDown, GripVertical, Trash2 } from "lucide-react";
+import { Camera, CalendarDays, X, Eye, ArrowLeft, Info, Copy, ChevronUp, ChevronDown, GripVertical, Trash2, Plus } from "lucide-react";
 import {
   createTransaction,
   addTransactionCategory,
@@ -514,19 +514,38 @@ export default function PaymentModal({ isOpen, onClose }) {
   
               {!previewUrl ? (
                 <div
-                  className="border-2 border-dashed border-indigo-200 dark:border-indigo-500/30 bg-indigo-50/10 dark:bg-indigo-500/5 hover:border-indigo-500 hover:bg-indigo-50/20 dark:hover:bg-indigo-500/10 rounded-2xl py-8 px-6 flex flex-col items-center justify-center text-slate-450 dark:text-slate-400 cursor-pointer transition-all duration-300 active:scale-[0.99] gap-2"
+                  className="flex items-center gap-3 bg-indigo-50/20 dark:bg-indigo-500/5 border border-dashed border-indigo-200 dark:border-indigo-500/30 hover:border-indigo-500 dark:hover:border-indigo-400 hover:bg-indigo-50/30 rounded-2xl p-3 shadow-sm cursor-pointer transition-all duration-200 active:scale-[0.99]"
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Camera size={26} className="text-indigo-500 dark:text-indigo-400 stroke-[1.5]" />
-                  <p className="text-[13px] font-bold text-slate-700 dark:text-slate-200 m-0 text-center">
-                    Klik untuk ambil foto / galeri
-                  </p>
-                  {transactionType === "pengeluaran" && isAdmin && (
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500 m-0 font-medium text-center">
-                      Boleh dikosongkan jika tidak ada lampiran.
+                  {/* Thumbnail Placeholder */}
+                  <div className="w-12 h-12 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/40 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/60 text-indigo-500 dark:text-indigo-400 shrink-0">
+                    <Camera size={20} className="stroke-[1.75]" />
+                  </div>
+
+                  {/* Metadata Placeholder */}
+                  <div className="flex-1 min-w-0 flex flex-col justify-center">
+                    <p className="text-[12px] font-bold text-slate-700 dark:text-slate-200 m-0 leading-snug">
+                      Klik untuk ambil foto / galeri
                     </p>
-                  )}
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 m-0 font-medium text-center">Format JPG/PNG, maks. 500KB</p>
+                    <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 m-0 mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 leading-none">
+                      <span>Format JPG/PNG</span>
+                      <span className="text-slate-350 dark:text-slate-750">•</span>
+                      <span>Maks. 500KB</span>
+                      {transactionType === "pengeluaran" && isAdmin && (
+                        <>
+                          <span className="text-slate-350 dark:text-slate-750">•</span>
+                          <span className="text-slate-400 dark:text-slate-500 font-medium">Opsional</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Actions Placeholder */}
+                  <div className="flex items-center gap-1 shrink-0">
+                    <div className="border-none bg-indigo-100/60 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 rounded-lg p-2 flex items-center justify-center">
+                      <Plus size={14} className="stroke-[2.5]" />
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="flex items-center gap-3 bg-indigo-50/30 dark:bg-indigo-500/5 border border-indigo-100/80 dark:border-indigo-550/20 rounded-2xl p-3 shadow-sm hover:border-indigo-200 transition-all duration-200">
