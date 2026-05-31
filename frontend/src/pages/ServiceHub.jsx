@@ -18,6 +18,8 @@ import {
   Bell,
   Plus,
   ArrowLeft,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import {
   getTickets,
@@ -33,6 +35,8 @@ import {
   createNews,
   getNewsReplies,
   createNewsReply,
+  updateNews,
+  deleteNews,
 } from "../application/use-cases/news/newsUseCases";
 import {
   getGeneralChats,
@@ -250,6 +254,7 @@ function ServiceHub() {
   const [keluhanForm, setKeluhanForm] = useState({ kategori: "Lampu Penerangan", deskripsi: "" });
   const [saranForm, setSaranForm] = useState({ deskripsi: "" });
   const [newsForm, setNewsForm] = useState({ judul: "", konten: "" });
+  const [editingNewsId, setEditingNewsId] = useState(null);
   const [publishingNews, setPublishingNews] = useState(false);
   const [selectedNews, setSelectedNews] = useState(null);
   const [newsReplies, setNewsReplies] = useState([]);
@@ -700,17 +705,62 @@ function ServiceHub() {
     }
     setPublishingNews(true);
     try {
-      const res = await createNews({ judul: newsForm.judul.trim(), konten: newsForm.konten.trim(), created_by_role: user?.role || "" });
+      let res;
+      if (editingNewsId) {
+        res = await updateNews({
+          id_berita: editingNewsId,
+          judul: newsForm.judul.trim(),
+          konten: newsForm.konten.trim(),
+          created_by_role: user?.role || "",
+        });
+      } else {
+        res = await createNews({
+          judul: newsForm.judul.trim(),
+          konten: newsForm.konten.trim(),
+          created_by_role: user?.role || "",
+        });
+      }
+
       if (res.status === "success") {
-        showAlert("Berita berhasil dipublikasikan.", { variant: "success", title: "Berhasil" });
+        showAlert(
+          editingNewsId ? "Berita berhasil diperbarui." : "Berita berhasil dipublikasikan.",
+          { variant: "success", title: "Berhasil" }
+        );
         setNewsForm({ judul: "", konten: "" });
+        setEditingNewsId(null);
         setOpenSheet("berita");
         await fetchNews(true);
       } else {
-        showAlert(res.message || "Gagal mempublikasikan berita.", { variant: "danger", title: "Gagal" });
+        showAlert(
+          res.message || (editingNewsId ? "Gagal memperbarui berita." : "Gagal mempublikasikan berita."),
+          { variant: "danger", title: "Gagal" }
+        );
       }
-    } catch { showAlert("Terjadi kesalahan koneksi.", { variant: "danger", title: "Kesalahan Koneksi" }); }
-    finally { setPublishingNews(false); }
+    } catch {
+      showAlert("Terjadi kesalahan koneksi.", { variant: "danger", title: "Kesalahan Koneksi" });
+    } finally {
+      setPublishingNews(false);
+    }
+  };
+
+  const handleDeleteNewsSubmit = (id_berita) => {
+    showConfirm(
+      "Apakah Anda yakin ingin menghapus berita ini?\n\nSeluruh komentar diskusi pada berita ini juga akan dihapus secara permanen.",
+      async () => {
+        try {
+          const res = await deleteNews(id_berita, user?.role || "");
+          if (res.status === "success") {
+            showAlert("Berita berhasil dihapus.", { variant: "success", title: "Berhasil" });
+            await fetchNews(true);
+          } else {
+            showAlert(res.message || "Gagal menghapus berita.", { variant: "danger", title: "Gagal" });
+          }
+        } catch {
+          showAlert("Terjadi kesalahan koneksi.", { variant: "danger", title: "Kesalahan Koneksi" });
+        }
+      },
+      { title: "Hapus Berita", variant: "danger" }
+    );
   };
 
   const handleKeluhanSubmit = async (e) => {
@@ -1296,16 +1346,7 @@ function ServiceHub() {
               <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Berita &amp; Informasi</h3>
               <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Kumpulan berita terkini dan pengumuman lingkungan warga</p>
             </div>
-            {user?.role === "admin" && (
-              <button
-                type="button"
-                className="flex items-center gap-1 px-2.5 py-1.5 bg-blue-600 text-white text-[11px] font-black border-none rounded-xl cursor-pointer hover:bg-blue-700 transition-colors shadow-sm active:scale-95 shrink-0"
-                onClick={() => setOpenSheet("tambahBerita")}
-              >
-                <Plus size={12} />
-                Berita
-              </button>
-            )}
+
             <button
               type="button"
               title="Muat ulang berita"
@@ -1366,10 +1407,40 @@ function ServiceHub() {
                               </>
                             )}
                           </div>
-                          <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 flex items-center gap-1 whitespace-nowrap">
-                            <CalendarDays size={10} className="stroke-[2.5]" />
-                            {news.tanggal ? safeDate(news.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }) : ""}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 flex items-center gap-1 whitespace-nowrap">
+                              <CalendarDays size={10} className="stroke-[2.5]" />
+                              {news.tanggal ? safeDate(news.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }) : ""}
+                            </span>
+                            {user?.role === "admin" && (
+                              <div className="flex items-center gap-1 ml-1 shrink-0">
+                                <button
+                                  type="button"
+                                  className="p-1 bg-slate-100 hover:bg-blue-50 dark:bg-slate-800/60 dark:hover:bg-blue-900/20 text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 rounded-md border-none cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-90"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setEditingNewsId(news.id_berita);
+                                    setNewsForm({ judul: news.judul, konten: news.konten });
+                                    setOpenSheet("tambahBerita");
+                                  }}
+                                  title="Edit Berita"
+                                >
+                                  <Pencil size={11} className="stroke-[2.5]" />
+                                </button>
+                                <button
+                                  type="button"
+                                  className="p-1 bg-slate-100 hover:bg-red-50 dark:bg-slate-800/60 dark:hover:bg-red-900/20 text-slate-500 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 rounded-md border-none cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-90"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteNewsSubmit(news.id_berita);
+                                  }}
+                                  title="Hapus Berita"
+                                >
+                                  <Trash2 size={11} className="stroke-[2.5]" />
+                                </button>
+                              </div>
+                            )}
+                          </div>
                         </div>
 
                         {/* Title */}
@@ -1422,6 +1493,21 @@ function ServiceHub() {
               </button>
             </div>
           )}
+
+          {user?.role === "admin" && (
+            <button
+              type="button"
+              className="absolute bottom-20 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-[0_4px_14px_rgba(37,99,235,0.4)] active:scale-90 transition-all z-20 cursor-pointer"
+              onClick={() => {
+                setEditingNewsId(null);
+                setNewsForm({ judul: "", konten: "" });
+                setOpenSheet("tambahBerita");
+              }}
+              title="Tambah Berita"
+            >
+              <Plus size={24} strokeWidth={2.5} />
+            </button>
+          )}
         </div>
       )}
 
@@ -1441,8 +1527,12 @@ function ServiceHub() {
           {/* Header */}
           <div className="flex justify-between items-start pt-6 pb-4 px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
             <div className="flex-1 min-w-0">
-              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Publikasi Berita Baru</h3>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 m-0 mt-1 leading-normal pr-4">Tulis pengumuman resmi untuk perumahan</p>
+              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">
+                {editingNewsId ? "Edit Pengumuman Berita" : "Publikasi Berita Baru"}
+              </h3>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 m-0 mt-1 leading-normal pr-4">
+                {editingNewsId ? "Perbarui isi pengumuman resmi warga" : "Tulis pengumuman resmi untuk perumahan"}
+              </p>
             </div>
             <button
               type="button"
@@ -1484,7 +1574,7 @@ function ServiceHub() {
                 disabled={publishingNews || !newsForm.judul.trim() || !newsForm.konten.trim()}
               >
                 <Send size={14} />
-                {publishingNews ? "Memublikasikan..." : "Publikasi Sekarang"}
+                {publishingNews ? "Memproses..." : (editingNewsId ? "Simpan Perubahan" : "Publikasi Sekarang")}
               </button>
             </form>
           </div>

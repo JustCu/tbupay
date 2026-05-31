@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useStore from "../store/useStore";
-import { Key, Info, LogOut, Home, Phone, ShieldCheck, Pencil, X, AlertCircle, Moon, Sun, Volume2, Globe, Bell, Terminal, Database, Cpu, Layers, ArrowLeft } from "lucide-react";
+import { Key, Info, LogOut, Home, Phone, ShieldCheck, Pencil, X, AlertCircle, Moon, Sun, Volume2, Globe, Bell, Terminal, Database, Cpu, Layers, ArrowLeft, Smartphone, Share2, MoreVertical } from "lucide-react";
 import { updateUser } from "../application/use-cases/users/userUseCases";
 import NotificationModal from "../components/NotificationModal";
 
@@ -21,6 +21,65 @@ export default function Profile() {
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isInstallGuideOpen, setIsInstallGuideOpen] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(window.deferredPrompt || null);
+  const [isStandalone, setIsStandalone] = useState(
+    window.matchMedia("(display-mode: standalone)").matches || navigator.standalone || false
+  );
+
+  useEffect(() => {
+    const handleInstallPrompt = (e) => {
+      setDeferredPrompt(window.deferredPrompt);
+    };
+
+    const handleInstallable = () => {
+      setDeferredPrompt(window.deferredPrompt);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleInstallPrompt);
+    window.addEventListener("pwa-installable", handleInstallable);
+
+    // Track display-mode changes
+    const mediaQuery = window.matchMedia("(display-mode: standalone)");
+    const handleDisplayModeChange = (e) => {
+      setIsStandalone(e.matches);
+    };
+    mediaQuery.addEventListener("change", handleDisplayModeChange);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleInstallPrompt);
+      window.removeEventListener("pwa-installable", handleInstallable);
+      mediaQuery.removeEventListener("change", handleDisplayModeChange);
+    };
+  }, []);
+
+  const handleInstallPWA = async () => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    
+    if (isIOS) {
+      setIsInstallGuideOpen(true);
+      return;
+    }
+
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === "accepted") {
+        window.deferredPrompt = null;
+        setDeferredPrompt(null);
+      }
+    } else {
+      if (isStandalone) {
+        showAlert("Aplikasi TBU Pay sudah terpasang di perangkat Anda.", {
+          variant: "success",
+          title: "Sudah Terpasang"
+        });
+      } else {
+        setIsInstallGuideOpen(true);
+      }
+    }
+  };
+
   const [form, setForm] = useState({ nama: "", blok_rumah: "", no_hp: "", password: "" });
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
@@ -289,7 +348,31 @@ export default function Profile() {
           </button>
         </div>
 
-        {/* Row 3: Tentang Aplikasi TBU Pay */}
+        {/* Row 3: Pasang Aplikasi PWA */}
+        <button
+          className="w-full flex items-center gap-3.5 p-3.5 bg-transparent border-none border-b cursor-pointer text-left transition-colors border-gray-100 dark:border-slate-800/80 hover:bg-slate-50 active:bg-slate-100 dark:hover:bg-slate-800/40 dark:active:bg-slate-800/60"
+          onClick={handleInstallPWA}
+        >
+          <div className={`w-[30px] h-[30px] min-w-[30px] min-h-[30px] rounded-full flex items-center justify-center shrink-0 transition-colors ${
+            isStandalone 
+              ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" 
+              : "bg-blue-50 text-[#0f4c81] dark:bg-slate-800/60 dark:text-indigo-400"
+          }`}>
+            <Smartphone size={14} />
+          </div>
+          <div className="flex flex-col flex-1 min-w-0">
+            <span className="text-[13px] font-bold leading-snug transition-colors text-gray-800 dark:text-gray-200">
+              {isStandalone ? "Aplikasi Sudah Terpasang" : "Pasang Aplikasi TBU Pay"}
+            </span>
+            <span className="text-[11px] mt-0.5 transition-colors text-gray-500 dark:text-gray-400">
+              {isStandalone 
+                ? "Aplikasi berjalan optimal dalam mode mandiri (PWA)" 
+                : "Tambahkan pintasan PWA langsung ke layar perangkat Anda"}
+            </span>
+          </div>
+        </button>
+
+        {/* Row 4: Tentang Aplikasi TBU Pay */}
         <button
           className="w-full flex items-center gap-3.5 p-3.5 bg-transparent border-none cursor-pointer text-left transition-colors hover:bg-slate-50 active:bg-slate-100 dark:hover:bg-slate-800/40 dark:active:bg-slate-800/60"
           onClick={() => setIsAboutOpen(true)}
@@ -449,6 +532,12 @@ export default function Profile() {
       <AboutAppPopup
         isOpen={isAboutOpen}
         onClose={() => setIsAboutOpen(false)}
+      />
+
+      {/* PWA Install Guide Popup */}
+      <PWAInstallGuidePopup
+        isOpen={isInstallGuideOpen}
+        onClose={() => setIsInstallGuideOpen(false)}
       />
     </div>
   );
@@ -703,6 +792,127 @@ function AboutAppPopup({ isOpen, onClose }) {
           </button>
         </div>
 
+      </div>
+    </div>
+  );
+}
+
+function PWAInstallGuidePopup({ isOpen, onClose }) {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+  return (
+    <div
+      className={`fixed inset-0 z-[80] flex justify-center items-center p-4 bg-black/60 backdrop-blur-xs transition-opacity duration-300 ${
+        isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      }`}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className={`relative w-full max-w-[440px] bg-white dark:bg-[#131c33] rounded-2xl shadow-2xl border border-gray-105 dark:border-slate-800/80 overflow-hidden flex flex-col max-h-[85vh] transform transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+          isOpen ? "scale-100 opacity-100 translate-y-0" : "scale-95 opacity-0 translate-y-4"
+        }`}
+      >
+        {/* Glowing Top Ribbon */}
+        <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600"></div>
+
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800/60 dark:hover:bg-slate-700/60 border-none rounded-full p-2 cursor-pointer text-gray-500 dark:text-gray-400 transition-colors"
+        >
+          <X size={16} />
+        </button>
+
+        {/* Content Area - Scrollable */}
+        <div className="p-6 overflow-y-auto flex-1 flex flex-col gap-5 select-none custom-scrollbar">
+          
+          <div className="flex flex-col items-center text-center mt-2">
+            <Smartphone size={36} className="text-blue-600 dark:text-indigo-400 mb-2" />
+            <h3 className="text-[17px] font-black text-gray-800 dark:text-white m-0 tracking-wide">
+              Instal Aplikasi TBU Pay
+            </h3>
+            <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-1 max-w-[280px] leading-relaxed">
+              Pasang aplikasi di layar utama perangkat Anda untuk akses yang lebih cepat, hemat kuota, dan dukungan offline penuh.
+            </p>
+          </div>
+
+          <div className="w-full h-[1px] bg-gray-100 dark:bg-slate-800/60"></div>
+
+          {isIOS ? (
+            <div className="flex flex-col gap-4">
+              <h4 className="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest leading-none">
+                Petunjuk Instalasi di iOS / iPhone
+              </h4>
+              <div className="bg-slate-50 dark:bg-slate-800/30 rounded-xl p-4 border border-slate-100/80 dark:border-slate-800/40 flex flex-col gap-3">
+                <div className="flex gap-3.5 items-start">
+                  <div className="w-6 h-6 rounded-full bg-blue-50 text-blue-600 dark:bg-slate-800/60 dark:text-indigo-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                    1
+                  </div>
+                  <p className="text-xs text-gray-700 dark:text-slate-350 m-0 leading-relaxed font-medium">
+                    Buka browser <strong>Safari</strong> dan buka aplikasi TBU Pay. Ketuk tombol <strong>Bagikan (Share)</strong> di bar navigasi Safari (ikon kotak dengan panah ke atas).
+                  </p>
+                </div>
+                <div className="flex gap-3.5 items-start">
+                  <div className="w-6 h-6 rounded-full bg-blue-50 text-blue-600 dark:bg-slate-800/60 dark:text-indigo-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                    2
+                  </div>
+                  <p className="text-xs text-gray-700 dark:text-slate-350 m-0 leading-relaxed font-medium">
+                    Gulir ke bawah dan ketuk pilihan <strong>"Tambahkan ke Layar Utama" (Add to Home Screen)</strong>.
+                  </p>
+                </div>
+                <div className="flex gap-3.5 items-start">
+                  <div className="w-6 h-6 rounded-full bg-blue-50 text-blue-600 dark:bg-slate-800/60 dark:text-indigo-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                    3
+                  </div>
+                  <p className="text-xs text-gray-700 dark:text-slate-350 m-0 leading-relaxed font-medium">
+                    Beri nama aplikasi atau biarkan default "TBU Pay", lalu ketuk <strong>"Tambah" (Add)</strong> di pojok kanan atas.
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+              <h4 className="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest leading-none">
+                Petunjuk Instalasi di Android / Chrome
+              </h4>
+              <div className="bg-slate-50 dark:bg-slate-800/30 rounded-xl p-4 border border-slate-100/80 dark:border-slate-800/40 flex flex-col gap-3">
+                <div className="flex gap-3.5 items-start">
+                  <div className="w-6 h-6 rounded-full bg-blue-50 text-blue-600 dark:bg-slate-800/60 dark:text-indigo-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                    1
+                  </div>
+                  <p className="text-xs text-gray-700 dark:text-slate-350 m-0 leading-relaxed font-medium">
+                    Ketuk tombol <strong>titik tiga (Menu)</strong> di pojok kanan atas browser Google Chrome.
+                  </p>
+                </div>
+                <div className="flex gap-3.5 items-start">
+                  <div className="w-6 h-6 rounded-full bg-blue-50 text-blue-600 dark:bg-slate-800/60 dark:text-indigo-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                    2
+                  </div>
+                  <p className="text-xs text-gray-700 dark:text-slate-350 m-0 leading-relaxed font-medium">
+                    Pilih menu <strong>"Instal aplikasi" (Install app)</strong> atau <strong>"Tambahkan ke Layar Utama" (Add to Home Screen)</strong>.
+                  </p>
+                </div>
+                <div className="flex gap-3.5 items-start">
+                  <div className="w-6 h-6 rounded-full bg-blue-50 text-blue-600 dark:bg-slate-800/60 dark:text-indigo-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                    3
+                  </div>
+                  <p className="text-xs text-gray-700 dark:text-slate-350 m-0 leading-relaxed font-medium">
+                    Ikuti konfirmasi pop-up yang muncul untuk menyelesaikan pemasangan aplikasi.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <button
+            onClick={onClose}
+            className="w-full bg-[#0f4c81] text-white border-none rounded-xl py-3 px-4 text-xs font-bold cursor-pointer transition-colors hover:bg-[#0a3460] active:scale-[0.98] shadow-md mt-2 flex items-center justify-center"
+          >
+            Mengerti, Tutup
+          </button>
+        </div>
       </div>
     </div>
   );

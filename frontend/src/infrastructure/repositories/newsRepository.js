@@ -26,4 +26,12 @@ export const newsRepository = {
   addReply(payload) {
     return backendApiAdapter.post("addNewsReply", payload);
   },
+
+  update(payload) {
+    return backendApiAdapter.post("editNews", payload);
+  },
+
+  delete(id_berita, created_by_role) {
+    return backendApiAdapter.post("deleteNews", { id_berita, created_by_role });
+  },
 };
