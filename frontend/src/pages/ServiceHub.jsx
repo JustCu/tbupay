@@ -1298,11 +1298,11 @@ function ServiceHub() {
             {user?.role === "admin" && (
               <button
                 type="button"
-                className="flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white text-[11px] font-black border-none rounded-xl cursor-pointer hover:bg-blue-700 transition-colors shadow-sm active:scale-95 shrink-0"
+                className="flex items-center gap-1 px-2.5 py-1.5 bg-blue-600 text-white text-[11px] font-black border-none rounded-xl cursor-pointer hover:bg-blue-700 transition-colors shadow-sm active:scale-95 shrink-0"
                 onClick={() => setOpenSheet("tambahBerita")}
               >
                 <Plus size={12} />
-                Tambah Berita
+                Berita
               </button>
             )}
             <button
