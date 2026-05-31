@@ -1367,7 +1367,7 @@ function ReportPreviewModal({
               <div className="flex flex-col gap-6 w-full">
                 {/* Kop Laporan / Letterhead */}
                 <div className="text-center pb-4 border-b-2 border-slate-900 flex flex-col items-center">
-                  <span className="text-[17px] font-black tracking-widest text-slate-900 leading-none">LAPORAN ARUS KAS KEUANGAN WARGA</span>
+                  <span className="text-[17px] font-black tracking-widest text-slate-900 leading-none">LAPORAN KEUANGAN WARGA</span>
                   <span className="text-[12px] font-extrabold tracking-wider text-slate-600 mt-1.5 uppercase">PERUMAHAN TERAS BALI UNGARAN (TBU)</span>
                   <span className="text-[10px] font-bold text-slate-500 mt-2 uppercase tracking-wide bg-slate-100 px-3 py-1 rounded-md print:bg-transparent print:p-0">
                     PERIODE: {periodTitle}
@@ -1423,7 +1423,7 @@ function ReportPreviewModal({
                           <th className="p-2 text-left font-bold w-[4%]">No</th>
                           <th className="p-2 text-left font-bold w-[12%]">Tanggal</th>
                           <th className="p-2 text-left font-bold w-[26%]">Keterangan</th>
-                          <th className="p-2 text-left font-bold w-[15%]">Kategori</th>
+                          <th className="p-2 text-left font-bold w-[15%]">Kategori / Jenis Iuran</th>
                           <th className="p-2 text-left font-bold w-[11%]">Oleh</th>
                           <th className="p-2 text-right font-bold w-[10%]">Debit</th>
                           <th className="p-2 text-right font-bold w-[10%]">Kredit</th>
