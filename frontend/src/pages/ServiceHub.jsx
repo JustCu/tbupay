@@ -1295,6 +1295,16 @@ function ServiceHub() {
               <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Berita &amp; Informasi</h3>
               <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Kumpulan berita terkini dan pengumuman lingkungan warga</p>
             </div>
+            {user?.role === "admin" && (
+              <button
+                type="button"
+                className="flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white text-[11px] font-black border-none rounded-xl cursor-pointer hover:bg-blue-700 transition-colors shadow-sm active:scale-95 shrink-0"
+                onClick={() => setOpenSheet("tambahBerita")}
+              >
+                <Plus size={12} />
+                Tambah Berita
+              </button>
+            )}
             <button
               type="button"
               title="Muat ulang berita"
@@ -1308,19 +1318,6 @@ function ServiceHub() {
 
           {/* Body content */}
           <div className="p-5 flex flex-col gap-4 overflow-y-auto flex-1">
-            {/* Toolbar: Tambah Berita (Admin Only) */}
-            {user?.role === "admin" && (
-              <div className="flex justify-end shrink-0">
-                <button
-                  type="button"
-                  className="flex items-center gap-1.5 px-4 py-2.5 bg-blue-600 text-white text-[12px] font-extrabold border-none rounded-xl cursor-pointer hover:bg-blue-700 transition-colors whitespace-nowrap shadow-sm active:scale-95"
-                  onClick={() => setOpenSheet("tambahBerita")}
-                >
-                  <Plus size={14} />
-                  Tambah Berita Baru
-                </button>
-              </div>
-            )}
    
 
             {loading && (
