@@ -661,7 +661,7 @@ export default function Cashflow() {
       <div className="pt-1 pb-4 flex justify-between items-start">
         <div>
           <h2 className="text-xl font-bold m-0 text-gray-800 dark:text-gray-100">Laporan Keuangan</h2>
-          <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-1 m-0">Pantau dan kelola arus kas warga secara real-time</p>
+          <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-1 m-0">Pantau dan kelola arus iuran warga secara real-time</p>
         </div>
         <div className="flex items-center gap-2 mt-1">
           <div
@@ -728,7 +728,7 @@ export default function Cashflow() {
         {/* Insight Saldo */}
         <div className="relative z-10 mt-4 pt-4 border-t border-white/10 flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-white/60 uppercase">Status Arus Kas</span>
+            <span className="text-[11px] font-bold text-white/60 uppercase">Status Arus Iuran</span>
             {netChange > 0 ? (
               <span className="text-[11px] font-extrabold text-white bg-emerald-500/80 px-2.5 py-0.5 rounded-full shadow-sm">
                 Surplus
@@ -746,12 +746,12 @@ export default function Cashflow() {
           <p className="text-[11px] font-medium text-white/80 m-0 leading-relaxed">
             {netChange > 0 ? (
               <>
-                Arus kas mengalami surplus sebesar{" "}
+                Arus iuran mengalami surplus sebesar{" "}
                 <span className="font-extrabold text-emerald-300">{formatRupiah(netChange)}</span> pada periode ini.
               </>
             ) : netChange < 0 ? (
               <>
-                Arus kas mengalami defisit sebesar{" "}
+                Arus iuran mengalami defisit sebesar{" "}
                 <span className="font-extrabold text-rose-300">{formatRupiah(Math.abs(netChange))}</span> pada periode ini.
               </>
             ) : (
@@ -764,7 +764,7 @@ export default function Cashflow() {
             className="mt-3.5 w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 active:bg-white/20 disabled:opacity-50 text-white border border-white/15 rounded-xl py-2.5 text-xs font-bold transition-all active:scale-[0.98] cursor-pointer shadow-sm"
           >
             <FileText size={14} className="stroke-[2.25]" />
-            Ekspor Laporan Kas ({periodTitle})
+            Ekspor Laporan Iuran ({periodTitle})
           </button>
         </div>
       </div>
@@ -817,10 +817,10 @@ export default function Cashflow() {
         </div>
       </div>
 
-      {/* Grafik Arus Kas */}
+      {/* Grafik Arus Iuran */}
       <div className="bg-white dark:bg-[#1a2640] p-5 rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-sm mb-6">
         <div className="flex justify-between items-center mb-4 gap-2">
-          <h3 className="font-bold text-gray-800 dark:text-gray-100 text-[15px] m-0 shrink-0">Grafik Arus Kas</h3>
+          <h3 className="font-bold text-gray-800 dark:text-gray-100 text-[15px] m-0 shrink-0">Grafik Arus Iuran</h3>
           <span className="text-[11px] font-extrabold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2.5 py-1 rounded-full capitalize truncate">
             {periodTitle}
           </span>
@@ -1417,10 +1417,10 @@ function ReportPreviewModal({
                   </div>
                 </div>
 
-                {/* Buku Kas Rinci (Ledger Table) */}
+                {/* Buku Iuran Rinci (Ledger Table) */}
                 <div className="mt-2">
                   <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-800 mb-2 border-l-4 border-blue-600 pl-2 print:border-slate-800">
-                    II. Buku Kas Rinci (General Ledger)
+                    II. Buku Iuran Rinci (General Ledger)
                   </h4>
                   <div className="w-full overflow-x-auto print:overflow-visible">
                     <table className="w-full border-collapse text-[10px] text-slate-700">
@@ -1498,7 +1498,7 @@ function ReportPreviewModal({
                         ) : (
                           <tr>
                             <td colSpan={8} className="p-6 text-center text-slate-400 italic">
-                              Tidak ada transaksi mutasi kas dalam periode ini
+                              Tidak ada transaksi mutasi iuran dalam periode ini
                             </td>
                           </tr>
                         )}

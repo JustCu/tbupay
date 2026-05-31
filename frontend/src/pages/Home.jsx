@@ -524,7 +524,7 @@ function HeroCarousel({ totalKas, totalPemasukan, totalPengeluaran, latestNews, 
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-slate-300">
                   <Wallet size={16} />
-                  <span className="text-[11px] font-bold uppercase tracking-wider">Kas Perumahan</span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider">Iuran Perumahan</span>
                 </div>
                 {/* Iuran status pill */}
                 {!loading && (
@@ -865,7 +865,7 @@ export default function Home() {
   const [loadingStep, setLoadingStep] = useState(0);
   const loadingSteps = [
     "Menghubungkan ke server aman...",
-    "Mengunduh catatan kas lingkungan...",
+    "Mengunduh catatan iuran lingkungan...",
     "Menyinkronkan diskusi warga...",
     "Mempersiapkan dasbor personal Anda..."
   ];

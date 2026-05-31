@@ -16,7 +16,7 @@ export default function PaymentModal({ isOpen, onClose }) {
   const showConfirm = useStore((s) => s.showConfirm);
   const isAdmin = user?.role === "admin";
   const [transactionType, setTransactionType] = useState("pemasukan");
-  const [kategori, setKategori] = useState("Kas Rutin");
+  const [kategori, setKategori] = useState("Iuran Rutin");
 
   // Format YYYY-MM for <input type="month">
   const currentMonth = new Date().toISOString().slice(0, 7);
@@ -36,7 +36,7 @@ export default function PaymentModal({ isOpen, onClose }) {
   const fileInputRef = useRef(null);
 
   const defaultPemasukanOptions = [
-    "Kas Rutin",
+    "Iuran Rutin",
     "Sumbangan Sosial",
     "Kebersihan Ekstra",
   ];
@@ -91,7 +91,7 @@ export default function PaymentModal({ isOpen, onClose }) {
     if (!isOpen) return;
     loadCategories();
     setTransactionType("pemasukan");
-    setKategori("Kas Rutin");
+    setKategori("Iuran Rutin");
     setBulan(currentMonth);
     setNominal("");
     setCatatan("");
@@ -345,9 +345,9 @@ export default function PaymentModal({ isOpen, onClose }) {
       if (res.status === "success") {
         const successMessage =
           transactionType === "pengeluaran"
-            ? "Pengeluaran berhasil dicatat ke kas perumahan."
+            ? "Pengeluaran berhasil dicatat ke iuran perumahan."
             : isAdmin
-              ? "Pemasukan berhasil dicatat ke kas perumahan."
+              ? "Pemasukan berhasil dicatat ke iuran perumahan."
               : "Bukti pembayaran berhasil dikirim dan menunggu verifikasi.";
         showAlert(successMessage, { variant: "success", title: "Berhasil" });
         onClose(); // close modal on success
@@ -385,11 +385,11 @@ export default function PaymentModal({ isOpen, onClose }) {
         </button>
         <div className="flex flex-col flex-1">
           <h2 className="text-xl font-bold m-0 text-slate-800 dark:text-slate-100 leading-tight">
-            {isAdmin ? "Input Kas Baru" : "Lapor Iuran Warga"}
+            {isAdmin ? "Input Iuran Baru" : "Lapor Iuran Warga"}
           </h2>
           <p className="text-[12px] text-slate-500 dark:text-slate-400 m-0 mt-1 leading-normal">
             {isAdmin
-              ? "Catat pemasukan & pengeluaran kas secara praktis"
+              ? "Catat pemasukan & pengeluaran iuran secara praktis"
               : "Lapor iuran bulanan untuk verifikasi"}
           </p>
         </div>

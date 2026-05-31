@@ -513,14 +513,13 @@ function AboutAppPopup({ isOpen, onClose }) {
 
           <div className="w-full h-[1px] bg-gray-100 dark:bg-slate-800/60"></div>
 
-          {/* Visi Utama */}
           <div className="flex flex-col gap-2">
             <h4 className="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest leading-none">
               Visi & Misi Platform
             </h4>
             <div className="bg-slate-50 dark:bg-slate-800/30 rounded-xl p-3.5 border border-slate-100/80 dark:border-slate-800/40">
               <p className="text-[12px] text-gray-700 dark:text-slate-300 m-0 leading-relaxed font-medium">
-                Membangun transparansi finansial lingkungan perumahan secara inklusif, memudahkan pelaporan kas warga secara akurat, serta memfasilitasi komunikasi pengurus perumahan dengan responsif dan modern.
+                Membangun transparansi finansial lingkungan perumahan secara inklusif, memudahkan pelaporan iuran warga secara akurat, serta memfasilitasi komunikasi pengurus perumahan dengan responsif dan modern.
               </p>
             </div>
           </div>
@@ -538,7 +537,7 @@ function AboutAppPopup({ isOpen, onClose }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <span className="text-[12px] font-bold text-gray-800 dark:text-gray-200 block leading-tight">
-                    Iuran Kas & Verifikasi
+                    Laporan Iuran & Verifikasi
                   </span>
                   <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 leading-normal">
                     Pencatatan iuran wajib bulanan yang terverifikasi aman oleh administrator dengan bukti pembayaran terunggah.
@@ -552,10 +551,10 @@ function AboutAppPopup({ isOpen, onClose }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <span className="text-[12px] font-bold text-gray-800 dark:text-gray-200 block leading-tight">
-                    Transparansi Laporan Kas
+                    Transparansi Laporan Iuran
                   </span>
                   <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 leading-normal">
-                    Pantau arus kas masuk dan keluar beserta bukti nota fisik secara real-time demi akuntabilitas keuangan bersama.
+                    Pantau arus iuran masuk dan keluar beserta bukti nota fisik secara real-time demi akuntabilitas keuangan bersama.
                   </span>
                 </div>
               </div>
