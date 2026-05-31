@@ -704,6 +704,7 @@ function ServiceHub() {
       if (res.status === "success") {
         showAlert("Berita berhasil dipublikasikan.", { variant: "success", title: "Berhasil" });
         setNewsForm({ judul: "", konten: "" });
+        setOpenSheet("berita");
         await fetchNews(true);
       } else {
         showAlert(res.message || "Gagal mempublikasikan berita.", { variant: "danger", title: "Gagal" });
@@ -1424,33 +1425,43 @@ function ServiceHub() {
         </div>
       )}
 
-      {/* ========== STANDALONE VIEW: TAMBAH BERITA (Admin Only) ========== */}
-      {openSheet === "tambahBerita" && (
-        <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+      {/* ========== BOTTOM MODAL: TAMBAH BERITA (Admin Only) ========== */}
+      <div
+        className={`fixed inset-0 z-[70] flex justify-center items-center p-4 bg-black/60 backdrop-blur-[1px] transition-opacity duration-300 ${
+          openSheet === "tambahBerita" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none overflow-hidden"
+        }`}
+        onClick={() => setOpenSheet("berita")}
+      >
+        <div
+          className={`w-full max-w-[400px] bg-white dark:bg-[#131c33] rounded-[24px] h-fit max-h-[85vh] flex flex-col shadow-[0_10px_40px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)] transition-all duration-300 ${
+            openSheet === "tambahBerita" ? "translate-y-0 scale-100" : "translate-y-4 scale-95"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
           {/* Header */}
-          <div className="flex items-center gap-3 px-5 pt-[calc(1rem+env(safe-area-inset-top,0px))] pb-4 bg-white dark:bg-[#131c33] border-b border-slate-100 dark:border-slate-800/80 shrink-0 shadow-sm">
+          <div className="flex justify-between items-start pt-6 pb-4 px-6 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
+            <div className="flex-1 min-w-0">
+              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Publikasi Berita Baru</h3>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 m-0 mt-1 leading-normal pr-4">Tulis pengumuman resmi untuk perumahan</p>
+            </div>
             <button
               type="button"
-              className="p-2 bg-slate-100 dark:bg-slate-800/60 rounded-full text-slate-655 dark:text-slate-400 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-700/60 active:scale-95"
+              className="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full border-none cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-90 shrink-0"
               onClick={() => setOpenSheet("berita")}
             >
-              <ArrowLeft size={20} />
+              <X size={16} className="stroke-[2.5]" />
             </button>
-            <div className="flex flex-col">
-              <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Publikasi Berita Baru</h3>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Tulis berita atau pengumuman resmi pengurus perumahan</p>
-            </div>
           </div>
 
-          {/* Form Content */}
-          <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
-            <form className="bg-white dark:bg-[#131c33] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-5 flex flex-col gap-4 shadow-xs" onSubmit={handlePublishNews}>
+          {/* Form Body */}
+          <div className="p-6 overflow-y-auto flex flex-col gap-4 min-h-0">
+            <form className="flex flex-col gap-4" onSubmit={handlePublishNews}>
               <div className="flex flex-col gap-1.5">
                 <label className={labelCls}>Judul Berita</label>
                 <input
                   type="text"
                   className={inputCls}
-                  placeholder="Masukkan judul berita atau pengumuman"
+                  placeholder="Masukkan judul berita..."
                   value={newsForm.judul}
                   onChange={(e) => setNewsForm({ ...newsForm, judul: e.target.value })}
                   required
@@ -1459,9 +1470,9 @@ function ServiceHub() {
               <div className="flex flex-col gap-1.5">
                 <label className={labelCls}>Isi Berita</label>
                 <textarea
-                  className={`${inputCls} resize-y`}
+                  className={`${inputCls} resize-none`}
                   rows="5"
-                  placeholder="Tulis isi berita atau pengumuman selengkapnya..."
+                  placeholder="Tulis pengumuman selengkapnya..."
                   value={newsForm.konten}
                   onChange={(e) => setNewsForm({ ...newsForm, konten: e.target.value })}
                   required
@@ -1469,8 +1480,8 @@ function ServiceHub() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl text-[13px] border-none cursor-pointer hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm mt-2 active:scale-95"
-                disabled={publishingNews}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white min-h-[44px] rounded-xl font-bold shadow-[0_4px_12px_rgba(37,99,235,0.2)] border-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-all active:scale-[0.98] mt-2 mb-2 flex items-center justify-center gap-2"
+                disabled={publishingNews || !newsForm.judul.trim() || !newsForm.konten.trim()}
               >
                 <Send size={14} />
                 {publishingNews ? "Memublikasikan..." : "Publikasi Sekarang"}
@@ -1478,7 +1489,7 @@ function ServiceHub() {
             </form>
           </div>
         </div>
-      )}
+      </div>
       {/* ========== STANDALONE VIEW: NEWS DETAIL ========== */}
       {openSheet === "newsDetail" && selectedNews && (
         <div className="fixed inset-0 z-[60] w-full bg-slate-50 dark:bg-[#0b1329] max-w-[480px] left-1/2 -translate-x-1/2 flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
