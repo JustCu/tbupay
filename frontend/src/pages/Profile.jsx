@@ -529,7 +529,7 @@ function AboutAppPopup({ isOpen, onClose }) {
             <h4 className="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest leading-none">
               Fitur Unggulan
             </h4>
-            <div className="grid grid-cols-1 gap-2">
+            <div className="grid grid-cols-1 gap-2.5">
               
               <div className="flex gap-3 items-start p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/20 rounded-lg transition-colors duration-200">
                 <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 dark:bg-slate-800/60 dark:text-indigo-400 shrink-0">
@@ -537,30 +537,30 @@ function AboutAppPopup({ isOpen, onClose }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <span className="text-[12px] font-bold text-gray-800 dark:text-gray-200 block leading-tight">
-                    Laporan Iuran & Verifikasi
+                    Pencatatan Iuran & Verifikasi
                   </span>
                   <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 leading-normal">
-                    Pencatatan iuran wajib bulanan yang terverifikasi aman oleh administrator dengan bukti pembayaran terunggah.
+                    Pencatatan iuran bulanan warga terverifikasi aman oleh admin dengan upload bukti transfer terkompresi otomatis.
                   </span>
                 </div>
               </div>
 
               <div className="flex gap-3 items-start p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/20 rounded-lg transition-colors duration-200">
-                <div className="p-1.5 rounded-lg bg-amber-50 text-amber-600 dark:bg-slate-800/60 dark:text-amber-400 shrink-0">
+                <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-650 dark:bg-slate-800/60 dark:text-indigo-400 shrink-0">
                   <Layers size={16} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <span className="text-[12px] font-bold text-gray-800 dark:text-gray-200 block leading-tight">
-                    Transparansi Laporan Iuran
+                    Ekspor Laporan Keuangan A4
                   </span>
                   <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 leading-normal">
-                    Pantau arus iuran masuk dan keluar beserta bukti nota fisik secara real-time demi akuntabilitas keuangan bersama.
+                    Unduh Laporan Keuangan resmi format PDF (Kop Surat, Ledger Mutasi Buku Iuran Rinci, Ringkasan Pos & Tanda Tangan).
                   </span>
                 </div>
               </div>
 
               <div className="flex gap-3 items-start p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/20 rounded-lg transition-colors duration-200">
-                <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-slate-800/60 dark:text-emerald-400 shrink-0">
+                <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-650 dark:bg-slate-800/60 dark:text-emerald-400 shrink-0">
                   <Cpu size={16} />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -568,7 +568,49 @@ function AboutAppPopup({ isOpen, onClose }) {
                     Pusat Informasi & Diskusi
                   </span>
                   <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 leading-normal">
-                    Saluran pengumuman berita penting perumahan terintegrasi dengan forum diskusi langsung antar tetangga.
+                    Saluran pengumuman berita penting terintegrasi dengan diskusi antar warga dan obrolan grup reaktif (refresh 5 detik).
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex gap-3 items-start p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/20 rounded-lg transition-colors duration-200">
+                <div className="p-1.5 rounded-lg bg-rose-50 text-rose-600 dark:bg-slate-800/60 dark:text-rose-400 shrink-0">
+                  <AlertCircle size={16} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-[12px] font-bold text-gray-800 dark:text-gray-200 block leading-tight">
+                    Manajemen Keluhan (Ticketing)
+                  </span>
+                  <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 leading-normal">
+                    Aspirasi warga dengan penugasan petugas PIC, ekstraksi kategori keluhan otomatis, serta pelacakan status penanganan.
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex gap-3 items-start p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/20 rounded-lg transition-colors duration-200">
+                <div className="p-1.5 rounded-lg bg-amber-50 text-amber-600 dark:bg-slate-800/60 dark:text-amber-400 shrink-0">
+                  <Home size={16} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-[12px] font-bold text-gray-800 dark:text-gray-200 block leading-tight">
+                    Kartu Identitas Digital Warga
+                  </span>
+                  <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 leading-normal">
+                    Tampilan Kartu Hunian Warga premium (Resident ID Card), menu kelola warga admin (list/tile grid) & pintasan chat WA.
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex gap-3 items-start p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/20 rounded-lg transition-colors duration-200">
+                <div className="p-1.5 rounded-lg bg-purple-50 text-purple-600 dark:bg-slate-800/60 dark:text-purple-400 shrink-0">
+                  <Key size={16} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-[12px] font-bold text-gray-800 dark:text-gray-200 block leading-tight">
+                    Sesi Keamanan & Auto-Logout
+                  </span>
+                  <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 leading-normal">
+                    Akses menu berbasis hak peranan (*role-based*) didukung sistem auto-logout setelah 7 hari tidak aktif demi keamanan data.
                   </span>
                 </div>
               </div>
@@ -590,7 +632,7 @@ function AboutAppPopup({ isOpen, onClose }) {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase leading-none">Frontend</span>
-                  <span className="text-[11px] font-bold text-gray-700 dark:text-slate-300 mt-0.5 leading-none">React 18 & Vite</span>
+                  <span className="text-[11px] font-bold text-gray-700 dark:text-slate-300 mt-0.5 leading-none">React 19 & Vite</span>
                 </div>
               </div>
 
@@ -629,15 +671,23 @@ function AboutAppPopup({ isOpen, onClose }) {
           <div className="w-full h-[1px] bg-gray-100 dark:bg-slate-800/60"></div>
 
           {/* Tim Pengembang & Hak Cipta */}
-          <div className="flex flex-col gap-2 items-center text-center mt-1">
-            <span className="text-[10px] text-gray-400 dark:text-slate-500 leading-normal">
-              Dikembangkan dengan kolaborasi erat oleh
-            </span>
-            <span className="text-[11px] font-black text-slate-700 dark:text-slate-300 leading-none mt-0.5 uppercase tracking-wide">
-              TBU PAY DEVELOPMENT TEAM
-            </span>
-            <span className="text-[10px] text-gray-400 dark:text-slate-500 leading-normal mt-2.5 font-medium">
-              © {new Date().getFullYear()} TBU Pay. All rights reserved.
+          <div className="flex flex-col gap-2.5 items-center text-center mt-1">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[9px] text-gray-400 dark:text-slate-500 uppercase tracking-wider font-bold">
+                Pengembang Aplikasi
+              </span>
+              <span className="text-[13px] font-black text-slate-800 dark:text-slate-200 mt-0.5">
+                Fathur R
+              </span>
+              <a 
+                href="mailto:office.fathur@gmail.com" 
+                className="text-[11px] font-bold text-blue-600 dark:text-indigo-400 hover:underline mt-0.5 block"
+              >
+                office.fathur@gmail.com
+              </a>
+            </div>
+            <span className="text-[10px] text-gray-400 dark:text-slate-500 leading-normal mt-2">
+              © {new Date().getFullYear()} TBU Pay. Hak Cipta Dilindungi.
             </span>
           </div>
 

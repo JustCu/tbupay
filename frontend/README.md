@@ -233,6 +233,8 @@ Standar kontribusi internal:
 3. Buat pull request dengan deskripsi perubahan, risiko, dan rencana rollback.
 4. Sertakan bukti uji untuk skenario utama.
 
-## Lisensi
+## Lisensi & Pengembang
 
-Tentukan lisensi proyek sesuai kebijakan organisasi sebelum distribusi publik.
+* **Pengembang**: Fathur R
+* **Surel (Email)**: office.fathur@gmail.com
+* **Hak Cipta**: © 2026 TBU Pay. Hak Cipta Dilindungi.
