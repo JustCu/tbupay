@@ -39,6 +39,10 @@ function doPost(e) {
       return handleDeleteUser(postData);
     } else if (action === "addNews") {
       return handleAddNews(postData);
+    } else if (action === "editNews") {
+      return handleEditNews(postData);
+    } else if (action === "deleteNews") {
+      return handleDeleteNews(postData);
     } else if (action === "addNewsReply") {
       return handleAddNewsReply(postData);
     } else if (action === "addTicketReply") {
@@ -411,6 +415,103 @@ function handleAddNews(data) {
       status: "success",
       message: "Berita berhasil dipublikasikan.",
     }),
+  ).setMimeType(ContentService.MimeType.JSON);
+}
+
+function handleEditNews(data) {
+  if (String(data.created_by_role || "") !== "admin") {
+    return ContentService.createTextOutput(
+      JSON.stringify({
+        status: "error",
+        message: "Hanya admin yang dapat mengedit berita.",
+      }),
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const id_berita = String(data.id_berita || "").trim();
+  const judul = String(data.judul || "").trim();
+  const konten = String(data.konten || "").trim();
+
+  if (!id_berita || !judul || !konten) {
+    return ContentService.createTextOutput(
+      JSON.stringify({
+        status: "error",
+        message: "ID, judul, dan konten berita wajib diisi.",
+      }),
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName("tb_berita");
+  const rows = sheet.getDataRange().getValues();
+
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]) === id_berita) {
+      sheet.getRange(i + 1, 2).setValue(judul); // judul
+      sheet.getRange(i + 1, 3).setValue(konten); // konten
+      return ContentService.createTextOutput(
+        JSON.stringify({
+          status: "success",
+          message: "Berita berhasil diperbarui.",
+        }),
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  return ContentService.createTextOutput(
+    JSON.stringify({ status: "error", message: "Berita tidak ditemukan." }),
+  ).setMimeType(ContentService.MimeType.JSON);
+}
+
+function handleDeleteNews(data) {
+  if (String(data.created_by_role || "") !== "admin") {
+    return ContentService.createTextOutput(
+      JSON.stringify({
+        status: "error",
+        message: "Hanya admin yang dapat menghapus berita.",
+      }),
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const id_berita = String(data.id_berita || "").trim();
+
+  if (!id_berita) {
+    return ContentService.createTextOutput(
+      JSON.stringify({
+        status: "error",
+        message: "ID berita wajib diisi.",
+      }),
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName("tb_berita");
+  const rows = sheet.getDataRange().getValues();
+
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]) === id_berita) {
+      sheet.deleteRow(i + 1);
+      
+      // Cascade delete berita replies
+      const replySheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName("tb_berita_balasan");
+      if (replySheet) {
+        const replyRows = replySheet.getDataRange().getValues();
+        for (let j = replyRows.length - 1; j >= 1; j--) {
+          if (String(replyRows[j][1]) === id_berita) {
+            replySheet.deleteRow(j + 1);
+          }
+        }
+      }
+
+      return ContentService.createTextOutput(
+        JSON.stringify({
+          status: "success",
+          message: "Berita berhasil dihapus.",
+        }),
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  return ContentService.createTextOutput(
+    JSON.stringify({ status: "error", message: "Berita tidak ditemukan." }),
   ).setMimeType(ContentService.MimeType.JSON);
 }
 
