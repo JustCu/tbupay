@@ -356,6 +356,8 @@ function ServiceHub() {
 
   // Ref and helper to scroll group chat to bottom
   const chatContainerRef = useRef(null);
+  const unreadBannerRef = useRef(null);
+  const [sessionLastReadTime, setSessionLastReadTime] = useState(null);
 
   const scrollToBottom = (behavior = "auto") => {
     if (chatContainerRef.current) {
@@ -366,15 +368,39 @@ function ServiceHub() {
     }
   };
 
-  // Scroll to bottom on initial load/open
+  const scrollToUnreadBanner = () => {
+    if (unreadBannerRef.current) {
+      unreadBannerRef.current.scrollIntoView({
+        behavior: "auto",
+        block: "center"
+      });
+    }
+  };
+
+  const firstUnreadChatIndex = useMemo(() => {
+    if (!sessionLastReadTime || generalChats.length === 0) return -1;
+    const lastReadTime = Number(sessionLastReadTime);
+    return generalChats.findIndex((chat) => {
+      if (!chat) return false;
+      const isOwn = String(chat.id_user) === String(user?.id_user);
+      const chatTime = safeDate(chat.timestamp).getTime();
+      return !isOwn && chatTime > lastReadTime;
+    });
+  }, [generalChats, sessionLastReadTime, user?.id_user]);
+
+  // Scroll to bottom or first unread banner on initial load/open
   useEffect(() => {
     if (openSheet === "grupchat" && generalChats.length > 0) {
       const timer = setTimeout(() => {
-        scrollToBottom("auto");
-      }, 60);
+        if (firstUnreadChatIndex !== -1 && unreadBannerRef.current) {
+          scrollToUnreadBanner();
+        } else {
+          scrollToBottom("auto");
+        }
+      }, 100);
       return () => clearTimeout(timer);
     }
-  }, [openSheet]);
+  }, [openSheet, firstUnreadChatIndex, generalChats.length]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -565,6 +591,10 @@ function ServiceHub() {
 
   useEffect(() => {
     if (openSheet === "grupchat") {
+      // Capture the current lastReadChatTime from the store BEFORE updating/resetting it
+      const currentLastRead = useStore.getState().lastReadChatTime;
+      setSessionLastReadTime(currentLastRead);
+
       setLastReadChatTime(Date.now());
       setUnreadChatCount(0);
 
@@ -575,6 +605,8 @@ function ServiceHub() {
         setUnreadChatCount(0);
       }, 5000);
       return () => clearInterval(interval);
+    } else {
+      setSessionLastReadTime(null);
     }
   }, [openSheet, setLastReadChatTime, setUnreadChatCount]);
 
@@ -1142,7 +1174,7 @@ function ServiceHub() {
               <div className="flex flex-col gap-3.5">
                 {(() => {
                   let lastDateHeader = null;
-                  return generalChats.map((chat) => {
+                  return generalChats.map((chat, index) => {
                     if (!chat) return null;
                     const isOwn = String(chat.id_user) === String(user?.id_user);
                     const bubbleColor = getDeterministicColor(chat.nama_pengirim);
@@ -1152,6 +1184,8 @@ function ServiceHub() {
                       lastDateHeader = currentDateHeader;
                     }
                     
+                    const showUnreadBanner = index === firstUnreadChatIndex;
+                    
                     return (
                       <div key={chat.id_chat} className="flex flex-col w-full">
                         {showDateHeader && (
@@ -1159,6 +1193,17 @@ function ServiceHub() {
                             <span className="bg-white/90 dark:bg-[#1f2c34]/90 text-[10px] text-gray-555 dark:text-gray-450 font-extrabold px-3.5 py-1.5 rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.05)] uppercase tracking-wider">
                               {currentDateHeader}
                             </span>
+                          </div>
+                        )}
+                        
+                        {showUnreadBanner && (
+                          <div ref={unreadBannerRef} className="flex items-center gap-3 my-4 select-none w-full">
+                            <div className="flex-1 h-[1px] bg-red-400/30 dark:bg-red-500/20"></div>
+                            <span className="bg-red-50/90 dark:bg-red-950/20 text-red-500 dark:text-red-450 text-[10px] font-black px-3.5 py-1.5 rounded-full border border-red-200/30 dark:border-red-500/20 uppercase tracking-widest flex items-center gap-1.5 shadow-sm">
+                              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                              Pesan Belum Dibaca
+                            </span>
+                            <div className="flex-1 h-[1px] bg-red-400/30 dark:bg-red-500/20"></div>
                           </div>
                         )}
                         <div className={`flex items-start gap-2 max-w-[85%] ${isOwn ? "self-end flex-row-reverse ml-auto" : "self-start mr-auto"}`}>
