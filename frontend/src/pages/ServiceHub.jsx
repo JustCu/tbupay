@@ -179,6 +179,7 @@ function ServiceHub() {
   const showConfirm = useStore((s) => s.showConfirm);
   const setLastReadChatTime = useStore((s) => s.setLastReadChatTime);
   const setUnreadChatCount = useStore((s) => s.setUnreadChatCount);
+  const unreadChatCount = useStore((state) => state.unreadChatCount);
 
   // Which bottom sheet is open
   const [openSheet, setOpenSheet] = useState(location.state?.openSheet || null); // null | 'keluhan' | 'saran' | 'berita' | 'pantauan'
@@ -767,7 +768,13 @@ function ServiceHub() {
         </div>
         
         <div className="relative z-10 shrink-0 w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors">
-          <ChevronRight size={18} strokeWidth={2.5} />
+          {unreadChatCount > 0 ? (
+            <span className="bg-red-500 text-white text-[11px] font-black w-6 h-6 rounded-full flex items-center justify-center border border-white/20 animate-pulse">
+              {unreadChatCount}
+            </span>
+          ) : (
+            <ChevronRight size={18} strokeWidth={2.5} />
+          )}
         </div>
       </button>
 
