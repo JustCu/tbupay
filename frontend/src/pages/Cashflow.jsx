@@ -289,7 +289,13 @@ export default function Cashflow() {
           masuk += nominal;
         } else if (trx.jenis === "pengeluaran") {
           keluar += nominal;
-          const pos = String(trx.keterangan || "Lainnya").trim() || "Lainnya";
+          let pos = "Lainnya";
+          if (trx.keterangan) {
+            const parts = trx.keterangan.split(" - ");
+            if (parts[0] && parts[0].trim()) {
+              pos = parts[0].trim();
+            }
+          }
           posMap[pos] = (posMap[pos] || 0) + nominal;
         }
       }
@@ -1462,7 +1468,13 @@ function ReportPreviewModal({
                                 <td className="p-2 text-left font-bold text-slate-800 truncate max-w-[140px] print:max-w-none print:whitespace-normal">
                                   {trx.keterangan || "Tanpa Keterangan"}
                                 </td>
-                                <td className="p-2 text-left text-slate-500">{trx.kategori || "Lainnya"}</td>
+                                <td className="p-2 text-left text-slate-500">
+                                   {(() => {
+                                     if (!trx.keterangan) return "Lainnya";
+                                     const parts = trx.keterangan.split(" - ");
+                                     return parts[0] ? parts[0].trim() : "Lainnya";
+                                   })()}
+                                 </td>
                                 <td className="p-2 text-left text-slate-500 truncate max-w-[70px]">{userName}</td>
                                 <td className="p-2 text-right text-emerald-600 font-bold tabular-nums">
                                   {isMasuk ? `+${formatRupiah(trx.nominal)}` : "-"}
