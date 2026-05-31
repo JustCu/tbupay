@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   X,
   Bell,
@@ -49,16 +50,25 @@ function buildNotifications(transactions, news, user) {
     });
   });
 
-  // --- 3. Transaksi belum terverifikasi milik user lain (untuk Admin) ---
+  // --- 1.5. Transaksi belum terverifikasi milik user lain (untuk Admin) ---
   const unverifiedOthers = transactions.filter((t) => {
-    const d = safeDate(t.timestamp);
-    return (
-      t.id_user !== user?.id_user &&
-      t.status === "pending" &&
-      d.getMonth() === thisMonth &&
-      d.getFullYear() === thisYear
-    );
+    return t.id_user !== user?.id_user && t.status === "pending";
   });
+
+  if (user?.role === "admin") {
+    unverifiedOthers.forEach((t) => {
+      notifs.push({
+        id: `admin-pending-${t.id_transaksi}`,
+        type: "warning",
+        title: "Perlu Verifikasi",
+        body: `Pembayaran iuran warga sebesar ${formatRp(t.nominal)} untuk "${t.keterangan}" menunggu verifikasi Anda.`,
+        time: timeAgo(t.timestamp),
+        read: false,
+        icon: "alert",
+        action: { label: "Verifikasi Sekarang", type: "info", key: "verify" },
+      });
+    });
+  }
 
   // --- 2. Transaksi diverifikasi bulan ini (milik user) ---
   const myVerifiedTrx = transactions.filter((t) => {
@@ -86,7 +96,7 @@ function buildNotifications(transactions, news, user) {
   // --- 3. Cek apakah user belum bayar iuran bulan ini (warga only) ---
   if (user?.role === "warga") {
     const hasPaymentThisMonth = transactions.some((t) => {
-      const d = new Date(t.timestamp);
+      const d = safeDate(t.timestamp);
       return (
         t.id_user === user?.id_user &&
         d.getMonth() === thisMonth &&
@@ -181,11 +191,24 @@ const TypeIcon = ({ icon, type }) => {
 };
 
 export default function NotificationModal({ isOpen, onClose, onPayNow }) {
+  const navigate = useNavigate();
   const user = useStore((state) => state.user);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [readIds, setReadIds] = useState(new Set());
   const [dataSource, setDataSource] = useState("network");
+
+  // Disable body scroll when open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -225,6 +248,9 @@ export default function NotificationModal({ isOpen, onClose, onPayNow }) {
     if (notif.action?.key === "pay") {
       onClose();
       if (onPayNow) onPayNow();
+    } else if (notif.action?.key === "verify") {
+      onClose();
+      navigate("/admin/verifikasi");
     }
   };
 
