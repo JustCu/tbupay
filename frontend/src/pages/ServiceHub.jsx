@@ -729,7 +729,7 @@ function ServiceHub() {
           </div>
           <div>
             <span className="block text-sm font-bold text-slate-800 dark:text-slate-100 leading-tight">Kotak Saran</span>
-            <span className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-1 leading-normal">Aspirasi untuk RT/RW</span>
+            <span className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-1 leading-normal">Aspirasi untuk Perumahan</span>
           </div>
         </button>
       </div>
@@ -1338,7 +1338,7 @@ function ServiceHub() {
             </button>
             <div className="flex flex-col">
               <h3 className="m-0 text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">Publikasi Berita Baru</h3>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Tulis berita atau pengumuman resmi pengurus RT/RW</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 m-0 mt-0.5">Tulis berita atau pengumuman resmi pengurus perumahan</p>
             </div>
           </div>
 

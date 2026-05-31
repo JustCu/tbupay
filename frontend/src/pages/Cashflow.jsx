@@ -699,7 +699,7 @@ export default function Cashflow() {
         })}
       </div>
 
-      {/* Ringkasan Keuangan RT */}
+      {/* Ringkasan Keuangan Perumahan */}
       <div
         className="relative overflow-hidden text-white p-5 rounded-2xl border border-transparent shadow-md mb-4"
         style={{
@@ -1532,7 +1532,7 @@ function ReportPreviewModal({
                 </div>
                 <div className="flex flex-col items-center text-center">
                   <span className="text-slate-400 uppercase tracking-wider text-[8px] font-extrabold">Mengetahui & Menyetujui,</span>
-                  <span className="font-extrabold text-slate-800 mt-1 uppercase">Ketua RT / RW TBU</span>
+                  <span className="font-extrabold text-slate-800 mt-1 uppercase">Pengurus Perumahan TBU</span>
                   <div className="h-16 w-32 flex items-end justify-center border-b border-slate-300 text-[8px] text-slate-400 italic pb-1">
                     ( Tanda Tangan & Tanggal )
                   </div>

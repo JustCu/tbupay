@@ -41,7 +41,7 @@ export default function PaymentModal({ isOpen, onClose }) {
     "Kebersihan Ekstra",
   ];
   const defaultPengeluaranOptions = [
-    "Operasional RT",
+    "Operasional Perumahan",
     "Perawatan Lingkungan",
     "Keamanan",
     "Kebersihan",
@@ -499,7 +499,7 @@ export default function PaymentModal({ isOpen, onClose }) {
               <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Catatan Tambahan (Opsional)</label>
               <textarea
                 className="w-full min-h-[72px] px-4 py-3 rounded-xl text-[13px] bg-slate-50 dark:bg-[#1b2641] border border-slate-200 dark:border-[#2c3c5e] outline-none font-sans text-slate-850 dark:text-slate-200 resize-y focus:bg-white dark:focus:bg-[#1b2641] focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder-slate-300 dark:placeholder-slate-600"
-                placeholder="Contoh: Titip iuran sekalian buat Pak RT"
+                placeholder="Contoh: Titip iuran sekalian buat pengurus"
                 value={catatan}
                 onChange={(e) => setCatatan(e.target.value)}
               />

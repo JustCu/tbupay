@@ -520,7 +520,7 @@ function AboutAppPopup({ isOpen, onClose }) {
             </h4>
             <div className="bg-slate-50 dark:bg-slate-800/30 rounded-xl p-3.5 border border-slate-100/80 dark:border-slate-800/40">
               <p className="text-[12px] text-gray-700 dark:text-slate-300 m-0 leading-relaxed font-medium">
-                Membangun transparansi finansial lingkungan perumahan secara inklusif, memudahkan pelaporan kas warga secara akurat, serta memfasilitasi komunikasi pengurus RT/RW dengan responsif dan modern.
+                Membangun transparansi finansial lingkungan perumahan secara inklusif, memudahkan pelaporan kas warga secara akurat, serta memfasilitasi komunikasi pengurus perumahan dengan responsif dan modern.
               </p>
             </div>
           </div>
@@ -569,7 +569,7 @@ function AboutAppPopup({ isOpen, onClose }) {
                     Pusat Informasi & Diskusi
                   </span>
                   <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 leading-normal">
-                    Saluran pengumuman berita penting RT/RW terintegrasi dengan forum diskusi langsung antar tetangga.
+                    Saluran pengumuman berita penting perumahan terintegrasi dengan forum diskusi langsung antar tetangga.
                   </span>
                 </div>
               </div>
