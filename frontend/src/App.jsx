@@ -9,6 +9,7 @@ import useStore from "./store/useStore";
 import MainLayout from "./layouts/MainLayout";
 import DialogModal from "./components/DialogModal";
 import { routeLoaders } from "./routes/routePrefetch";
+import { getGeneralChats } from "./application/use-cases/chats/chatUseCases";
 
 const Login = lazy(() => import("./pages/Login"));
 const Home = lazy(() => import("./pages/Home"));
@@ -41,6 +42,37 @@ export default function App() {
   const logout = useStore((state) => state.logout);
   const updateActivity = useStore((state) => state.updateActivity);
   const showAlert = useStore((state) => state.showAlert);
+  const user = useStore((state) => state.user);
+  const lastReadChatTime = useStore((state) => state.lastReadChatTime);
+  const setUnreadChatCount = useStore((state) => state.setUnreadChatCount);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const checkUnreadChats = async () => {
+      try {
+        const res = await getGeneralChats();
+        if (res?.status === "success" && Array.isArray(res.data)) {
+          const chats = res.data;
+          const currentUserId = user?.id_user;
+          const unreadCount = chats.filter((c) => {
+            const t = new Date(c.timestamp || 0).getTime();
+            return t > (lastReadChatTime || 0) && c.id_user !== currentUserId;
+          }).length;
+          setUnreadChatCount(unreadCount);
+        }
+      } catch (err) {
+        console.error("Error checking unread chats:", err);
+      }
+    };
+
+    // Initial check on mount/auth
+    checkUnreadChats();
+
+    // Check periodically every 15 seconds
+    const interval = setInterval(checkUnreadChats, 15000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated, lastReadChatTime, user?.id_user, setUnreadChatCount]);
 
   useEffect(() => {
     if (!isAuthenticated) return;

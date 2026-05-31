@@ -177,6 +177,8 @@ function ServiceHub() {
   const isAdmin = user?.role === "admin";
   const showAlert = useStore((s) => s.showAlert);
   const showConfirm = useStore((s) => s.showConfirm);
+  const setLastReadChatTime = useStore((s) => s.setLastReadChatTime);
+  const setUnreadChatCount = useStore((s) => s.setUnreadChatCount);
 
   // Which bottom sheet is open
   const [openSheet, setOpenSheet] = useState(location.state?.openSheet || null); // null | 'keluhan' | 'saran' | 'berita' | 'pantauan'
@@ -518,13 +520,18 @@ function ServiceHub() {
 
   useEffect(() => {
     if (openSheet === "grupchat") {
+      setLastReadChatTime(Date.now());
+      setUnreadChatCount(0);
+
       fetchGeneralChats(true); // Initial fetch with spinner
       const interval = setInterval(() => {
         fetchGeneralChats(true, true); // Background fetch (no spinner)
+        setLastReadChatTime(Date.now());
+        setUnreadChatCount(0);
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [openSheet]);
+  }, [openSheet, setLastReadChatTime, setUnreadChatCount]);
 
   useEffect(() => {
     if (openSheet === "newsDetail" && selectedNews?.id_berita) {

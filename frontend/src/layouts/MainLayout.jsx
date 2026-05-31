@@ -14,6 +14,7 @@ export default function MainLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useStore((state) => state.user);
+  const unreadChatCount = useStore((state) => state.unreadChatCount);
 
   const navItems = [
     {
@@ -104,7 +105,9 @@ export default function MainLayout() {
               onTouchStart={() => handleNavIntent(item.id)}
               onClick={() => navigate(item.path)}
             >
-              <Icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 2} fill="none" />
+              <div className="relative">
+                <Icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 2} fill="none" />
+              </div>
               <span 
                 className={`text-[10px] mt-1 ${isActive ? "font-semibold" : "font-medium"}`}
               >
@@ -132,12 +135,19 @@ export default function MainLayout() {
           return (
             <button
               key={item.id}
-              className={`flex flex-col items-center justify-center w-full transition-colors ${isActive ? "text-blue-600" : "text-gray-400"}`}
+              className={`flex flex-col items-center justify-center w-full transition-colors relative ${isActive ? "text-blue-600" : "text-gray-400"}`}
               onMouseEnter={() => handleNavIntent(item.id)}
               onTouchStart={() => handleNavIntent(item.id)}
               onClick={() => navigate(item.path)}
             >
-              <Icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 2} fill="none" />
+              <div className="relative">
+                <Icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 2} fill="none" />
+                {item.id === "service" && unreadChatCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[8px] font-extrabold min-w-[14px] h-[14px] px-1 rounded-full flex items-center justify-center border border-white animate-pulse">
+                    {unreadChatCount}
+                  </span>
+                )}
+              </div>
               <span 
                 className={`text-[10px] mt-1 ${isActive ? "font-semibold" : "font-medium"}`}
               >

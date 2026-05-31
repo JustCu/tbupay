@@ -717,6 +717,7 @@ export default function Home() {
   const setHasUnreadNotif = useStore((state) => state.setHasUnreadNotif);
   const showAlert = useStore((state) => state.showAlert);
   const showConfirm = useStore((state) => state.showConfirm);
+  const unreadChatCount = useStore((state) => state.unreadChatCount);
   const navigate = useNavigate();
 
   const [transactions, setTransactions] = useState(() => {
@@ -1235,11 +1236,16 @@ export default function Home() {
           <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center leading-tight">Data Warga</span>
         </button>
         <button
-          className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer"
+          className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer relative"
           onClick={() => navigate("/service", { state: { openSheet: "grupchat" } })}
         >
           <MessageCircle size={24} className="text-primary dark:text-blue-400 my-1 shrink-0" />
           <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300 text-center leading-tight">Grup Chat</span>
+          {unreadChatCount > 0 && (
+            <span className="absolute top-2 right-2 bg-red-500 text-white text-[9px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center border border-white animate-pulse">
+              {unreadChatCount}
+            </span>
+          )}
         </button>
         <button
           className="flex flex-col items-center justify-start gap-2 bg-white dark:bg-[#1a2640] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-none active:scale-95 transition-transform cursor-pointer"

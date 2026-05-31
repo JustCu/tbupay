@@ -11,6 +11,12 @@ const useStore = create(
       logout: () => set({ user: null, isAuthenticated: false, lastActivity: null }),
       updateActivity: () => set((state) => state.isAuthenticated ? { lastActivity: Date.now() } : {}),
 
+      // Chat unread system
+      lastReadChatTime: 0,
+      unreadChatCount: 0,
+      setLastReadChatTime: (time) => set({ lastReadChatTime: time }),
+      setUnreadChatCount: (count) => set({ unreadChatCount: count }),
+
       hasUnreadNotif: false,
       setHasUnreadNotif: (val) => set({ hasUnreadNotif: val }),
 
