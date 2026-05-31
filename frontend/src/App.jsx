@@ -36,6 +36,59 @@ function PrivateRoute({ children }) {
 
 export default function App() {
   const isDarkMode = useStore((state) => state.isDarkMode);
+  const isAuthenticated = useStore((state) => state.isAuthenticated);
+  const lastActivity = useStore((state) => state.lastActivity);
+  const logout = useStore((state) => state.logout);
+  const updateActivity = useStore((state) => state.updateActivity);
+  const showAlert = useStore((state) => state.showAlert);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+
+    const checkSession = () => {
+      if (lastActivity) {
+        const elapsed = Date.now() - lastActivity;
+        if (elapsed > SEVEN_DAYS_MS) {
+          logout();
+          showAlert(
+            "Sesi login Anda telah berakhir karena tidak ada aktivitas selama 7 hari. Silakan masuk kembali.",
+            { title: "Sesi Berakhir", variant: "warning" }
+          );
+          return true;
+        }
+      }
+      return false;
+    };
+
+    if (checkSession()) return;
+
+    let lastUpdate = Date.now();
+    const handleActivity = () => {
+      const now = Date.now();
+      if (now - lastUpdate > 30000) {
+        updateActivity();
+        lastUpdate = now;
+      }
+    };
+
+    const events = ["mousedown", "keydown", "scroll", "touchstart"];
+    events.forEach((event) => {
+      window.addEventListener(event, handleActivity);
+    });
+
+    const interval = setInterval(() => {
+      checkSession();
+    }, 60000);
+
+    return () => {
+      events.forEach((event) => {
+        window.removeEventListener(event, handleActivity);
+      });
+      clearInterval(interval);
+    };
+  }, [isAuthenticated, lastActivity, logout, updateActivity, showAlert]);
 
   useEffect(() => {
     // Apply persisted theme class to document element on startup & changes

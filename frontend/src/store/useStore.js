@@ -6,8 +6,10 @@ const useStore = create(
     (set) => ({
       user: null, // { id_user, nama, blok_rumah, no_hp, role }
       isAuthenticated: false,
-      login: (userData) => set({ user: userData, isAuthenticated: true }),
-      logout: () => set({ user: null, isAuthenticated: false }),
+      lastActivity: null,
+      login: (userData) => set({ user: userData, isAuthenticated: true, lastActivity: Date.now() }),
+      logout: () => set({ user: null, isAuthenticated: false, lastActivity: null }),
+      updateActivity: () => set((state) => state.isAuthenticated ? { lastActivity: Date.now() } : {}),
 
       hasUnreadNotif: false,
       setHasUnreadNotif: (val) => set({ hasUnreadNotif: val }),
